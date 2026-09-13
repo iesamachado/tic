@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Funciones de soporte y validación ──
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email != null &&
+             (request.auth.token.email == 'bernatcosta@iesamachado.org' || 
+              request.auth.token.email.lower() == 'bernatcosta@iesamachado.org');
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || 
+             (isAuthenticated() && 
+              exists(/databases/$(database)/documents/tic2_users/$(request.auth.uid)) &&
+              get(/databases/$(database)/documents/tic2_users/$(request.auth.uid)).data.role == 'admin');
+    }
+
+    function isTeacher() {
+      return isAdmin() || 
+             (isAuthenticated() && 
+              exists(/databases/$(database)/documents/tic2_users/$(request.auth.uid)) &&
+              get(/databases/$(database)/documents/tic2_users/$(request.auth.uid)).data.role == 'teacher');
+    }
+
+    // ── Colección de Usuarios y sus subcolecciones (TIC2) ──
+    match /tic2_users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+
+      // Subcolecciones del usuario (ej: /tic2_users/{userId}/tic2_games/{gameId})
+      match /{allChildren=**} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    // ── Colección de Docentes Autorizados (TIC2) ──
+    match /tic2_allowed_teachers/{teacherEmail} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ── Colección de Alumnos Autorizados (TIC2) ──
+    match /tic2_allowed_students/{studentEmail} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
+
+    // ── Colección de Clases (TIC2) ──
+    match /tic2_classes/{classId} {
+      allow read: if isAuthenticated();
+      allow create: if isTeacher();
+      allow update, delete: if isTeacher() && 
+        (resource.data.teacherId == request.auth.uid || isAdmin());
+
+      // Subcolección de miembros de clase
+      match /members/{memberId} {
+        allow read: if isAuthenticated();
+        allow write: if isTeacher() || (isAuthenticated() && request.auth.uid == memberId);
+      }
+
+      // Subcolección de tareas
+      match /tic2_assignments/{assignmentId} {
+        allow read: if isAuthenticated();
+        allow write: if isTeacher();
+      }
+    }
+
+    // ── Membresías de clases por PIN (TIC2) ──
+    match /tic2_class_members/{memberDocId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // ── Colección de Resultados de Juegos (TIC2) ──
+    match /tic2_game_results/{resultId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && (request.resource.data.studentId == request.auth.uid || isTeacher());
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Sesiones en vivo (TIC2) ──
+    match /tic2_live_sessions/{sessionId} {
+      allow read, write: if isAuthenticated();
+
+      match /{allSubcollections=**} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+
+    match /tic2_live_participants/{participantId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // ── Textos y configuraciones (TIC2) ──
+    match /tic2_texts/{textId} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
+
+    match /tic2_settings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Plataforma unificada de juegos educativos con integración Google Classroom. Kanban Hero, CyberDefender, SuperMarioBros y App Creator en un solo lugar.">
+  <title>TIC2Hub — Juegos Educativos</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+  <!-- Canvas partículas -->
+  <canvas id="particles-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+  <!-- Hero principal -->
+  <main class="hero" id="login-hero">
+
+    <!-- Logo + título -->
+    <div class="hero-content" id="login-panel">
+
+      <div class="login-logo animate-fade-up">
+        <span class="login-logo-icon">🎓</span>
+        <h1 class="login-title">TIC2<span class="login-title-accent">Hub</span></h1>
+        <p class="login-tagline">La plataforma de juegos educativos de tu centro</p>
+      </div>
+
+      <!-- Tarjetas de juegos (preview) -->
+      <div class="login-games-preview animate-fade-up delay-1" aria-hidden="true">
+        <div class="login-game-chip" style="--chip-color:#00d4ff">📋 Kanban Hero</div>
+        <div class="login-game-chip" style="--chip-color:#ff6b35">🛡️ CyberDefender</div>
+        <div class="login-game-chip" style="--chip-color:#ff8fab">🍄 SuperMarioBros</div>
+        <div class="login-game-chip" style="--chip-color:#a8d8ea">📱 App Creator</div>
+      </div>
+
+      <!-- Panel de login -->
+      <div class="login-card animate-fade-up delay-2" id="panel-role-select">
+        <h2 class="login-card-title">¿Cómo entras hoy?</h2>
+        <p class="login-card-sub">Selecciona tu rol para continuar</p>
+
+        <div class="login-role-buttons">
+          <!-- DOCENTE -->
+          <button class="login-role-btn login-role-btn--teacher" id="btn-teacher-google">
+            <span class="role-btn-icon">👨‍🏫</span>
+            <div class="role-btn-text">
+              <strong>Soy Docente</strong>
+              <small>Accedo con Google + Classroom</small>
+            </div>
+            <span class="role-btn-arrow">→</span>
+          </button>
+
+          <!-- ALUMNO -->
+          <button class="login-role-btn login-role-btn--student" id="btn-student-google">
+            <span class="role-btn-icon">👨‍🎓</span>
+            <div class="role-btn-text">
+              <strong>Soy Alumno/a</strong>
+              <small>Accedo con mi cuenta Google</small>
+            </div>
+            <span class="role-btn-arrow">→</span>
+          </button>
+        </div>
+
+        <div id="login-error" class="form-error" style="margin-top: var(--space-4); text-align: center; font-size: var(--text-sm);"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

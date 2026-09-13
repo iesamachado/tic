@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Panel de control del docente. Gestiona clases, habilita juegos y sincroniza con Google Classroom.">
+  <title>TIC2Hub — Dashboard Docente</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <link rel="stylesheet" href="css/dashboard_teacher.css">
+</head>
+<body class="page">
+
+  <!-- Header (renderizado por ui.js) -->
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+
+      <!-- Cabecera del dashboard -->
+      <header class="dashboard-header animate-fade-up">
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <h1 class="dashboard-title" id="teacher-welcome" style="margin: 0;">Bienvenido/a 👋</h1>
+        </div>
+        <p class="dashboard-subtitle" style="margin-top: var(--space-2);">Gestiona tus clases y controla el acceso a los juegos educativos.</p>
+      </header>
+
+      <!-- Stats rápidas -->
+      <div class="dashboard-grid dashboard-grid--4 animate-fade-up delay-1" id="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">🏫</span>
+          <div class="stat-value" id="stat-classes">—</div>
+          <div class="stat-label">Clases activas</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">👨‍🎓</span>
+          <div class="stat-value" id="stat-students">—</div>
+          <div class="stat-label">Alumnos totales</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎮</span>
+          <div class="stat-value" id="stat-games">—</div>
+          <div class="stat-label">Juegos habilitados</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📊</span>
+          <div class="stat-value" id="stat-results">—</div>
+          <div class="stat-label">Partidas este mes</div>
+        </div>
+      </div>
+
+      <!-- Sección: Mis Clases -->
+      <section class="animate-fade-up delay-2" aria-labelledby="section-classes-title">
+        <div class="section-header">
+          <h2 class="section-title" id="section-classes-title">🏫 Mis Clases</h2>
+          <div class="section-actions">
+            <button class="btn btn-ghost btn--sm" id="btn-import-classroom">
+              <span>📥</span> Importar de Classroom
+            </button>
+            <button class="btn btn-primary" id="btn-new-class">
+              <span>+</span> Nueva Clase
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de clases -->
+        <div class="classes-grid" id="classes-list">
+          <!-- Skeleton mientras carga -->
+          <div class="class-card skeleton" style="height:220px"></div>
+          <div class="class-card skeleton" style="height:220px"></div>
+          <div class="class-card skeleton" style="height:220px"></div>
+        </div>
+        <p class="empty-state" id="empty-classes" style="display:none">
+          <span class="empty-state-icon">🏫</span>
+          Aún no tienes ninguna clase. ¡Crea la primera!
+        </p>
+      </section>
+      
+      <!-- Sección: Temario -->
+      <section class="animate-fade-up delay-2" aria-labelledby="section-topics-title">
+        <div class="section-header">
+          <h2 class="section-title" id="section-topics-title">📚 Bloques Temáticos (Temario)</h2>
+        </div>
+        <p class="section-desc">Accede al contenido teórico de la asignatura para repasarlo o proyectarlo en clase.</p>
+        <div class="games-grid" id="teacher-topics-grid">
+          <!-- Renderizado por JS -->
+        </div>
+      </section>
+
+      <!-- Sección: También puedes jugar -->
+      <section class="animate-fade-up delay-3" aria-labelledby="section-play-title">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2 class="section-title" id="section-play-title">🎮 También puedes jugar</h2>
+            <p class="section-desc" style="margin-bottom:0;">Como docente puedes acceder a cualquier juego para probarlo o practicar.</p>
+          </div>
+          <a href="roadmap.html" class="btn btn-ghost btn--sm" style="display:flex; align-items:center; gap:6px;">
+            🚀 <span>Ver Roadmap de Juegos</span>
+          </a>
+        </div>
+        <div class="games-grid" id="teacher-games-grid" style="margin-top: var(--space-4);">
+          <!-- Renderizado por JS -->
+        </div>
+      </section>
+
+      <!-- Sección: Mi Historial de Partidas -->
+      <section class="animate-fade-up delay-4" aria-labelledby="section-history-title">
+        <div class="section-header">
+          <h2 class="section-title" id="section-history-title">⏱️ Mi Historial de Partidas</h2>
+        </div>
+        <p class="section-desc">Tus últimas 10 partidas jugadas.</p>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <table class="ranking-table" id="teacher-history-table">
+            <thead>
+              <tr>
+                <th>Juego</th>
+                <th>Puntuación</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="teacher-history-list">
+              <tr><td colspan="3" class="text-center text-muted" style="padding: var(--space-6);">Cargando historial...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Nueva clase -->
+  <div id="modal-new-class" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="new-class-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="new-class-title">Nueva Clase</h3>
+        <button class="modal-close" id="close-new-class" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-new-class" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="class-name-input">Nombre de la clase *</label>
+            <input type="text" id="class-name-input" placeholder="Ej: 1º ESO Tecnología Grupo A"
+                   maxlength="60" required>
+          </div>
+          <div class="form-group" style="margin-top: var(--space-4);">
+            <label class="form-label" for="class-level-input">Nivel (ESO)</label>
+            <select id="class-level-input" required>
+              <option value="1" selected>1º ESO</option>
+              <option value="2">2º ESO</option>
+              <option value="3">3º ESO</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: var(--space-4);">
+            <label class="form-label" for="class-students-input">Correos de alumnos (opcional)</label>
+            <textarea id="class-students-input" rows="4" style="font-family:var(--font-mono); font-size:var(--text-xs);"
+                      placeholder="Pega aquí los correos (uno por línea, o separados por comas):&#10;alumno1@g.educaand.es&#10;alumno2@iesamachado.org"></textarea>
+            <p class="form-hint">Los alumnos añadidos quedarán automáticamente autorizados para acceder a TIC2Hub con su cuenta de Google.</p>
+          </div>
+          <p class="form-hint" style="margin-top: var(--space-2);">Se generará además un PIN de 6 dígitos con el que también podrán unirse.</p>
+          <div class="modal-footer" style="padding:0; margin-top:var(--space-6); border:none">
+            <button type="button" class="btn btn-ghost" id="cancel-new-class">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Crear Clase</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Importar Classroom -->
+  <div id="modal-import-classroom" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="import-classroom-title">
+    <div class="modal-box modal-box--wide">
+      <div class="modal-header">
+        <h3 id="import-classroom-title">📥 Importar desde Google Classroom</h3>
+        <button class="modal-close" id="close-import-classroom" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body" id="classroom-modal-body">
+        <p class="text-muted text-center">Cargando cursos...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/dashboard_teacher.js"></script>
+</body>
+</html>

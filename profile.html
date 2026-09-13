@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Mi Perfil">
+  <title>TIC2Hub — Mi Perfil</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <style>
+    .profile-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .profile-avatar-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--bg-card);
+      border: 4px solid var(--accent);
+      margin: 0 auto var(--space-4) auto;
+      display: block;
+      box-shadow: var(--shadow-md);
+    }
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+    }
+    .avatar-option {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: var(--bg-body);
+      object-fit: cover;
+    }
+    .avatar-option:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-sm);
+    }
+    .avatar-option.selected {
+      border-color: var(--accent);
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+    }
+    .style-filter {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+      justify-content: center;
+    }
+    .style-btn {
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-base);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      transition: all var(--transition-fast);
+    }
+    .style-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container profile-container animate-fade-up">
+      <div class="section-header" style="justify-content: center; margin-bottom: var(--space-6);">
+        <h1 class="section-title">👤 Mi Perfil</h1>
+      </div>
+
+      <div class="card">
+        <form id="profile-form" novalidate>
+          
+          <div style="text-align: center; margin-bottom: var(--space-6);">
+            <img id="avatar-preview" class="profile-avatar-preview" src="" alt="Avatar actual">
+            <input type="hidden" id="photo-url-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="display-name-input">Nombre visible</label>
+            <input type="text" id="display-name-input" placeholder="Tu nombre" required>
+            <p class="form-hint" id="name-hint" style="margin-top: var(--space-1);">Como docente, puedes modificar tu nombre como quieras.</p>
+          </div>
+
+          <div class="form-group" style="margin-top: var(--space-6);">
+            <label class="form-label">Elige un nuevo Avatar</label>
+            <p class="form-hint" style="margin-bottom: var(--space-3);">Selecciona un estilo y haz clic en el que más te guste.</p>
+            
+            <div class="style-filter" id="style-filters">
+              <!-- Filtros generados por JS -->
+            </div>
+
+            <div class="avatar-grid" id="avatar-grid">
+              <!-- Avatares generados por JS -->
+            </div>
+            
+            <div style="text-align: center; margin-top: var(--space-4);">
+              <button type="button" class="btn btn-ghost btn--sm" id="btn-randomize">🎲 Generar otros distintos</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-3); margin-top: var(--space-8);">
+            <button type="button" class="btn btn-ghost" id="btn-cancel" style="flex: 1;">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="flex: 2;">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/profile.js"></script>
+</body>
+</html>

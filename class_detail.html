@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Gestión de clase. Administra alumnos, habilita juegos y sincroniza con Google Classroom.">
+  <title>TIC2Hub — Gestión de Clase</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <link rel="stylesheet" href="css/class_detail.css">
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+
+      <!-- Cabecera -->
+      <header class="dashboard-header animate-fade-up">
+        <a href="dashboard_teacher.html" class="back-link">← Volver a mis clases</a>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:var(--space-2);">
+          <div>
+            <h2 id="class-name" style="margin:0; font-size:1.8rem;">Cargando...</h2>
+            <div style="display:flex; gap:var(--space-4); margin-top:var(--space-2); color:var(--text-muted); font-size:0.9rem;">
+              <span id="class-pin" class="badge badge--primary" style="cursor:pointer;" title="Copiar PIN">📋 ---</span>
+              <span id="classroom-link-meta" style="display:none; align-items:center; gap:var(--space-2);">
+                <span class="badge badge--accent">🔗 Vinculada a Classroom</span>
+              </span>
+              <a href="evaluation.html" class="btn btn-ghost btn--sm" style="display:flex; align-items:center; gap:6px; text-decoration:none;">
+                📊 <span>Cómo evaluar (Criterios y Tareas)</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Grid principal: tabs -->
+      <div class="class-tabs animate-fade-up delay-1">
+        <button class="tab-btn tab-btn--active" data-tab="games">📚 Temario y Juegos</button>
+        <button class="tab-btn" data-tab="students">👨‍🎓 Alumnos</button>
+        <button class="tab-btn" data-tab="assignments">📋 Tareas</button>
+        <button class="tab-btn" data-tab="results">📊 Resultados</button>
+      </div>
+
+      <!-- TAB: CONTENIDOS (habilitación) -->
+      <section id="tab-games" class="tab-content tab-content--active animate-fade-up delay-2">
+        <div class="dashboard-grid dashboard-grid--2" style="grid-template-columns: 1fr 1fr; align-items: start;">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Juegos habilitados</h2>
+            </div>
+            <p class="form-hint" style="margin-bottom:var(--space-5)">
+              Activa o desactiva cada juego. Solo los alumnos de esta clase verán los juegos activos.
+            </p>
+            <div class="games-toggle-list" id="games-toggle-list">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Temario y Teoría</h2>
+            </div>
+            <p class="form-hint" style="margin-bottom:var(--space-5)">
+              Selecciona qué bloques temáticos pueden visualizar los alumnos de esta clase.
+            </p>
+            <div class="games-toggle-list" id="topics-toggle-list">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: ALUMNOS -->
+      <section id="tab-students" class="tab-content" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Alumnos de la clase</h2>
+            <div class="card-header-actions" style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+              <button class="btn btn-ghost btn--sm" id="btn-sync-students">
+                🔄 Sincronizar Classroom
+              </button>
+              <button class="btn btn-primary btn--sm" id="btn-add-students">
+                + Añadir alumnos
+              </button>
+            </div>
+          </div>
+
+          <div id="students-list">
+            <div class="skeleton" style="height:60px;margin-bottom:8px"></div>
+            <div class="skeleton" style="height:60px;margin-bottom:8px"></div>
+            <div class="skeleton" style="height:60px"></div>
+          </div>
+
+          <p class="empty-state" id="no-students" style="display:none">
+            No hay alumnos en esta clase todavía. Usa el botón "+ Añadir alumnos", comparte el PIN o sincroniza desde Classroom.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: TAREAS -->
+      <section id="tab-assignments" class="tab-content" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Tareas de Classroom</h2>
+            <button class="btn btn-primary btn--sm" id="btn-new-assignment">
+              + Nueva tarea
+            </button>
+          </div>
+          <p class="form-hint" style="margin-bottom:var(--space-5)">
+            Crea tareas en Google Classroom vinculadas a cada juego. Las notas se sincronizan automáticamente.
+          </p>
+          <div id="assignments-list">
+            <p class="empty-state" id="no-assignments">Aún no hay tareas creadas para esta clase.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: RESULTADOS -->
+      <section id="tab-results" class="tab-content" style="display:none">
+        <div class="results-filter" id="results-filter">
+          <label class="form-label">Filtrar por juego:</label>
+          <div class="game-filter-pills" id="game-filter-pills">
+            <button class="filter-pill filter-pill--active" data-game="">Todos</button>
+            <!-- Se añaden dinámicamente -->
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid--2" style="margin-bottom:var(--space-6)">
+          <div class="card">
+            <h3 class="card-title">🏆 Podio</h3>
+            <div id="results-podium"></div>
+          </div>
+          <div class="card">
+            <h3 class="card-title">📋 Ranking completo</h3>
+            <div id="results-ranking"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Nueva tarea -->
+  <div id="modal-new-assignment" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="new-assignment-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="new-assignment-title">Nueva tarea en Classroom</h3>
+        <button class="modal-close" id="close-new-assignment" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-new-assignment" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="assignment-game">Juego</label>
+            <select id="assignment-game" required>
+              <option value="">Selecciona un juego...</option>
+              <!-- Rellenado por JS -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="assignment-title">Título de la tarea</label>
+            <input type="text" id="assignment-title" placeholder="Ej: Práctica de mecanografía" required>
+          </div>
+          <div id="assignment-criteria-suggestion" style="display:none; margin-bottom:var(--space-4);" class="alert alert--info"></div>
+          <div class="form-group">
+            <label class="form-label" for="assignment-target">Puntuación objetivo (para nota 10/10)</label>
+            <input type="number" id="assignment-target" min="1" placeholder="Ej: 100" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="assignment-due">Fecha de entrega (opcional)</label>
+            <input type="datetime-local" id="assignment-due">
+          </div>
+          <div class="assignment-classroom-note" id="assignment-classroom-note" style="display:none">
+            <div class="alert alert--warning">
+              <span>⚠️</span>
+              <div>Esta clase no tiene un curso de Classroom vinculado. La tarea solo se guardará en TIC2Hub.</div>
+            </div>
+          </div>
+          <p id="assignment-error" class="form-error" aria-live="polite"></p>
+          <div class="modal-footer" style="padding:0; margin-top:var(--space-5); border:none">
+            <button type="button" class="btn btn-ghost" id="cancel-new-assignment">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Crear tarea</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Añadir alumnos manualmente -->
+  <div id="modal-add-students" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="add-students-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="add-students-title">➕ Añadir alumnos a la clase</h3>
+        <button class="modal-close" id="close-add-students" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-students" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="manual-students-input">Correos electrónicos de los alumnos</label>
+            <textarea id="manual-students-input" rows="6" style="font-family:var(--font-mono); font-size:var(--text-xs);"
+                      placeholder="Pega los correos (uno por línea o separados por comas):&#10;alumno1@g.educaand.es&#10;alumno2@iesamachado.org" required></textarea>
+            <p class="form-hint" style="margin-top: var(--space-2);">
+              Se admiten correos corporativos <strong>@g.educaand.es</strong>, <strong>@iesamachado.org</strong> o cualquier otro dominio. Quedarán autorizados para iniciar sesión inmediatamente con Google.
+            </p>
+          </div>
+          <div class="modal-footer" style="padding:0; margin-top:var(--space-5); border:none">
+            <button type="button" class="btn btn-ghost" id="cancel-add-students">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Añadir a la clase</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Sincronizar notas -->
+  <div id="modal-sync-grades" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="sync-grades-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="sync-grades-title">📊 Volcar notas a Classroom</h3>
+        <button class="modal-close" id="close-sync-grades" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body" id="sync-grades-body">
+        <p class="form-hint">Selecciona las tareas cuyas notas quieres sincronizar.</p>
+        <div id="sync-assignments-list"></div>
+        <div style="margin-top:var(--space-4)">
+          <button class="btn btn-primary btn--full" id="btn-do-sync">📤 Sincronizar notas</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/class_detail.js"></script>
+</body>
+</html>

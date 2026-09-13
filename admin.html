@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Panel de Administración. Gestión de docentes autorizados y administradores del sistema.">
+  <title>TIC2Hub — Panel de Administración</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <style>
+    .admin-header-badge {
+      background: #ffc300;
+      color: #000;
+      font-weight: 800;
+      padding: 4px 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-full);
+      box-shadow: 2px 2px 0px 0px var(--border);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .teacher-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      background: var(--bg-card);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 2px 2px 0px 0px var(--border);
+      margin-bottom: var(--space-3);
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      transition: transform var(--transition-fast);
+    }
+    .teacher-item-row:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px 0px var(--border);
+    }
+    .teacher-item-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      min-width: 240px;
+      flex: 1;
+    }
+    .teacher-item-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: var(--border-width) solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .teacher-item-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .filter-search-box {
+      position: relative;
+      flex: 1;
+      max-width: 360px;
+    }
+  </style>
+</head>
+<body class="page">
+
+  <!-- Header dinámico -->
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+
+      <!-- Cabecera de la página -->
+      <header class="dashboard-header animate-fade-up">
+        <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+          <a href="dashboard_teacher.html" class="back-link" style="margin: 0; margin-right: var(--space-2);">← Volver a Mis Clases</a>
+          <span class="admin-header-badge">👑 Zona de Administración</span>
+        </div>
+        <h1 class="dashboard-title" style="margin-top: var(--space-2);">Gestión de Docentes y Acceso 🛡️</h1>
+        <p class="dashboard-subtitle">Autoriza a profesores con cuentas <strong>@g.educaand.es</strong>, <strong>@iesamachado.org</strong> o cualquier otro dominio para crear clases y acceder a TIC2Hub.</p>
+      </header>
+
+      <!-- Stats y métricas rápidas -->
+      <div class="dashboard-grid dashboard-grid--3 animate-fade-up delay-1" style="margin-bottom: var(--space-8);">
+        <div class="stat-card">
+          <span class="stat-icon">👥</span>
+          <div class="stat-value" id="stat-total-teachers">—</div>
+          <div class="stat-label">Docentes autorizados</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">👑</span>
+          <div class="stat-value" id="stat-admins">—</div>
+          <div class="stat-label">Administradores</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⚡</span>
+          <div class="stat-value" id="stat-domains">—</div>
+          <div class="stat-label">Dominios en uso</div>
+        </div>
+      </div>
+
+      <!-- Sección de Lista y Acciones -->
+      <div class="dashboard-grid dashboard-grid--sidebar animate-fade-up delay-2">
+        
+        <!-- Sidebar: Autorizar nuevo docente -->
+        <aside>
+          <div class="card" style="position: sticky; top: calc(var(--navbar-height) + var(--space-4));">
+            <div class="card-header">
+              <h2 class="card-title">➕ Autorizar Docente</h2>
+            </div>
+            <p class="form-hint" style="margin-bottom: var(--space-4);">
+              Añade uno o varios correos electrónicos para concederles acceso docente inmediato.
+            </p>
+
+            <form id="form-add-teacher" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="input-teacher-emails">Correos electrónicos *</label>
+                <textarea id="input-teacher-emails" rows="4" style="font-family: var(--font-mono); font-size: var(--text-xs);"
+                          placeholder="docente@g.educaand.es&#10;profesor@iesamachado.org" required></textarea>
+                <p class="form-hint">Uno por línea o separados por comas.</p>
+              </div>
+
+              <div class="form-group" style="margin-top: var(--space-3);">
+                <label class="form-label" for="input-teacher-name">Nombre o departamento (opcional)</label>
+                <input type="text" id="input-teacher-name" placeholder="Ej: Dpto. Tecnología">
+              </div>
+
+              <div class="form-group" style="margin-top: var(--space-3);">
+                <label class="form-label" for="select-teacher-role">Rol asignado</label>
+                <select id="select-teacher-role">
+                  <option value="teacher" selected>👨‍🏫 Docente (crear y gestionar sus clases)</option>
+                  <option value="admin">👑 Administrador (acceso total + panel admin)</option>
+                </select>
+              </div>
+
+              <div style="margin-top: var(--space-6);">
+                <button type="submit" class="btn btn-primary btn--full" id="btn-submit-teacher">
+                  <span>➕</span> Autorizar Acceso
+                </button>
+              </div>
+            </form>
+          </div>
+        </aside>
+
+        <!-- Contenido principal: Lista de docentes autorizados -->
+        <section>
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+              <div>
+                <h2 class="card-title" style="margin: 0;">Docentes Autorizados</h2>
+                <small class="text-muted" id="teachers-count-subtitle">Cargando...</small>
+              </div>
+              
+              <div class="filter-search-box">
+                <input type="text" id="input-search-teacher" placeholder="🔍 Buscar por email o nombre..." style="padding: 6px 12px; font-size: var(--text-sm);">
+              </div>
+            </div>
+
+            <!-- Lista de docentes -->
+            <div id="teachers-list-container" style="margin-top: var(--space-4);">
+              <div class="skeleton" style="height: 64px; margin-bottom: 8px;"></div>
+              <div class="skeleton" style="height: 64px; margin-bottom: 8px;"></div>
+              <div class="skeleton" style="height: 64px;"></div>
+            </div>
+
+            <p class="empty-state" id="empty-teachers-msg" style="display: none;">
+              <span class="empty-state-icon">🔍</span>
+              No se encontraron docentes con ese criterio de búsqueda.
+            </p>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

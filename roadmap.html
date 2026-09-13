@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadmap de Juegos - TIC2Hub</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  
+  <style>
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    .game-idea-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-idea-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+    .game-idea-card.status-done::before { background: var(--success); }
+    .game-idea-card.status-todo::before { background: var(--text-muted); }
+    
+    .game-idea-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+    .game-idea-icon {
+      font-size: 2rem;
+      background: var(--bg-surface2);
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .game-idea-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 0 0 4px 0;
+    }
+    .game-idea-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+    .criteria-box {
+      background: var(--bg-surface2);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      font-size: 0.8rem;
+    }
+    .criteria-box strong { color: var(--primary); display: block; margin-bottom: 4px; }
+    .tag-list {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+    }
+  </style>
+</head>
+<body class="page">
+  <div id="app-header"></div>
+  
+  <main class="page-content">
+    <div class="container">
+      <header class="dashboard-header animate-fade-up">
+        <a href="dashboard_teacher.html" class="back-link">← Volver al Panel</a>
+        <h1 class="dashboard-title">🚀 Roadmap de Juegos (1º ESO)</h1>
+        <p class="text-muted">Planificación de futuros mini-juegos vinculados a la normativa andaluza LOMLOE.</p>
+      </header>
+
+      <div class="roadmap-grid animate-fade-up delay-1">
+        
+
+
+        <!-- ASIMOV.IO -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">⚖️</div>
+              <div>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Simulador ético estilo "Reigns". Eres una IA municipal tomando decisiones (deslizando cartas) para equilibrar felicidad humana, eficiencia y leyes robóticas.
+          </div>
+          <div class="criteria-box">
+            <strong>C. Robótica y Sociedad</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.1.2 - Papel de la robótica</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATASCOPE -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">🔍</div>
+              <div>
+                <h3 class="game-idea-title">DataScope</h3>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Juego de detectives usando Big Data. Aplica filtros lógicos a una gran base de datos de logs para acotar sospechosos y resolver misterios.
+          </div>
+          <div class="criteria-box">
+            <strong>G. Datos Masivos</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.4.1 - Analizar datos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEUROBOT -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">🧠</div>
+              <div>
+                <h3 class="game-idea-title">NeuroBot</h3>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Entrenamiento de IA supervisado. Clasifica basura para enseñar a un robot; si lo entrenas con sesgos o errores, su red neuronal fallará en la fase de prueba.
+          </div>
+          <div class="criteria-box">
+            <strong>H. Inteligencia Artificial</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.4.2 - Machine Learning</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NETDEFENDER -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">🛡️</div>
+              <div>
+                <h3 class="game-idea-title">NetDefender</h3>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Tower Defense de Ciberseguridad. Coloca defensas (Contraseñas fuertes, 2FA, Cortafuegos) para detener oleadas de Malware, Spam y Ataques de Diccionario.
+          </div>
+          <div class="criteria-box">
+            <strong>I. Ciberseguridad</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.6.1 - Protección en red</span>
+              <span class="badge badge--ghost">TIC2.1.6.4 - Seg. activa/pasiva</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- EL MODERADOR -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">🕵️</div>
+              <div>
+                <h3 class="game-idea-title">El Moderador</h3>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Simulador de moderación en redes. Tienes 3 segundos por publicación para aprobarla o banearla si contiene Fake News, revela datos privados o viola Copyright.
+          </div>
+          <div class="criteria-box">
+            <strong>I. Ciberseguridad (Legal)</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.6.2 - Publicación segura</span>
+              <span class="badge badge--ghost">TIC2.1.6.3 - Derechos en web</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEBBUILDER -->
+        <div class="game-idea-card status-todo">
+          <div class="game-idea-header">
+            <div style="display:flex; gap:12px;">
+              <div class="game-idea-icon">🌐</div>
+              <div>
+                <h3 class="game-idea-title">WebBuilder</h3>
+                <span class="badge badge--muted">⏳ ToDo</span>
+              </div>
+            </div>
+          </div>
+          <div class="game-idea-desc">
+            Clínica de código HTML. Te llega una página web desordenada y debes inyectar o reparar etiquetas (&lt;h1&gt;, &lt;img&gt;) para arreglar el diseño visual.
+          </div>
+          <div class="criteria-box">
+            <strong>E. Desarrollo Web</strong>
+            <div class="tag-list">
+              <span class="badge badge--ghost">TIC2.1.5.1 - Const. de apps web</span>
+              <span class="badge badge--ghost">TIC2.1.5.2 - Resolver problemas</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { requireAuth } from './js/common/auth.js';
+    import { renderHeader } from './js/common/ui.js';
+    requireAuth({
+      allowedRoles: ['teacher', 'admin'],
+      onAuthorized: (user, profile) => {
+        renderHeader(user, profile);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criterios de Evaluación y Tareas - TIC2Hub</title>
+  
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  
+  <style>
+    .eval-container {
+      display: flex;
+      gap: var(--space-6);
+      align-items: flex-start;
+      margin-top: var(--space-6);
+    }
+    .eval-master {
+      flex: 3;
+      background: var(--bg-surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .eval-detail {
+      flex: 2;
+      position: sticky;
+      top: 100px;
+      background: var(--bg-surface);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-lg);
+      min-height: 400px;
+    }
+    
+    .ranking-table th {
+      background: var(--bg-body);
+      padding: var(--space-3) var(--space-4);
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 2px solid var(--border);
+    }
+    .ranking-table td {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    
+    .task-desc {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    .btn-game-task {
+      background-color: var(--accent-light, #ffb2ef);
+      border: var(--border-width, 2px) solid var(--text-primary, #000);
+      box-shadow: 2px 2px 0px var(--text-primary, #000);
+      color: var(--text-primary, #000);
+    }
+    .btn-game-task:hover {
+      background-color: var(--accent, #ff90e8);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--text-primary, #000);
+    }
+    .btn-game-task.btn-primary {
+      background-color: var(--text-primary, #000) !important;
+      color: var(--bg-surface, #fff) !important;
+      box-shadow: 0px 0px 0px var(--text-primary, #000) !important;
+      transform: translate(2px, 2px);
+    }
+      white-space: pre-wrap;
+      color: #334155;
+      max-height: 60vh;
+      overflow-y: auto;
+      margin-top: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    
+    @media (max-width: 992px) {
+      .eval-container {
+        flex-direction: column-reverse;
+      }
+      .eval-detail {
+        position: static;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <main class="container py-8">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <a href="dashboard_teacher.html" class="btn btn-sm btn-outline" style="margin-bottom: 15px; display: inline-flex;">← Volver al Panel</a>
+        <h1 class="page-title">📊 Criterios y Tareas</h1>
+        <p class="page-desc">Planificación basada en la normativa de Tecnologías de la Información y la Comunicación II de Andalucía.</p>
+      </div>
+      <div style="display:flex; gap:15px; align-items:center;">
+        <div>
+          <label for="view-mode" style="font-weight:bold; margin-right: 5px;">Agrupar:</label>
+          <select id="view-mode" class="input" style="width: auto; display: inline-block;">
+            <option value="criterion">Por Criterio</option>
+            <option value="block">Por Bloque</option>
+            <option value="task">Por Tarea</option>
+          </select>
+        </div>
+        <div id="course-selector-container">
+          <label for="level-select" style="font-weight:bold; margin-right: 5px;">Curso:</label>
+          <select id="level-select" class="input" style="width: auto; display: inline-block;">
+            <option value="1">1º ESO</option>
+            <option value="2">2º ESO</option>
+            <option value="3">3º ESO</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="eval-container">
+      <div class="eval-master">
+        <table class="ranking-table" style="width:100%; text-align: left; border-collapse: collapse;">
+          <thead id="eval-thead">
+            <!-- JS -->
+          </thead>
+          <tbody id="eval-tbody">
+            <!-- JS -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="eval-detail" id="task-detail-panel">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center;">
+          <span style="font-size: 3rem; margin-bottom: 10px;">👈</span>
+          <p>Selecciona una tarea de la tabla<br>para ver su descripción y copiarla.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script type="module" src="js/evaluation.js"></script>
+</body>
+</html>

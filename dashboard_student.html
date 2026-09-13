@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Panel del alumno. Accede a tus clases y juegos habilitados por tu docente.">
+  <title>TIC2Hub — Mi Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <link rel="stylesheet" href="css/dashboard_student.css">
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+
+      <!-- Cabecera -->
+      <header class="dashboard-header animate-fade-up">
+        <h1 class="dashboard-title" id="student-welcome">¡Hola! 👋</h1>
+        <p class="dashboard-subtitle">Aquí están tus clases y los juegos que tienes disponibles.</p>
+      </header>
+
+      <!-- Alerta si viene sin acceso a un juego -->
+      <div id="no-access-alert" class="alert alert--warning animate-fade-up" style="display:none; margin-bottom:var(--space-6)">
+        <span>⚠️</span>
+        <div id="no-access-msg"></div>
+      </div>
+
+      <!-- Stats rápidas del alumno -->
+      <div class="dashboard-grid dashboard-grid--3 animate-fade-up delay-1">
+        <div class="stat-card">
+          <span class="stat-icon">🏫</span>
+          <div class="stat-value" id="stat-my-classes">—</div>
+          <div class="stat-label">Mis clases</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎮</span>
+          <div class="stat-value" id="stat-available-games">—</div>
+          <div class="stat-label">Juegos disponibles</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⭐</span>
+          <div class="stat-value" id="stat-total-score">—</div>
+          <div class="stat-label">Mejor puntuación</div>
+        </div>
+      </div>
+
+      <!-- Mis Clases + Juegos -->
+      <section class="animate-fade-up delay-2" aria-labelledby="my-classes-title">
+        <div class="section-header">
+          <h2 class="section-title" id="my-classes-title">🏫 Mis Clases</h2>
+          <button class="btn btn-ghost btn--sm" id="btn-join-class">
+            <span>➕</span> Unirse con PIN
+          </button>
+        </div>
+
+        <!-- Mensaje si no hay clases -->
+        <div id="no-classes-msg" class="empty-state" style="display:none">
+          <span class="empty-state-icon">🏫</span>
+          Aún no estás en ninguna clase. Pide el PIN a tu docente para unirte.
+        </div>
+
+        <!-- Acordeón de clases -->
+        <div id="student-classes-list" class="student-classes-list">
+          <div class="class-card skeleton" style="height:180px"></div>
+          <div class="class-card skeleton" style="height:180px"></div>
+        </div>
+      </section>
+
+      <!-- Mis Tareas -->
+      <section class="animate-fade-up delay-3" aria-labelledby="assignments-title" id="section-assignments" style="display:none">
+        <div class="section-header">
+          <h2 class="section-title" id="assignments-title">📋 Mis tareas</h2>
+        </div>
+        <div id="student-assignments-list"></div>
+      </section>
+
+      <!-- Historial reciente -->
+      <section class="animate-fade-up delay-3" aria-labelledby="history-title">
+        <div class="section-header">
+          <h2 class="section-title" id="history-title">📊 Mis últimas partidas</h2>
+        </div>
+        <div class="card" id="history-card">
+          <p id="history-empty" class="empty-state" style="display:none">
+            Aún no has jugado ninguna partida. ¡Empieza ahora!
+          </p>
+          <table class="ranking-table" id="history-table" style="display:none">
+            <thead>
+              <tr>
+                <th>Juego</th>
+                <th>Puntuación</th>
+                <th>Clase</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Unirse a clase por PIN -->
+  <div id="modal-join-class" class="modal-backdrop" aria-hidden="true" role="dialog"
+       aria-modal="true" aria-labelledby="join-class-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="join-class-title">Unirse a una clase</h3>
+        <button class="modal-close" id="close-join-modal" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="form-hint" style="margin-bottom:var(--space-4)">
+          Introduce el PIN de 6 dígitos que te ha dado tu docente.
+        </p>
+        <form id="form-join-class" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="pin-input">PIN de la clase</label>
+            <input type="text" id="pin-input" inputmode="numeric" pattern="[0-9]{6}"
+                   maxlength="6" placeholder="000000" class="pin-input-big"
+                   autocomplete="off">
+          </div>
+          <p id="join-error" class="form-error" aria-live="polite"></p>
+          <div class="modal-footer" style="padding:0; margin-top:var(--space-5); border:none">
+            <button type="button" class="btn btn-ghost" id="cancel-join">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Unirme</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/dashboard_student.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CLASSHUB — Design System
+   Variables CSS globales, tipografía y tokens de diseño
+════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── Colores base (Neo-Brutalism) ───────────────────────── */
+  --bg-root:        #F5F1E7; /* Light beige background */
+  --bg-surface:     #FFFFFF; /* White for cards */
+  --bg-card:        #FFFFFF;
+  --bg-card-hover:  #FFFDF5;
+  --bg-input:       #FFFFFF;
+  --bg-overlay:     rgba(0, 0, 0, 0.7);
+
+  /* ── Texto (Neo-Brutalism) ──────────────────────────────── */
+  --text-primary:   #000000; /* Pure black */
+  --text-secondary: #333333; /* Dark gray */
+  --text-muted:     #555555; /* Medium gray */
+  --text-inverted:  #FFFFFF; /* White text on dark elements */
+
+  /* ── Acento principal (Brillante y sólido) ──────────────── */
+  --accent:         #FF90E8; /* Bright Pink */
+  --accent-light:   #FFB2EF;
+  --accent-dark:    #E078CA;
+  --accent-glow:    rgba(0, 0, 0, 0); /* No glow in brutalism */
+  --accent-subtle:  #FFE300; /* Bright Yellow for subtle highlights */
+
+  /* ── Acentos por juego ───────────────────────────────────── */
+  --game-mecanoclass:       #90A8FF; /* Pastel Blue */
+  --game-mecanoclass-dark:  #7088DF;
+  --game-rompecodigos:      #FF6B35; /* Orange */
+  --game-rompecodigos-dark: #DF4B15;
+  --game-helados:           #FF90E8; /* Pink */
+  --game-helados-dark:      #DF70C8;
+  --game-moon:              #23A094; /* Teal */
+  --game-moon-dark:         #038074;
+
+  /* ── Semánticos ──────────────────────────────────────────── */
+  --success:        #23A094;
+  --success-subtle: #D5F2EF;
+  --warning:        #FFE300;
+  --warning-subtle: #FFF9C4;
+  --error:          #FF4C4C;
+  --error-subtle:   #FFD6D6;
+  --info:           #90A8FF;
+  --info-subtle:    #DEE5FF;
+
+  /* ── Roles ───────────────────────────────────────────────── */
+  --teacher-color:  #FF90E8;
+  --student-color:  #90A8FF;
+
+  /* ── Bordes (Neo-Brutalism: Gruesos y negros) ───────────── */
+  --border:         #000000;
+  --border-hover:   #000000;
+  --border-strong:  #000000;
+  --border-width:   3px;
+
+  /* ── Gradientes (Eliminados a favor de colores sólidos) ─── */
+  --gradient-brand:    #000000;
+  --gradient-surface:  #FFFFFF;
+  --gradient-card:     #FFFFFF;
+  --gradient-glow:     transparent;
+
+  /* ── Sombras (Neo-Brutalism: Sólidas) ───────────────────── */
+  --shadow-sm:   3px 3px 0px 0px #000000;
+  --shadow-md:   5px 5px 0px 0px #000000;
+  --shadow-lg:   8px 8px 0px 0px #000000;
+  --shadow-glow: none;
+  --shadow-card: 6px 6px 0px 0px #000000;
+
+  /* ── Radio de borde (Ligeramente redondeados o cuadrados) ─ */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Espaciado ───────────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Tipografía ──────────────────────────────────────────── */
+  --font-heading: 'Outfit', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+
+  /* ── Transiciones ────────────────────────────────────────── */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+  --transition-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Navbar ──────────────────────────────────────────────── */
+  --navbar-height: 64px;
+
+  /* ── Z-index ─────────────────────────────────────────────── */
+  --z-base:     1;
+  --z-overlay:  500;
+  --z-header:   1000;
+  --z-dropdown: 1100;
+  --z-modal:    2000;
+  --z-toast:    3000;
+  --z-loading:  4000;
+}
