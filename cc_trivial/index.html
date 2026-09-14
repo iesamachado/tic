@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Radio Trivial CC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/common/design-system.css">
+  <link rel="stylesheet" href="../css/common/reset.css">
+  <link rel="stylesheet" href="../css/common/layout.css">
+  <link rel="stylesheet" href="../css/common/components.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="navbar">
+    <div class="logo">
+      <a href="../index.html">🎙️ TIC2Hub</a>
+    </div>
+    <div class="nav-links">
+      <a href="../roadmap.html" class="nav-item">Volver al Roadmap</a>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="container">
+    <!-- PANTALLA DE INICIO -->
+    <div id="start-screen" class="glass-panel text-center fade-in">
+      <h1>🎙️ Radio Trivial CC</h1>
+      <p>Estás en los mandos de la radio escolar. Responde correctamente a estas preguntas sobre derechos de autor para no meter a la radio en un lío legal.</p>
+      <div id="auth-warning" style="display:none; color: #ff4b4b; margin: 15px 0;">
+        ⚠️ Debes iniciar sesión para que tu nota se guarde en Classroom.
+      </div>
+      <button id="btn-start" class="btn btn-primary" style="margin-top:20px; font-size:1.2rem; padding: 15px 30px;">▶️ EMPEZAR GRABACIÓN</button>
+    </div>
+
+    <!-- PANTALLA DE JUEGO -->
+    <div id="game-screen" class="glass-panel hidden fade-in">
+      <div class="game-header">
+        <div class="score-display">PUNTOS: <span id="score">0</span></div>
+        <div class="question-counter">PREGUNTA <span id="current-question">1</span> / 10</div>
+        <div class="timer-display">⏱️ <span id="timer">15</span>s</div>
+      </div>
+
+      <div class="question-container">
+        <h2 id="question-text">Cargando pregunta...</h2>
+      </div>
+
+      <div class="answers-grid" id="answers-grid">
+        <!-- Los botones de respuesta se inyectan aquí con JS -->
+      </div>
+    </div>
+
+    <!-- PANTALLA DE RESULTADOS -->
+    <div id="result-screen" class="glass-panel text-center hidden fade-in">
+      <h1>🎬 ¡Grabación Finalizada!</h1>
+      <h2 style="font-size: 3rem; margin: 20px 0; color: #4a90e2;">Puntuación: <span id="final-score">0</span></h2>
+      <p id="result-message"></p>
+      <button id="btn-restart" class="btn btn-primary" style="margin-top:20px;">🔁 Volver a Jugar</button>
+      <a href="../roadmap.html" class="btn btn-outline" style="margin-top:20px; margin-left: 10px;">Salir</a>
+    </div>
+  </main>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hex Invaders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/common/design-system.css">
+  <link rel="stylesheet" href="../css/common/reset.css">
+  <link rel="stylesheet" href="../css/common/layout.css">
+  <link rel="stylesheet" href="../css/common/components.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <a href="../index.html">👾 TIC2Hub</a>
+    </div>
+    <div class="nav-links">
+      <a href="../roadmap.html" class="nav-item">Volver al Roadmap</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div id="game-container" class="glass-panel text-center fade-in">
+      
+      <!-- INICIO -->
+      <div id="start-screen">
+        <h1 class="glitch-text">HEX INVADERS</h1>
+        <p>Destruye las naves enemigas disparando a la que coincida con el código de color Hexadecimal del radar.</p>
+        <p style="font-size: 0.9rem; color:#aaa;">Pista: #FF0000 es rojo, #00FF00 es verde, #0000FF es azul.</p>
+        <div id="auth-warning" style="display:none; color: #ff4b4b; margin: 15px 0;">
+          ⚠️ Inicia sesión para guardar tu puntuación en Classroom.
+        </div>
+        <button id="btn-start" class="btn btn-primary" style="margin-top:20px; font-size:1.2rem;">🚀 JUGAR</button>
+      </div>
+
+      <!-- JUEGO -->
+      <div id="game-screen" class="hidden">
+        <div class="hud">
+          <div class="score-board">PUNTOS: <span id="score">0</span></div>
+          <div class="lives-board">VIDAS: <span id="lives">❤️❤️❤️</span></div>
+        </div>
+        
+        <div id="radar">
+          <div class="target-label">OBJETIVO CSS:</div>
+          <div id="target-hex">#FFFFFF</div>
+        </div>
+
+        <div id="alien-zone">
+          <!-- Los aliens se inyectan aquí con JS -->
+        </div>
+      </div>
+
+      <!-- GAME OVER -->
+      <div id="result-screen" class="hidden">
+        <h1 style="color: #ff4b4b;">GAME OVER</h1>
+        <p>La invasión ha triunfado.</p>
+        <h2 style="color: #f1c40f; font-size:2.5rem;">Puntos: <span id="final-score">0</span></h2>
+        <button id="btn-restart" class="btn btn-primary" style="margin-top:20px;">🔁 Reintentar</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

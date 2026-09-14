@@ -117,250 +117,160 @@ export function getAppUrl(relativePath = '') {
 
 /** Metadatos de los juegos disponibles */
 export const GAMES = {
-  netdefender: {
-    id: 'netdefender',
-    name: 'NetDefender',
-    description: 'Juego de defensa activa contra ataques informáticos',
-    icon: '🛡️',
-    color: '#ef4444',
-    colorDark: '#b91c1c',
-    path: './netdefender/index.html',
-    gamePath: './netdefender/index.html'
+  hex_invaders: {
+    id: 'hex_invaders',
+    name: 'Hex Invaders',
+    description: 'Defiende tu base disparando a los alienígenas correctos leyendo su código Hexadecimal (CSS).',
+    icon: '👾',
+    type: 'arcade',
+    gamePath: 'hex_invaders/index.html',
+    color: '#9b59b6',
+    colorDark: '#8e44ad'
   },
-  trivial: {
-    id: 'trivial',
-    name: 'CyR Trivial',
-    description: 'Demuestra lo que sabes respondiendo rápido',
-    icon: '❓',
-    color: '#eab308',
-    colorDark: '#a16207',
-    path: './trivial/index.html',
-    gamePath: './trivial/index.html'
-  },
-
-  mecanoclass: {
-    id: 'mecanoclass',
-    name: 'MecanoClass',
-    description: 'Juego de mecanografía con modo en vivo',
-    icon: '⌨️',
+  cert_arcade: {
+    id: 'cert_arcade',
+    name: 'Certificado Arcade',
+    description: 'Acompaña a nuestro personaje a sacarse el Certificado Digital en la vida real.',
+    icon: '🏛️',
+    type: 'arcade',
+    gamePath: 'cert_arcade/index.html',
     color: '#00d4ff',
-    colorDark: '#007a99',
-    path: './mecanoclass/index.html',
-    gamePath: './mecanoclass/index.html'
+    colorDark: '#008bbf'
   },
-  rompecodigos: {
-    id: 'rompecodigos',
-    name: 'RompeCódigos',
-    description: 'Descifra mensajes cifrados en equipo',
-    icon: '🔐',
-    color: '#ff6b35',
-    colorDark: '#c44a1a',
-    path: './rompecodigos/index.html',
-    gamePath: './rompecodigos/index.html'
-  },
-  helados: {
-    id: 'helados',
-    name: 'H3L4D0S',
-    description: 'Sirve helados y aprende programación',
-    icon: '🍦',
-    color: '#ff8fab',
-    colorDark: '#cc5a7a',
-    path: './helados/index.html',
-    gamePath: './helados/game.html'
-  },
-  moon: {
-    id: 'moon',
-    name: 'MOON',
-    description: 'Aventura espacial de plataformas',
-    icon: '🌙',
-    color: '#a8d8ea',
-    colorDark: '#5a9bb5',
-    path: './moon/index.html',
-    gamePath: './moon/game.html'
-  },
-  arenabots: {
-    id: 'arenabots',
-    name: 'ArenaBots',
-    description: 'Programa tu robot para la batalla',
-    icon: '🤖',
-    color: '#00e5ff',
-    colorDark: '#0099aa',
-    path: './arenabots/index.html',
-    gamePath: './arenabots/index.html'
-  },
-  cybersmith: {
-    id: 'cybersmith',
-    name: 'CyberSmith',
-    description: 'Monta tu ordenador y aprende hardware',
-    icon: '🛠️',
-    color: '#b8e986',
-    colorDark: '#7ed321',
-    path: './cybersmith/index.html',
-    gamePath: './cybersmith/index.html'
-  },
-  asimov: {
-    id: 'asimov',
-    name: 'Asimov.IO',
-    description: 'Simulador ético de Inteligencia Artificial',
-    icon: '⚖️',
-    color: '#3b82f6',
-    colorDark: '#1d4ed8',
-    path: './asimov/index.html',
-    gamePath: './asimov/index.html'
-  },
-  appflow: {
-    id: 'appflow',
-    name: 'AppFlow',
-    description: 'Conecta eventos y sensores en móviles',
-    icon: '📱',
-    color: '#bb86fc',
-    colorDark: '#9965f4',
-    path: './appflow/index.html',
-    gamePath: './appflow/game.html'
+  cc_trivial: {
+    id: 'cc_trivial',
+    name: 'Radio Trivial CC',
+    description: 'Estás produciendo el podcast de la radio escolar. Responde al trivial para saber qué música o efectos puedes usar legalmente.',
+    icon: '🎙️',
+    type: 'quiz',
+    gamePath: 'cc_trivial/index.html',
+    color: '#f5a623',
+    colorDark: '#c4841a'
   }
 };
 
-/** Metadatos de los temas (Syllabus) */
 export const TOPICS = {
-  block1: {
-    id: 'block1',
-    name: 'Bloque 1: Alfabetización Digital',
-    description: 'Uso del ordenador, carpetas y nube',
-    icon: '💻',
-    htmlPath: 'temario/block1.html',
+  topic_kanban: {
+    id: 'topic_kanban',
+    name: '1. Metodologías Ágiles (Kanban)',
+    description: 'Organización y ciclo de vida',
+    icon: '📋',
+    htmlPath: 'temario/kanban.html',
     color: '#4a90e2'
   },
-  block2: {
-    id: 'block2',
-    name: 'Bloque 2: Programación',
-    description: 'Programación por bloques con Scratch',
-    icon: '🧩',
-    htmlPath: 'temario/block2.html',
-    color: '#f5a623'
+  topic_drive: {
+    id: 'topic_drive',
+    name: '2. Ofimática Colaborativa',
+    description: 'Trabajo en la nube (Docs/Drive)',
+    icon: '☁️',
+    htmlPath: 'temario/drive.html',
+    color: '#34a853'
   },
-  block3: {
-    id: 'block3',
-    name: 'Bloque 3: Robótica',
-    description: 'Computación física con Micro:bit',
-    icon: '🤖',
-    htmlPath: 'temario/block3.html',
+  topic_audacity: {
+    id: 'topic_audacity',
+    name: '3. Edición de Audio',
+    description: 'Mesas de mezcla, podcasting y Audacity',
+    icon: '🎙️',
+    htmlPath: 'temario/audacity.html',
+    color: '#f39c12'
+  },
+  topic_gimp: {
+    id: 'topic_gimp',
+    name: '4. Edición de Imagen',
+    description: 'Resoluciones, capas y GIMP',
+    icon: '🎨',
+    htmlPath: 'temario/gimp.html',
+    color: '#8e44ad'
+  },
+  topic_wordpress: {
+    id: 'topic_wordpress',
+    name: '5. Gestores de Contenido (WordPress)',
+    description: 'Creación de sitios web con CMS',
+    icon: '📰',
+    htmlPath: 'temario/wordpress.html',
+    color: '#2980b9'
+  },
+  topic_wiki: {
+    id: 'topic_wiki',
+    name: '6. Entornos Wikis',
+    description: 'Documentación colaborativa',
+    icon: '📖',
+    htmlPath: 'temario/wiki.html',
+    color: '#16a085'
+  },
+  topic_cc: {
+    id: 'topic_cc',
+    name: '7. Propiedad Intelectual',
+    description: 'Creative Commons y Derechos de autor',
+    icon: '©️',
+    htmlPath: 'temario/cc.html',
+    color: '#f5a623',
+    colorDark: '#c4841a'
+  },
+  topic_cyber: {
+    id: 'topic_cyber',
+    name: '8. Ciberseguridad Básica',
+    description: 'Contraseñas, 2FA y Privacidad',
+    icon: '🔐',
+    htmlPath: 'temario/cyber.html',
     color: '#d0021b'
   },
-
-
-  block4: {
-    id: 'block4',
-    name: 'Bloque 4: IoT y Móvil',
-    description: 'Sensores, Redes y Apps',
-    icon: '📱',
-    htmlPath: 'temario/block4.html',
-    color: '#00bcd4'
+  topic_cert: {
+    id: 'topic_cert',
+    name: '9. Certificados Digitales',
+    description: 'Firma electrónica y FNMT',
+    icon: '🏛️',
+    htmlPath: 'temario/cert.html',
+    color: '#00d4ff',
+    colorDark: '#008bbf'
   },
-  block5: {
-    id: 'block5',
-    name: 'Bloque 5: Inteligencia Artificial',
-    description: 'IA generativa y tecnologías emergentes',
-    icon: '🧠',
-    htmlPath: 'temario/block5.html',
-    color: '#9013fe'
+  topic_html: {
+    id: 'topic_html',
+    name: '10. Desarrollo Web (HTML/CSS)',
+    description: 'Estructura visual de internet',
+    icon: '🌐',
+    htmlPath: 'temario/html.html',
+    color: '#e34c26'
   },
-  block6: {
-    id: 'block6',
-    name: 'Bloque 6: Ciberseguridad',
-    description: 'Ciudadanía digital y seguridad en red',
-    icon: '🛡️',
-    htmlPath: 'temario/block6.html',
-    color: '#50e3c2'
+    topic_js: {
+    id: 'topic_js',
+    name: '11. Programación JavaScript',
+    description: 'Lógica, DOM y Eventos',
+    icon: '💻',
+    htmlPath: 'temario/js.html',
+    color: '#f1c40f'
+  },
+  topic_js_adv: {
+    id: 'topic_js_adv',
+    name: '12. JS Avanzado y Antigravity',
+    description: 'Web Apps, Firebase y Agentes IA',
+    icon: '🚀',
+    htmlPath: 'temario/js_advanced.html',
+    color: '#8e44ad'
   }
 };
 
-/** Mapeo sugerido de criterios de evaluación de Computación y Robótica (Andalucía) */
 export const GAMES_CRITERIA_MAPPING = {
-  mecanoclass: {
-    '1º ESO': 'CYR.1.F.1 (Sistemas de computación) / CYR.1.I.1 (Seguridad activa y pasiva)',
-    '2º ESO': 'CYR.2.F.1 (Tipologías de sistemas) / CYR.2.I.1 (Privacidad e identidad)',
-    '3º ESO': 'CYR.3.F.1 (Aplicaciones computacionales) / CYR.3.I.2 (Necesidad y concienciación)'
+  hex_invaders: {
+    '2º Bachillerato': 'TIC2.3.1 (Contenidos en la web)'
   },
-  rompecodigos: {
-    '1º ESO': 'CYR.1.I.1 (Seguridad activa y pasiva), CYR.1.I.3 (Peligros en Internet)',
-    '2º ESO': 'CYR.2.I.1 (Privacidad e identidad), CYR.2.I.2 (Riesgos por exposición)',
-    '3º ESO': 'CYR.3.I.1 (Tipologías de Ciberseguridad), CYR.3.I.2 (Ciberseguridad: necesidad)'
+  cert_arcade: {
+    '2º Bachillerato': 'TIC2.2.1 (Medidas de seguridad) / TIC2.2.2 (Privacidad en Internet)'
   },
-  helados: {
-    '1º ESO': 'CYR.1.A.3 (Algoritmos y secuencias), CYR.1.A.4 (Tareas repetitivas y condicionales)',
-    '2º ESO': 'CYR.2.A.2 (Programas con bloques), CYR.2.A.4 (Tareas repetitivas y condicionales)',
-    '3º ESO': 'CYR.3.A.2 (Especificaciones en bloques), CYR.3.A.4 (Bucles y condicionales anidadas)'
-  },
-  arenabots: {
-    '1º ESO': 'CYR.1.C.1 (Definición de robot), CYR.1.C.5 (Programación de robots)',
-    '2º ESO': 'CYR.2.C.2 (Aplicaciones de robots), CYR.2.C.5 (Programación con bloques)',
-    '3º ESO': 'CYR.3.C.3 (Morfología de robots), CYR.3.C.5 (Programación texto/microprocesadores)'
-  },
-  moon: {
-    '1º ESO': 'CYR.1.A.5 (Interacción con el usuario), CYR.1.A.1 (Introducción a lenguajes visuales)',
-    '2º ESO': 'CYR.2.A.5 (Pantallas de interacción con el usuario)',
-    '3º ESO': 'CYR.3.A.5 (Entornos de interacción con el usuario)'
-  },
-  cybersmith: {
-    '1º ESO': 'CYR.1.F.1 (Componentes Hardware), CYR.1.C.1 (Computación física)',
-    '2º ESO': 'CYR.2.F.1 (Tipologías de sistemas físicos)',
-    '3º ESO': 'CYR.3.F.1 (Sistemas de computación física)'
+  cc_trivial: {
+    '2º Bachillerato': 'TIC2.4.1 (Trabajo colaborativo y derechos) / TIC2.3.1 (Contenidos en la web)'
   }
 };
 
 export const CYR_EVALUATION_DATA = {
-  1: [
-    { crit: '1.1', text: 'Comprender el funcionamiento global de los sistemas de computación física y sus componentes.', block: 'F. Computación física (Hardware)', current: 'MecanoClass, CyberSmith', prop: '1. Carpetas, 3. Mecanografía, N1. Usuarios' },
-    { crit: '1.2', text: 'Reconocer el papel de la robótica en nuestra sociedad.', block: 'C. Robótica', current: '-', prop: '15. Dispositivos/Red, 17. Test Asimov' },
-    { crit: '1.3', text: 'Entender la estructura básica de un programa informático.', block: 'A. Programación', current: 'H3L4D0S, MOON', prop: '7. Oso Polar, 8. Escarabajo, 9. Elefante, 11. Gato Bross, 12. Code.org' },
-    { crit: '1.4', text: 'Comprender los principios básicos de ingeniería en los que se basan los robots.', block: 'C. Robótica', current: 'ArenaBots', prop: '20. Cutebot Siguelíneas, N4. Esquiva-obstáculos' },
-    { crit: '2.1', text: 'Conocer y resolver problemas desarrollando un programa informático con bloques.', block: 'A. Programación', current: 'H3L4D0S, ArenaBots', prop: '4. Píxeles, 5. Diagramas, 6. Test Algoritmos, N3. Depuración' },
-    { crit: '2.2', text: 'Entender el funcionamiento interno de las aplicaciones y cómo se construyen.', block: 'D. Desarrollo', current: '-', prop: '10. Mapa Interactivo, 18. Juego Micro:bit' },
-    { crit: '3.1', text: 'Construir un sistema de computación o robótico.', block: 'C/F. Proyecto Físico', current: 'CyberSmith', prop: '19. Código Morse, 21. Coche Teledirigido' },
-    { crit: '4.1', text: 'Conocer distintos tipos de datos, analizarlos y visualizarlos.', block: 'G. Datos masivos', current: '-', prop: '22. Canción IA, 23. Dibujando IA, 26. La sed de ChatGPT' },
-    { crit: '4.2', text: 'Comprender los principios básicos de agentes inteligentes y aprendizaje automático.', block: 'H. Inteligencia Artificial', current: '-', prop: '24. Entrena IA, 25. Test IA, N5. Cómic IA' },
-    { crit: '5.1', text: 'Conocer la construcción de aplicaciones web y de forma segura.', block: 'E. Desarrollo Web', current: '-', prop: '0. Quién eres, N2. Gestión Archivos' },
-    { crit: '5.2', text: 'Resolver la variedad de problemas de una aplicación web.', block: 'E. Desarrollo Web', current: '-', prop: '13. Felicitación GIMP, 14. Crea tu web' },
-    { crit: '6.1', text: 'Adoptar conductas y hábitos que permitan la protección en la red.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: '16. Bienestar Digital, N7. Phishing' },
-    { crit: '6.2', text: 'Acceder a servicios de publicación aplicando criterios de seguridad.', block: 'I. Ciberseguridad', current: '-', prop: '2. Envío eMails, N6. Retos INCIBE' },
-    { crit: '6.3', text: 'Reconocer los derechos de los materiales alojados en la web.', block: 'I. Ciberseguridad', current: '-', prop: '27. Creative Commons, 28. Infografía Ciberseg.' },
-    { crit: '6.4', text: 'Adoptar conductas de seguridad activa y pasiva en protección de datos.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: '29. Contraseñas seguras, N8. Seguridad Act/Pas.' }
-  ],
   2: [
-    { crit: '1.1', text: 'Comprender el funcionamiento de los sistemas de computación física.', block: 'F. Computación física', current: 'MecanoClass, CyberSmith', prop: '-' },
-    { crit: '1.2', text: 'Reconocer el papel de la robótica, conociendo las aplicaciones más comunes.', block: 'C. Robótica', current: '-', prop: 'Asimov.IO' },
-    { crit: '1.3', text: 'Entender cómo funciona un programa, elaborarlo y sus componentes.', block: 'A. Programación', current: 'H3L4D0S, MOON', prop: '-' },
-    { crit: '1.4', text: 'Comprender los principios de ingeniería de los robots y su funcionamiento.', block: 'C. Robótica', current: 'ArenaBots', prop: '-' },
-    { crit: '2.1', text: 'Conocer y resolver problemas desarrollando un programa informático.', block: 'A. Programación', current: 'H3L4D0S, ArenaBots', prop: '-' },
-    { crit: '2.2', text: 'Entender el funcionamiento interno de las aplicaciones móviles y cómo se construyen.', block: 'D. Desarrollo móvil', current: '-', prop: 'AppFlow' },
-    { crit: '2.3', text: 'Resolver problemas desarrollando una aplicación móvil.', block: 'D. Desarrollo móvil', current: '-', prop: 'AppFlow' },
-    { crit: '3.1', text: 'Construir un sistema de computación o robótico automatizado.', block: 'C/F. Proyecto', current: 'CyberSmith', prop: '-' },
-    { crit: '4.1', text: 'Conocer aplicaciones de Big Data, metadatos y emplear espíritu crítico.', block: 'G. Datos masivos', current: '-', prop: 'DataScope' },
-    { crit: '4.2', text: 'Comprender el aprendizaje automático para resolver situaciones con IA.', block: 'H. Inteligencia Artificial', current: '-', prop: 'NeuroBot' },
-    { crit: '5.1', text: 'Conocer la construcción de aplicaciones informáticas y web de forma responsable.', block: 'E. Desarrollo Web', current: '-', prop: 'WebBuilder' },
-    { crit: '5.2', text: 'Resolver problemas presentes en el desarrollo de una aplicación web.', block: 'E. Desarrollo Web', current: '-', prop: 'WebBuilder' },
-    { crit: '6.1', text: 'Adoptar conductas que permitan la protección en la red.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: 'NetDefender' },
-    { crit: '6.2', text: 'Acceder a servicios de publicación aplicando seguridad.', block: 'I. Ciberseguridad', current: '-', prop: 'El Moderador' },
-    { crit: '6.3', text: 'Reconocer los derechos de propiedad intelectual en Internet.', block: 'I. Ciberseguridad', current: '-', prop: 'El Moderador' },
-    { crit: '6.4', text: 'Adoptar conductas de seguridad y protección de datos.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: 'NetDefender' }
-  ],
-  3: [
-    { crit: '1.1', text: 'Comprender el funcionamiento de sistemas de computación física.', block: 'F. Computación física', current: 'MecanoClass, CyberSmith', prop: '-' },
-    { crit: '1.2', text: 'Reconocer los conceptos de la robótica y configuraciones morfológicas.', block: 'C. Robótica', current: 'ArenaBots', prop: 'Asimov.IO' },
-    { crit: '1.3', text: 'Entender cómo funciona un programa y sus principales componentes.', block: 'A. Programación', current: 'H3L4D0S, MOON', prop: '-' },
-    { crit: '1.4', text: 'Comprender los principios de ingeniería de los robots.', block: 'C. Robótica', current: 'ArenaBots', prop: '-' },
-    { crit: '2.1', text: 'Resolver problemas desarrollando programas informáticos.', block: 'A. Programación', current: 'H3L4D0S, ArenaBots', prop: '-' },
-    { crit: '2.2', text: 'Entender el funcionamiento interno de aplicaciones móviles.', block: 'D. Desarrollo móvil', current: '-', prop: 'AppFlow' },
-    { crit: '2.3', text: 'Resolver problemas desarrollando una aplicación móvil.', block: 'D. Desarrollo móvil', current: '-', prop: 'AppFlow' },
-    { crit: '3.1', text: 'Construir un sistema de computación o robótico.', block: 'C/F. Proyecto', current: 'CyberSmith', prop: '-' },
-    { crit: '4.1', text: 'Conocer la naturaleza de los distintos tipos de metadatos (Big Data).', block: 'G. Datos masivos', current: '-', prop: 'DataScope' },
-    { crit: '4.2', text: 'Comprender el funcionamiento de agentes inteligentes e IA.', block: 'H. Inteligencia Artificial', current: '-', prop: 'NeuroBot' },
-    { crit: '4.3', text: 'Comprender los principios de funcionamiento del Data Scraping.', block: 'G. Datos masivos', current: '-', prop: 'DataScope' },
-    { crit: '5.1', text: 'Construcción de aplicaciones web y de forma segura.', block: 'E. Desarrollo Web', current: '-', prop: 'WebBuilder' },
-    { crit: '5.2', text: 'Resolver variedad de problemas en aplicaciones web.', block: 'E. Desarrollo Web', current: '-', prop: 'WebBuilder' },
-    { crit: '6.1', text: 'Adoptar conductas que permitan la protección en la red.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: 'NetDefender' },
-    { crit: '6.2', text: 'Intercambio y publicación de información digital con seguridad.', block: 'I. Ciberseguridad', current: '-', prop: 'El Moderador' },
-    { crit: '6.3', text: 'Reconocer y comprender la propiedad intelectual.', block: 'I. Ciberseguridad', current: '-', prop: 'El Moderador' },
-    { crit: '6.4', text: 'Estrategias de ciberseguridad que garantizan protección a usuarios.', block: 'I. Ciberseguridad', current: 'RompeCódigos', prop: 'NetDefender' }
+    { crit: '1.1', text: 'Analizar y valorar el impacto de la industria de desarrollo de software en la sociedad actual.', block: 'A. Desarrollo de Software', current: '-', prop: '-' },
+    { crit: '2.1', text: 'Emplear medidas de seguridad informática necesarias.', block: 'C. Seguridad Informática', current: 'Certificado Arcade', prop: 'Wiki Ciberseguridad, UVUS' },
+    { crit: '2.2', text: 'Proteger la privacidad en Internet.', block: 'C. Seguridad Informática', current: '-', prop: 'Wiki Ciberseguridad' },
+    { crit: '3.1', text: 'Elaborar y publicar contenidos en la web.', block: 'B. Publicación de contenidos', current: '-', prop: 'Web HTML, WordPress, Guión Podcast, Hex Invaders' },
+    { crit: '4.1', text: 'Trabajar colaborativamente respetando los derechos de autor.', block: 'B. Publicación de contenidos', current: 'CC Trivial', prop: 'Podcast Audacity, Ivoox/Spotify' },
+    { crit: '5.1', text: 'Desarrollar una variedad de aplicaciones informáticas.', block: 'A. Desarrollo de Software', current: '-', prop: 'SuperMario Move Move, Crea tu App' },
+    { crit: '5.2', text: 'Aplicar los principales pasos del ciclo de vida de una aplicación.', block: 'A. Desarrollo de Software', current: '-', prop: 'Tablero Kanban, Crea tu App' },
+    { crit: '5.3', text: 'Analizar y resolver problemas de tratamiento de la información.', block: 'A. Desarrollo de Software', current: '-', prop: 'Crea tu App' }
   ]
 };

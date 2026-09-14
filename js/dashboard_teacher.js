@@ -124,7 +124,7 @@ function renderTeacherTopicCards() {
   const grid = $('teacher-topics-grid');
   if (!grid) return;
   grid.innerHTML = Object.values(TOPICS).map(t => `
-    <a class="game-card" href="${t.htmlPath || t.pdfPath}" target="_blank" style="--game-color:${t.color}; --game-color-dark:${t.colorDark}; text-decoration: none;">
+    <a class="game-card" href="${t.htmlPath || t.pdfPath}"  style="--game-color:${t.color}; --game-color-dark:${t.colorDark}; text-decoration: none;">
       <div class="game-card-link" style="pointer-events: none;">
         <div class="game-card-icon">${t.icon}</div>
         <div class="game-card-name">${escapeHtml(t.name)}</div>

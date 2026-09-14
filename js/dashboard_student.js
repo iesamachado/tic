@@ -87,7 +87,7 @@ function renderStudentClassCard(cls) {
     if (!t) return '';
     // Como las páginas del temario estarán en root/temario/blockN.html
     return `
-      <a class="game-card" href="${t.htmlPath}" target="_blank"
+      <a class="game-card" href="${t.htmlPath}" 
          style="--game-color:${t.color}; --game-color-dark:${t.color}; filter: brightness(1.1);">
         <div class="game-card-icon">${t.icon}</div>
         <div class="game-card-name">${escapeHtml(t.name)}</div>

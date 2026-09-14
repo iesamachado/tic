@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - Certificados Digitales</title>
+  <style>
+    :root {
+      --primary: #004b87; /* Azul FNMT */
+      --secondary: #e74c3c;
+      --accent: #f39c12;
+      --bg: #f4f6f7;
+      --text: #2c3e50;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 900px; 
+      margin: auto; 
+      color: var(--text); 
+      background-color: #fff;
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--primary); margin-bottom: 5px; font-size: 2.5rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    
+    h2 { color: var(--primary); margin-top: 50px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; font-size: 1.8rem; }
+    h3 { color: #34495e; font-size: 1.4rem; margin-top: 30px; }
+    p { margin-bottom: 15px; font-size: 1.1rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; font-family: monospace; }
+    
+    .info-box { background: #fff; border: 1px solid #c3c4c7; border-left: 5px solid var(--accent); padding: 25px; border-radius: 4px; margin: 30px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--accent); }
+    
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #f0f6fc; border-radius: 8px; font-size: 1.2rem; color: var(--primary); border: 2px dashed var(--primary); font-weight: bold; }
+
+    /* FNMT Web Mockup Classes */
+    .fnmt-mockup {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 30px 0;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      font-family: Arial, sans-serif;
+    }
+    .fnmt-header {
+      background-color: #004b87;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fnmt-header-title { font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; }
+    .fnmt-nav { background: #f2f2f2; border-bottom: 1px solid #ccc; padding: 10px 20px; font-size: 0.9rem; color: #555; }
+    .fnmt-body { display: flex; background: #fff; }
+    .fnmt-sidebar { width: 220px; background: #fafafa; border-right: 1px solid #eee; padding: 20px; font-size: 0.9rem; }
+    .fnmt-sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .fnmt-sidebar li { padding: 10px 0; border-bottom: 1px solid #ddd; color: #004b87; cursor: pointer; }
+    .fnmt-sidebar li.active { font-weight: bold; border-left: 3px solid #e74c3c; padding-left: 10px; }
+    .fnmt-content { padding: 30px; flex: 1; }
+    .fnmt-form-group { margin-bottom: 15px; }
+    .fnmt-form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 0.95rem; }
+    .fnmt-form-group input { width: 100%; max-width: 300px; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
+    .fnmt-btn { background: #004b87; color: white; border: none; padding: 10px 20px; border-radius: 3px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+  <header class="topic-header">
+    <h1>9. Certificados Digitales (FNMT)</h1>
+    <p class="subtitle">Tu identidad electrónica oficial: Criptografía Asimétrica y Trámites con el Estado.</p>
+    <div style="font-size: 5rem; text-align: center; margin-top: 20px;">🏛️🔐</div>
+  </header>
+  
+  <section>
+    <h2>1. ¿Qué es un Certificado Digital?</h2>
+    <p>Un certificado digital es el equivalente electrónico a tu DNI físico. Es un archivo criptográfico (normalmente acabado en <code>.p12</code> o <code>.pfx</code>) que garantiza matemáticamente ante internet que tú eres quien dices ser.</p>
+    <p>Con él puedes firmar contratos oficiales, pedir becas, pagar impuestos, pedir tu Vida Laboral o matricularte en la universidad sin salir de tu casa, las 24 horas del día. En España, la entidad principal que emite estos certificados es la <strong>Fábrica Nacional de Moneda y Timbre (FNMT - CERES)</strong>.</p>
+  </section>
+
+  <section>
+    <h2>2. El Proceso Oficial: Paso a Paso</h2>
+    <p>Atención: El certificado es <strong>totalmente gratuito</strong>. Debes realizar el trámite en la <a href="https://www.sede.fnmt.gob.es/certificados/persona-fisica" target="_blank" style="color:var(--primary); font-weight:bold;">web oficial de la Sede Electrónica de la FNMT</a>.</p>
+    
+    <div class="info-box" style="border-left-color: var(--primary);">
+      <h3 style="color: var(--primary);">⚠️ ADVERTENCIA TÉCNICA CRÍTICA</h3>
+      <p>Todo el proceso (desde el Paso 1 hasta el Paso 4) debe hacerse <strong>EN EL MISMO ORDENADOR</strong>, con el <strong>MISMO NAVEGADOR</strong> y bajo el <strong>MISMO USUARIO</strong> de Windows/Mac. Si pides el código en Chrome, no puedes descargarlo en Edge. Tampoco puedes formatear el PC en mitad del proceso.</p>
+    </div>
+
+    <h3>Paso 1: Configuración Previa</h3>
+    <p>Antes de solicitar nada, tu ordenador necesita instalar un software puente que genere tus "claves privadas". La FNMT te hará descargar e instalar el <strong>Configurador FNMT</strong> y el software <strong>AutoFirma</strong> (desarrollado por el Ministerio).</p>
+
+    <h3>Paso 2: Solicitud vía Web</h3>
+    <p>Una vez instalado el software, vas al apartado "Solicitar Certificado" en su web. Verás una pantalla exactamente como esta:</p>
+    
+    <!-- MOCKUP FNMT PASO 2 -->
+    <div class="fnmt-mockup">
+      <div class="fnmt-header">
+        <div class="fnmt-header-title">SEDE ELECTRÓNICA | FNMT-RCM</div>
+        <div>🇪🇸 ES | CERES</div>
+      </div>
+      <div class="fnmt-nav">
+        Inicio > Certificados > Persona Física > Solicitar Certificado
+      </div>
+      <div class="fnmt-body">
+        <div class="fnmt-sidebar">
+          <ul>
+            <li>Configuración previa</li>
+            <li class="active">Solicitar Certificado</li>
+            <li>Acreditar Identidad</li>
+            <li>Descargar Certificado</li>
+          </ul>
+        </div>
+        <div class="fnmt-content">
+          <h2 style="color: #004b87; margin-top: 0; font-size: 1.5rem; border:none; padding:0;">Solicitud de Certificado de Persona Física</h2>
+          <p style="font-size: 0.9rem; color: #555;">Por favor, rellene los siguientes datos para generar su Código de Solicitud.</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+          
+          <div class="fnmt-form-group">
+            <label>Nº del Documento de Identificación (DNI/NIE): *</label>
+            <input type="text" value="12345678Z" disabled>
+          </div>
+          <div class="fnmt-form-group">
+            <label>Primer Apellido: *</label>
+            <input type="text" value="GARCÍA" disabled>
+          </div>
+          <div class="fnmt-form-group">
+            <label>Correo Electrónico: *</label>
+            <input type="email" value="alumno@instituto.es" disabled>
+          </div>
+          <div style="font-size: 0.8rem; color: #666; margin: 15px 0;">
+            <input type="checkbox" checked disabled> <i>Pulse aquí para consultar y aceptar las condiciones de expedición del certificado.</i>
+          </div>
+          <button class="fnmt-btn" disabled>Enviar petición</button>
+        </div>
+      </div>
+    </div>
+    
+    <p>Al pulsar "Enviar petición", el navegador abrirá una ventana generadora de claves. Al terminar, la FNMT te enviará al correo electrónico un <strong>Código de Solicitud</strong> de 9 dígitos.</p>
+
+    <h3>Paso 3: Acreditación de Identidad Presencial</h3>
+    <p>Por motivos de seguridad nacional, un ordenador no puede confirmar que eres tú. Tienes que coger tu <strong>DNI original en vigor</strong>, tu Código de Solicitud, e ir físicamente a una Oficina de Registro Pública (Ayuntamientos, Agencia Tributaria, Seguridad Social). El funcionario comprobará tu cara con la foto del carnet y activará tu código en el sistema del Estado.</p>
+
+    <h3>Paso 4: Descarga del Certificado</h3>
+    <p>Vuelves a casa, abres exactamente el <strong>mismo navegador</strong>, y entras en la sección "Descargar Certificado".</p>
+    
+    <!-- MOCKUP FNMT PASO 4 -->
+    <div class="fnmt-mockup">
+      <div class="fnmt-header">
+        <div class="fnmt-header-title">SEDE ELECTRÓNICA | FNMT-RCM</div>
+        <div>🇪🇸 ES | CERES</div>
+      </div>
+      <div class="fnmt-nav">
+        Inicio > Certificados > Persona Física > Descargar Certificado
+      </div>
+      <div class="fnmt-body">
+        <div class="fnmt-sidebar">
+          <ul>
+            <li>Configuración previa</li>
+            <li>Solicitar Certificado</li>
+            <li>Acreditar Identidad</li>
+            <li class="active">Descargar Certificado</li>
+          </ul>
+        </div>
+        <div class="fnmt-content">
+          <h2 style="color: #004b87; margin-top: 0; font-size: 1.5rem; border:none; padding:0;">Descarga de Certificado</h2>
+          <p style="font-size: 0.9rem; color: #555;">Introduzca el Código de Solicitud obtenido en el Paso 2 para proceder a la instalación.</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+          
+          <div class="fnmt-form-group">
+            <label>Nº del Documento de Identificación (DNI/NIE): *</label>
+            <input type="text" value="12345678Z" disabled>
+          </div>
+          <div class="fnmt-form-group">
+            <label>Primer Apellido: *</label>
+            <input type="text" value="GARCÍA" disabled>
+          </div>
+          <div class="fnmt-form-group">
+            <label>Código de Solicitud: *</label>
+            <input type="text" value="847291048" disabled style="font-weight: bold; border-color: #004b87; background: #eaf2f8;">
+          </div>
+          <div style="font-size: 0.8rem; color: #666; margin: 15px 0;">
+            <input type="checkbox" checked disabled> <i>Acepto las condiciones de uso.</i>
+          </div>
+          <button class="fnmt-btn" style="background-color: #27ae60;" disabled>Descargar Certificado</button>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+  <section>
+    <h2>3. Copia de Seguridad y Exportación (VITAL)</h2>
+    <p>Cuando finaliza el Paso 4, el certificado se queda instalado "silenciosamente" en las entrañas de tu navegador. Si el disco duro se rompe al día siguiente, <strong>pierdes tu certificado para siempre</strong> y tendrás que volver a hacer las colas del Ayuntamiento.</p>
+    <p>Por eso, el <strong>Paso 5 no escrito</strong> es Exportar el Certificado:</p>
+    <ol>
+      <li>Ir a los Ajustes del Navegador > Privacidad y Seguridad > Gestionar Certificados.</li>
+      <li>Seleccionarlo y darle a <strong>Exportar con Clave Privada</strong>.</li>
+      <li>Te pedirá que inventes una contraseña.</li>
+      <li>Se guardará un archivo <code>.p12</code>. Guarda ese archivo en un Pendrive seguro o envíatelo a tu propio correo, porque ese archivo (junto a la contraseña) es la llave maestra de tu vida digital. Puedes pasarlo a tu móvil e instalarlo ahí también.</li>
+    </ol>
+  </section>
+  
+  
+  <section>
+    <h2>4. ¿Cómo firmar un PDF? (AutoFirma)</h2>
+    <p>Tener el certificado instalado en el navegador te permite identificarte en páginas web, pero <strong>¿qué pasa si tienes que firmar un contrato en PDF que te han mandado por correo?</strong> Para eso sirve el programa de escritorio <strong>AutoFirma</strong>.</p>
+    
+    <div style="background: #eaf2f8; border-left: 5px solid #3498db; padding: 20px; margin: 20px 0; border-radius: 4px;">
+      <h3 style="color: #2980b9; margin-top: 0;">Pasos para firmar un documento:</h3>
+      <ol style="margin-bottom: 0;">
+        <li>Abre el programa AutoFirma en tu ordenador.</li>
+        <li>Arrastra el documento PDF (ej. un contrato de trabajo) dentro de la ventana de AutoFirma.</li>
+        <li>Selecciona "Hacer la firma visible dentro del PDF" (opcional, por si quieres que quede bonito con un sello visual).</li>
+        <li>Elige tu certificado digital de la lista que aparecerá (el sistema lo detectará automáticamente si lo tienes instalado en Windows/Mac).</li>
+        <li>¡Listo! AutoFirma creará un nuevo archivo llamado <code>documento_signed.pdf</code>. Ese archivo tiene validez legal idéntica a una firma manuscrita ante un notario.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Súper Poderes con 18 años: Trámites Útiles</h2>
+    <p>Acabas de cumplir 18 años. Ya eres un ciudadano de pleno derecho frente al Estado. Estas son algunas de las cosas que puedes resolver en 5 minutos desde el sofá gracias a tu certificado, sin pisar una oficina y sin pedir cita previa:</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+      
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0 0 10px 0;"><a href="https://sede.educacion.gob.es/portada.html" target="_blank" style="color: #e74c3c; text-decoration: none;">🎓 Matrícula Universitaria / Becas 🔗</a></h4>
+        <p style="font-size: 0.95rem; margin: 0; color: #555;">La Sede Electrónica del Ministerio de Educación te exigirá firmar digitalmente la solicitud para la <strong>Beca MEC</strong>. Además, la matriculación en la Universidad y las actas de acceso se firman mucho más rápido así.</p>
+      </div>
+
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0 0 10px 0;"><a href="https://sede.dgt.gob.es/es/" target="_blank" style="color: #3498db; text-decoration: none;">🚗 Carnet de Conducir y DGT 🔗</a></h4>
+        <p style="font-size: 0.95rem; margin: 0; color: #555;">En la web oficial de la DGT puedes entrar a <strong>consultar tus puntos</strong>, pagar multas en el acto si te llega alguna, o cambiar tu domicilio para que te lleguen las notificaciones a tu nueva casa de estudiante.</p>
+      </div>
+
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0 0 10px 0;"><a href="https://portal.seg-social.gob.es/" target="_blank" style="color: #27ae60; text-decoration: none;">🏥 Tu Vida Laboral (Seg. Social) 🔗</a></h4>
+        <p style="font-size: 0.95rem; margin: 0; color: #555;">Al firmar tu primer contrato de trabajo (ej. en verano o prácticas), debes entrar al portal de la Seguridad Social para descargarte en 1 clic tu <strong>Informe de Vida Laboral</strong> y comprobar que la empresa te ha dado de alta legalmente.</p>
+      </div>
+
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0 0 10px 0;"><a href="https://administracion.gob.es/" target="_blank" style="color: #f39c12; text-decoration: none;">🏙️ Empadronamiento (Red SARA) 🔗</a></h4>
+        <p style="font-size: 0.95rem; margin: 0; color: #555;">Si te mudas de ciudad para estudiar o trabajar, puedes sacar un <strong>Certificado de Empadronamiento</strong> al instante en la sede de tu Ayuntamiento. Ideal para recibir ayudas al alquiler o descuentos en transporte.</p>
+      </div>
+      
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0 0 10px 0;"><a href="https://sede.mjusticia.gob.es/" target="_blank" style="color: #8e44ad; text-decoration: none;">👶 Partida de Nacimiento (Justicia) 🔗</a></h4>
+        <p style="font-size: 0.95rem; margin: 0; color: #555;">El Ministerio de Justicia te permite descargar tu certificado literal de nacimiento en PDF. Es imprescindible para trámites importantes como tramitar tu DNI si lo pierdes o si decides casarte en el futuro.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="task-link">
+    <strong>🎯 Tarea Profesional Vinculada:</strong> Tarea 11 - Juego: Certificado Arcade.
+  </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

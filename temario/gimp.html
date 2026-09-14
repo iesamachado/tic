@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - Diseño Gráfico</title>
+  <style>
+    :root {
+      --primary: #5c5c5c; /* GIMP dark theme */
+      --secondary: #e67e22; /* Warning orange */
+      --accent: #3498db;
+      --bg: #323232; /* Editor dark bg */
+      --text: #ecf0f1;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 900px; 
+      margin: auto; 
+      color: #333; 
+      background-color: #f8f9fa;
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--accent);
+    }
+    h1 { color: #2c3e50; margin-bottom: 5px; font-size: 2.5rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    
+    h2 { color: #2c3e50; margin-top: 50px; border-left: 5px solid var(--accent); padding-left: 15px; font-size: 1.8rem; background: #e8f4f8; padding: 10px 15px; border-radius: 0 8px 8px 0; }
+    h3 { color: #e67e22; font-size: 1.4rem; margin-top: 30px; }
+    p { margin-bottom: 15px; font-size: 1.1rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    code { background: #e9ecef; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-family: monospace; font-weight: bold; }
+    
+    .info-box { background: #fff; border: 1px solid #dee2e6; border-left: 5px solid var(--secondary); padding: 25px; border-radius: 6px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--secondary); }
+    
+    .gimp-ui { background: var(--primary); padding: 20px; border-radius: 8px; color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 30px 0; }
+    .gimp-ui h3 { color: #fff; margin-top: 0; }
+    
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .tool-card { background: #4a4a4a; padding: 15px; border-radius: 6px; border: 1px solid #666; }
+    .tool-card h4 { margin: 0 0 10px 0; color: #74b9ff; font-size: 1.1rem; }
+    .tool-card p { font-size: 0.9rem; margin: 0; line-height: 1.4; }
+
+    .ai-box { background: linear-gradient(135deg, #6c5ce7, #a29bfe); color: white; padding: 25px; border-radius: 8px; margin: 40px 0; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3); }
+    .ai-box h2 { color: white; border: none; background: none; padding: 0; margin-top: 0; }
+    
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.2rem; color: #0056b3; border: 2px dashed #4a90e2; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+  <header class="topic-header">
+    <h1>4. Diseño Gráfico Profesional (GIMP)</h1>
+    <p class="subtitle">Tratamiento de imagen, color, capas y la revolución de la IA generativa.</p>
+    <div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">🖌️🎨</div>
+  </header>
+  
+  <section>
+    <h2>1. El Tamaño y la Resolución: Evita el desastre</h2>
+    <p>Antes de abrir siquiera una imagen, debes tomar la decisión más importante como diseñador gráfico: <strong>¿Dónde se va a ver tu diseño?</strong></p>
+    
+    <div class="info-box" style="border-left-color: #e74c3c;">
+      <h3 style="color: #e74c3c;">PPI (Píxeles Por Pulgada)</h3>
+      <p>Es la densidad de puntos que tiene una imagen. Si te equivocas aquí, arruinarás el trabajo:</p>
+      <ul>
+        <li>🌐 <strong>Para Pantalla / Redes Sociales (72 ppi):</strong> Los monitores y móviles no necesitan más densidad. A 72 ppi el archivo pesará pocos kilobytes y cargará rapidísimo en tu web.</li>
+        <li>🖨️ <strong>Para Impresión / Cartelería (300 ppi):</strong> El papel exige muchísima calidad. Si diseñas un póster A4 a 72 ppi y lo envías a la imprenta, saldrá "pixelado" (borroso y lleno de cuadrados). Siempre debes crear un lienzo nuevo a <strong>300 ppi</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. La Teoría del Color: Pantalla vs Papel</h2>
+    <p>¿Alguna vez has diseñado algo con colores neón brutales en el ordenador y, al imprimirlo, se veía apagado y grisáceo? Es culpa del modo de color.</p>
+    
+    <div style="display: flex; gap: 30px; margin: 30px 0; flex-wrap: wrap; align-items: center; justify-content: center;">
+      <!-- RGB SVG -->
+      <div style="text-align: center;">
+        <h4 style="margin-bottom: 10px; color: #2c3e50;">RGB (Luz / Pantallas)</h4>
+        <svg width="150" height="150" viewBox="0 0 200 200">
+          <circle cx="100" cy="70" r="50" fill="red" opacity="0.8" style="mix-blend-mode: screen;"></circle>
+          <circle cx="70" cy="120" r="50" fill="lime" opacity="0.8" style="mix-blend-mode: screen;"></circle>
+          <circle cx="130" cy="120" r="50" fill="blue" opacity="0.8" style="mix-blend-mode: screen;"></circle>
+          <circle cx="100" cy="103" r="18" fill="white"></circle>
+        </svg>
+        <p style="font-size: 0.85rem; max-width: 180px; margin: 10px auto;">Se suman luces. La mezcla de todos crea el BLANCO.</p>
+      </div>
+
+      <!-- CMYK SVG -->
+      <div style="text-align: center;">
+        <h4 style="margin-bottom: 10px; color: #2c3e50;">CMYK (Tinta / Imprenta)</h4>
+        <svg width="150" height="150" viewBox="0 0 200 200">
+          <circle cx="100" cy="70" r="50" fill="cyan" opacity="0.8" style="mix-blend-mode: multiply;"></circle>
+          <circle cx="70" cy="120" r="50" fill="magenta" opacity="0.8" style="mix-blend-mode: multiply;"></circle>
+          <circle cx="130" cy="120" r="50" fill="yellow" opacity="0.8" style="mix-blend-mode: multiply;"></circle>
+          <circle cx="100" cy="103" r="15" fill="black"></circle>
+        </svg>
+        <p style="font-size: 0.85rem; max-width: 180px; margin: 10px auto;">Se suma tinta. La mezcla de todos crea el NEGRO.</p>
+      </div>
+    </div>
+    
+    <p>GIMP trabaja internamente en <strong>RGB</strong> (Rojo, Verde, Azul). Las impresoras usan <strong>CMYK</strong> (Cian, Magenta, Amarillo, Negro). El papel no tiene luz propia, por lo que <em>nunca</em> podrá reproducir colores tan brillantes como tu monitor LED.</p>
+    
+    <div style="text-align: center; margin: 25px 0;">
+      <img src="../normativa/rgb-cube.png" alt="Cubo RGB y CMYK" style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+      <p style="font-size: 0.9rem; color: #666; font-style: italic;">Representación matemática tridimensional: El cubo RGB y CMYK.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Herramientas Clave de Edición en GIMP</h2>
+    
+    <div class="gimp-ui">
+      <h3>🛠️ El Panel de Herramientas</h3>
+      <p style="font-size: 0.95rem; margin-bottom: 20px; color: #ccc;">A dominar el editor se aprende practicando. Estas son las funciones vitales para crear vuestra cartelería:</p>
+      
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h4>📚 Las Capas (Layers)</h4>
+          <p>El concepto más importante. Piensa en las capas como láminas de cristal apiladas. El fondo va abajo, luego pones una imagen recortada encima, y arriba del todo el texto. Si borras algo en la capa superior, no afectará a las de abajo.</p>
+        </div>
+        
+        <div class="tool-card">
+          <h4>✂️ Recorte (Crop Tool)</h4>
+          <p>Sirve para reencuadrar una fotografía eliminando lo que sobra de los bordes. Seleccionas el área que quieres mantener, pulsas Intro y el resto desaparece. <strong>Atención:</strong> Es destructivo, recortará todas las capas a la vez.</p>
+        </div>
+        
+        <div class="tool-card">
+          <h4>🩹 Tampón de Clonar</h4>
+          <p>¿Hay una mancha, un grano o una papelera arruinando la foto? Con el tampón pulsas <code>Ctrl + Clic</code> en una zona "limpia" para copiar esa textura, y luego "pintas" sobre la mancha. Estarás copiando píxeles de un sitio a otro.</p>
+        </div>
+        
+        <div class="tool-card">
+          <h4>A Texto (Tipografía)</h4>
+          <p>Crea automáticamente una capa nueva exclusiva para las letras. Puedes cambiar la fuente, tamaño, espaciado y color. Como es una capa independiente, siempre podrás moverla por encima de las imágenes sin mezclarse.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="ai-box">
+      <h2>🤖 4. La Nueva Era: Edición con Inteligencia Artificial</h2>
+      <p style="font-size: 1.1rem;">La industria del diseño gráfico ha cambiado para siempre. Programas como Photoshop y diversas webs ya integran IA generativa para editar imágenes. Como futuros creadores, debéis dominar estas técnicas:</p>
+      
+      <ul style="background: rgba(255,255,255,0.1); padding: 20px 20px 20px 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-top: 20px;">
+        <li><strong>Relleno Generativo (Inpainting):</strong> Seleccionas un objeto de la foto (un coche de fondo) y le pides a la IA que lo borre. En lugar de dejar un hueco en blanco, la IA "inventa" y pinta el fondo que habría detrás manteniendo la iluminación exacta.</li>
+        <li><strong>Expansión de Imagen (Outpainting):</strong> Tienes una foto cuadrada y necesitas que sea horizontal para un póster. La IA puede "imaginar" y dibujar qué hay más allá de los bordes originales, ampliando el paisaje de forma realista.</li>
+        <li><strong>Upscaling Generativo:</strong> Antiguamente, si ampliabas una foto pequeña, se pixelaba. Ahora, la IA puede ampliar una imagen minúscula y "redibujar" los píxeles faltantes, creando nitidez de alta resolución (HD) donde antes había borrones.</li>
+      </ul>
+      <p style="margin-bottom: 0; font-size: 0.9rem; opacity: 0.9; text-align: right;"><em>*Pregunta al profesor por herramientas como DALL-E, Midjourney o Stable Diffusion para generar vuestros propios fondos.</em></p>
+    </div>
+  </section>
+
+  <div class="task-link">
+    <strong>🎯 Tarea Profesional Vinculada:</strong> Tarea 4 - Marketing: Campaña de Difusión Nacional.
+  </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - JS Avanzado y Antigravity</title>
+  <style>
+    :root {
+      --primary: #8e44ad;
+      --secondary: #2c3e50;
+      --accent: #e74c3c;
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--primary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .prompt-box { background: #eaf2f8; border-left: 5px solid #3498db; padding: 20px; border-radius: 4px; margin: 20px 0; font-family: monospace; color: #2c3e50; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--primary); font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div style="text-align: right; margin-bottom: 20px;">
+    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
+  </div>
+
+  <h1>12. JS Avanzado y Antigravity (IA)</h1>
+  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Desarrollo de Web Apps modernas delegando código a la Inteligencia Artificial.</p>
+
+  <section>
+    <h2>1. El nuevo rol: Director de Proyecto (Prompting)</h2>
+    <p>Desarrollar aplicaciones complejas requiere escribir muchísimo código repetitivo. En el mundo real, los programadores modernos usan asistentes de Inteligencia Artificial para acelerar este proceso.</p>
+    <p>Nosotros usaremos <strong>Google Antigravity</strong> (ya sea su entorno de Chat web o el agente integrado en <strong>Visual Studio Code</strong>). Con Antigravity, no programas escribiendo línea por línea, sino que diseñas la arquitectura y le pides a la IA que construya las piezas. A esta habilidad de pedirle cosas a la IA se la llama <strong>Prompt Engineering</strong> (Ingeniería de Prompts).</p>
+    
+    <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0;">
+      <h3 style="margin-top:0; color: #8e44ad;">Anatomía del Prompt Perfecto</h3>
+      <p>Para que la IA no se invente código inútil, tu petición (prompt) debe tener 4 partes:</p>
+      <ol>
+        <li><strong>Rol y Contexto:</strong> "Eres un desarrollador web experto en JS puro..."</li>
+        <li><strong>Objetivo Claro:</strong> "...necesito que conectes mi archivo index.html con Firebase..."</li>
+        <li><strong>Restricciones:</strong> "...no uses frameworks como React, usa solo JS Vanilla tipo módulo..."</li>
+        <li><strong>Estructura de Salida:</strong> "...devuélveme solo el código del archivo db.js".</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Apps Responsive (Diseño Adaptativo) con IA</h2>
+    <p>Hoy en día, el 80% de los usuarios navega desde el móvil. Si intentas hacer el CSS a mano, perderás horas. Pídele a la IA que use <strong>Media Queries</strong> por ti.</p>
+    
+    <div class="prompt-box">
+      <strong>Ejemplo de Prompt para Diseño Responsive:</strong><br><br>
+      "Tengo un contenedor HTML con 3 tarjetas (divs) que están en fila usando flexbox. Necesito que modifiques mi CSS para que el diseño sea totalmente 'Responsive'. Si la pantalla es de móvil (menos de 768px), las tarjetas deben apilarse en una columna vertical usando una Media Query. Devuélveme solo la regla CSS que debo añadir."
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Backend: Google Firebase (Login y BBDD)</h2>
+    <p>Para hacer un juego o app real, necesitas guardar datos en un servidor de Google (Firebase). <strong>En lugar de memorizar las funciones de la librería de Firebase, vamos a pedirle a la IA que nos escriba el código de conexión.</strong></p>
+
+    <h3>A. Autenticación (Login con Google)</h3>
+    <p>La IA puede generarte el botón y el código de inicio de sesión en segundos. Usa un prompt como este:</p>
+    <div class="prompt-box">
+      "Actúa como ingeniero Backend. Necesito integrar 'Firebase Authentication' en mi web para que los usuarios puedan iniciar sesión con su cuenta de Google. Escríbeme el código JS necesario usando 'signInWithPopup'. Devuélveme el código comentado paso a paso para que yo pueda entenderlo e insertarlo en mi archivo auth.js. Usa la última versión de Firebase v9."
+    </div>
+
+    <h3>B. Base de Datos (Cloud Firestore)</h3>
+    <p>Firestore es la base de datos de Firebase donde guardaremos el ranking de los jugadores o los datos de la app. Para que la IA te escriba las funciones de Guardar y Leer, debes ser muy específico con los nombres de tus 'Colecciones' (carpetas de la bbdd).</p>
+    
+    <div class="prompt-box">
+      <strong>Prompt para guardar y leer puntuaciones:</strong><br><br>
+      "Tengo un juego en Javascript. Necesito guardar las puntuaciones en Cloud Firestore.<br>
+      1. Escribe una función 'guardarPuntuacion(usuario, puntos)' que use 'setDoc' para guardar la info en la colección llamada 'ranking'.<br>
+      2. Escribe una función 'mostrarRanking()' que use 'getDocs' para descargar las puntuaciones y las imprima por consola.<br>
+      Asegúrate de importar las funciones correctas de 'firebase/firestore' al principio del archivo."
+    </div>
+  </section>
+
+  <div class="task-link">
+    🎯 <strong>Tarea Profesional:</strong> Tarea 16 - Crea tu propia App Web (con ayuda de la IA)
+  </div>
+
+  <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

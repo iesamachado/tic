@@ -636,10 +636,20 @@ async function renderResults() {
 
     // Enriquecer con perfiles
     const enriched = await Promise.all(ranking.map(async r => {
-      const member = members.find(m => m.uid === r.studentId);
+      let member = members.find(m => m.uid === r.studentId);
+      
+      // Si el jugador no está en la lista de alumnos (ej: es el profesor jugando), buscamos su perfil
+      if (!member) {
+        try {
+          const { getUserProfile } = await import('./common/db.js');
+          const profile = await getUserProfile(r.studentId);
+          if (profile) member = profile;
+        } catch(e) {}
+      }
+
       return {
         ...r,
-        displayNameAnonymized: member?.displayNameAnonymized || member?.displayName || 'Alumno',
+        displayNameAnonymized: member?.displayNameAnonymized || member?.displayName || 'Desconocido',
         photoURL: member?.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${r.studentId}`
       };
     }));

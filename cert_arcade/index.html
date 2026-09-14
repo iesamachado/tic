@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificado Arcade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/common/design-system.css">
+  <link rel="stylesheet" href="../css/common/reset.css">
+  <link rel="stylesheet" href="../css/common/layout.css">
+  <link rel="stylesheet" href="../css/common/components.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="navbar">
+    <div class="logo">
+      <a href="../index.html">🏛️ TIC2Hub</a>
+    </div>
+    <div class="nav-links">
+      <a href="../roadmap.html" class="nav-item">Volver al Roadmap</a>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="container">
+    <div id="game-container" class="glass-panel text-center fade-in" style="position:relative;">
+
+      <!-- NOTIFICACIONES IN-GAME -->
+      <div id="game-toast" class="hidden" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px; font-weight: bold; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: opacity 0.3s; opacity: 0; min-width: 300px;">
+        <span id="toast-text"></span>
+      </div>
+
+
+      <!-- RETRO MAP -->
+      <div id="retro-map" style="background: #111; border: 4px solid #f1c40f; border-radius: 8px; padding: 15px 30px; margin-bottom: 30px; position: relative; height: 100px; display: flex; align-items: center; justify-content: space-between; font-family: monospace; box-shadow: inset 0 0 20px rgba(0,0,0,1);">
+        <!-- Casa -->
+        <div style="text-align: center; color: #4cd137; z-index: 2;">
+          <div style="font-size: 2.5rem; text-shadow: 0 0 10px #4cd137;">🏠</div>
+          <div style="font-size: 0.8rem; margin-top: 5px; font-weight: bold;">CASA</div>
+        </div>
+        
+        <!-- Camino -->
+        <div style="position: absolute; top: 40%; left: 15%; right: 15%; height: 0; border-top: 4px dashed #555; z-index: 1;"></div>
+        
+        <!-- Ayuntamiento -->
+        <div style="text-align: center; color: #3498db; z-index: 2;">
+          <div style="font-size: 2.5rem; text-shadow: 0 0 10px #3498db;">🏛️</div>
+          <div style="font-size: 0.8rem; margin-top: 5px; font-weight: bold;">OFICINA</div>
+        </div>
+
+        <!-- Personaje -->
+        <div id="player-sprite" style="position: absolute; left: 10%; top: 15px; font-size: 3rem; z-index: 3; transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));">
+          🧍
+        </div>
+      </div>
+
+      
+      <!-- PANTALLA INICIO -->
+      <div id="start-screen">
+        <h1>🏛️ Certificado Arcade</h1>
+        <p>Acompaña a nuestro protagonista en su épica aventura por la burocracia para conseguir su Certificado Digital.</p>
+        <div id="auth-warning" style="display:none; color: #ff4b4b; margin: 15px 0;">
+          ⚠️ Inicia sesión para guardar tu puntuación.
+        </div>
+        <button id="btn-start" class="btn btn-primary" style="margin-top:20px;">INICIAR AVENTURA</button>
+      </div>
+
+      <!-- FASE 1: PC SOLICITUD -->
+      <div id="phase1" class="hidden">
+        <h2>Fase 1: Preparación en Casa 💻</h2>
+        <p>Estás en tu ordenador. (¡Recuerda usar siempre el mismo navegador!). El trámite en España es <strong>totalmente gratuito</strong>. ¿Qué debes hacer para empezar?</p>
+        <div class="options-grid">
+          <button class="btn btn-outline action-btn" data-action="wrong">Pagar 50€ de tasas al Estado por la web</button>
+          <button class="btn btn-outline action-btn" data-action="wrong">Ir directamente al Ayuntamiento a pedirlo</button>
+          <button class="btn btn-outline action-btn" id="btn-correct-1" data-action="correct">Instalar AutoFirma y solicitarlo por web</button>
+        </div>
+        <div id="phase1-step2" class="hidden" style="margin-top: 20px;">
+          <p>¡Perfecto! Introduce tu DNI para generar tu solicitud previa:</p>
+          <input type="text" placeholder="DNI (Ej: 12345678A)" id="dni-input" class="input" style="width: 200px;">
+          <button id="btn-request" class="btn btn-primary">Solicitar</button>
+        </div>
+      </div>
+
+      <!-- FASE 2: AYUNTAMIENTO -->
+      <div id="phase2" class="hidden">
+        <h2>Fase 2: Acreditación 🏛️</h2>
+        <p>Has llegado a la Oficina de Registro Pública.</p>
+        <div class="dialogue-box">
+          <p><strong>Funcionario:</strong> "Buenos días, necesito identificarle para darle su código de descarga."</p>
+          <div class="options-grid" style="margin-top: 15px;">
+            <button class="btn btn-outline action-btn2" data-action="wrong">Aquí tiene mi partida de nacimiento</button>
+            <button class="btn btn-outline action-btn2" data-action="correct" id="btn-correct-2">Aquí tiene mi DNI original, soy yo.</button>
+            <button class="btn btn-outline action-btn2" data-action="wrong">Tome 20€ para las tasas de acreditación</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 3: DESCARGA -->
+      <div id="phase3" class="hidden">
+        <h2>Fase 3: Descarga 💾</h2>
+        <p>Vuelves a casa. <strong>¡Ojo! Debes usar EL MISMO ordenador y navegador</strong>.</p>
+        <p>Introduce tu DNI y el código que te acaban de dar presencialmente en la oficina para instalarlo.</p>
+        <input type="text" id="final-dni" placeholder="DNI" class="input" style="width: 150px; margin-bottom:10px;">
+        <br>
+        <input type="text" id="final-code" placeholder="Código (1234)" class="input" style="width: 150px; margin-bottom:10px;">
+        <br>
+        <button id="btn-download" class="btn btn-primary">DESCARGAR E INSTALAR</button>
+        <p id="error-msg" style="color:red; display:none; margin-top: 10px;">Datos incorrectos. Inténtalo de nuevo.</p>
+      </div>
+
+      
+      <!-- FASE 4: EL ESCRITORIO VIRTUAL -->
+      <div id="phase4" class="hidden">
+        <h2>Fase 4: El Poder del Certificado ⚡</h2>
+        <p>¡Certificado instalado! Estás en el escritorio de tu ordenador. ¿Qué quieres hacer ahora?</p>
+        
+        <div style="background: #1e272e; border: 4px solid #576574; border-radius: 8px; padding: 20px; margin-top: 20px; min-height: 200px; position: relative;">
+          <!-- Barra de tareas -->
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: #000; border-top: 2px solid #576574; display: flex; align-items: center; padding: 0 10px;">
+             <div style="width: 20px; height: 20px; background: #0fb9b1; border-radius: 50%;"></div>
+          </div>
+          
+          <!-- Iconos del escritorio -->
+          <div style="display: flex; gap: 30px; justify-content: center; padding-top: 20px;">
+            <div id="icon-sede" style="text-align: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="font-size: 3rem;">🏛️</div>
+              <div style="font-size: 0.8rem; margin-top: 5px; color: white;">Sede Electrónica<br>(Pedir Partida Nac.)</div>
+            </div>
+            
+            <div id="icon-backup" style="text-align: center; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="font-size: 3rem;">🔐</div>
+              <div style="font-size: 0.8rem; margin-top: 5px; color: white;">Certificados<br>(Hacer Backup)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      
+      <!-- Modal Partida Nacimiento -->
+      <div id="sede-modal" class="hidden" style="position: absolute; top: 15%; left: 50%; transform: translateX(-50%); background: white; color: black; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 50;">
+        <h3 style="color: #8e44ad; margin-top: 0;">🏛️ Ministerio de Justicia</h3>
+        <p style="font-size: 0.9rem; color: #555;">Solicitud de Partida de Nacimiento. Al pulsar descargar, firmarás con tu certificado.</p>
+        <input type="text" id="pdf-nombre" placeholder="Nombre" class="input" style="width: 100%; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box;">
+        <input type="text" id="pdf-apellidos" placeholder="Apellidos" class="input" style="width: 100%; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box;">
+        <input type="text" id="pdf-lugar" placeholder="Lugar Nac. (Ej. Madrid)" class="input" style="width: 100%; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box;">
+        <input type="date" id="pdf-fecha" class="input" style="width: 100%; margin-bottom: 15px; border: 1px solid #ccc; box-sizing: border-box;">
+        <button id="btn-generate-pdf" class="btn btn-primary" style="width: 100%; background: #8e44ad; color: white;">FIRMAR Y DESCARGAR PDF</button>
+        <button id="btn-close-modal" class="btn btn-outline" style="width: 100%; margin-top: 10px;">Cancelar</button>
+      </div>
+
+      <!-- RESULTADO -->
+      <div id="result-screen" class="hidden">
+        <h1>🎉 ¡CERTIFICADO CONSEGUIDO!</h1>
+        <p>Has superado la burocracia con éxito y de forma segura.</p>
+        <h2 style="color: #28a745; font-size:2.5rem;">Puntos: <span id="score">0</span></h2>
+        <button id="btn-restart" class="btn btn-outline" style="margin-top:20px;">Volver a Jugar</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

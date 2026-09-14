@@ -4,7 +4,7 @@ import { renderHeader } from './common/ui.js';
 import { requireAuth } from './common/auth.js';
 
 let currentMode = 'criterion';
-let currentLevel = '1';
+let currentLevel = '2';
 
 document.addEventListener('DOMContentLoaded', () => {
   requireAuth({
@@ -19,12 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function calculateTaskWeights() {
   const ces = {
-    '1': ['1.1', '1.2', '1.3', '1.4'],
-    '2': ['2.1', '2.2', '2.3'],
+    '1': ['1.1'],
+    '2': ['2.1', '2.2'],
     '3': ['3.1'],
-    '4': ['4.1', '4.2'],
-    '5': ['5.1', '5.2'],
-    '6': ['6.1', '6.2', '6.3', '6.4']
+    '4': ['4.1'],
+    '5': ['5.1', '5.2', '5.3']
   };
 
   const crit_tasks = {};
@@ -38,7 +37,7 @@ function calculateTaskWeights() {
     }
   });
 
-  const ce_weight = 100.0 / 6.0;
+  const ce_weight = 100.0 / 5.0;
 
   Object.values(ces).forEach(crits => {
     const crit_weight = ce_weight / crits.length;
@@ -103,7 +102,7 @@ function getTaskButton(t) {
 }
 
 function renderByCriterion(level) {
-  const criteriaList = CYR_EVALUATION_DATA[level] || CYR_EVALUATION_DATA[1];
+  const criteriaList = CYR_EVALUATION_DATA[level] || CYR_EVALUATION_DATA[2];
   $('eval-thead').innerHTML = `
     <tr>
       <th style="width:10%;">Crit.</th>
@@ -114,7 +113,7 @@ function renderByCriterion(level) {
   
   let html = '';
   criteriaList.forEach(c => {
-    const matchingTasks = (level == 1) ? CLASSROOM_TASKS.filter(t => t.crit && t.crit.split(',').map(s => s.trim()).includes(c.crit)) : [];
+    const matchingTasks = (level == 2) ? CLASSROOM_TASKS.filter(t => t.crit && t.crit.split(',').map(s => s.trim()).includes(c.crit)) : [];
     
     let tasksHtml = '<span style="color:var(--text-muted)">-</span>';
     if (matchingTasks.length > 0) {

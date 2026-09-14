@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - WordPress</title>
+  <style>
+    :root {
+      --primary: #0073aa; /* WordPress Blue */
+      --secondary: #1d2327; /* WP Dark */
+      --accent: #d63638; /* WP Red alert */
+      --bg: #f0f0f1; /* WP Light Gray */
+      --text: #3c434a;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 850px; 
+      margin: auto; 
+      color: var(--text); 
+      background-color: #fff;
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.5rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    h2 { color: var(--primary); margin-top: 50px; border-left: 4px solid var(--primary); padding-left: 15px; font-size: 1.8rem; background: #f8f9fa; padding: 10px 15px; border-radius: 0 8px 8px 0; }
+    h3 { color: var(--secondary); font-size: 1.4rem; margin-top: 30px; }
+    p { margin-bottom: 15px; font-size: 1.1rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    code { background: var(--bg); padding: 3px 6px; border-radius: 4px; color: var(--accent); font-family: monospace; font-weight: bold; }
+    .info-box { background: #fff; border: 1px solid #c3c4c7; border-left: 5px solid var(--primary); padding: 25px; border-radius: 4px; margin: 30px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--primary); font-size: 1.3rem; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #f0f6fc; border-radius: 8px; font-size: 1.2rem; color: #0366d6; border: 2px dashed #0073aa; font-weight: bold; }
+    
+    /* WordPress UI Mocks */
+    .wp-dashboard { display: flex; border: 1px solid #c3c4c7; border-radius: 4px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .wp-sidebar { width: 200px; background: var(--secondary); color: #fff; padding: 20px 0; font-size: 0.95rem; }
+    .wp-sidebar-item { padding: 10px 20px; cursor: default; display: flex; align-items: center; gap: 10px; }
+    .wp-sidebar-item:hover, .wp-sidebar-item.active { background: #2c3338; color: #72aee6; border-left: 4px solid #72aee6; padding-left: 16px; }
+    .wp-content { flex: 1; background: #f0f0f1; padding: 30px; }
+    
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card { background: #fff; border: 1px solid #dcdcde; padding: 20px; border-radius: 4px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+  <header class="topic-header">
+    <h1>5. WordPress: Tu Propio Medio de Comunicación</h1>
+    <p class="subtitle">Aprende a gestionar un Sistema Gestor de Contenidos (CMS) profesional.</p>
+    <div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">📰🖥️</div>
+  </header>
+  
+  <section>
+    <h2>1. ¿Qué es WordPress?</h2>
+    <p>Un <strong>Content Management System (CMS)</strong> es un software que permite a usuarios sin conocimientos profundos de programación web crear, organizar y publicar contenido. Actualmente, WordPress impulsa más del 40% de todas las páginas web de Internet (incluyendo revistas, periódicos, y webs corporativas).</p>
+    <p>La magia de un CMS es que <strong>separa el diseño de la base de datos</strong>. Puedes cambiar el diseño entero de la web pulsando un botón, y todos tus artículos, imágenes y textos seguirán intactos porque están guardados de forma segura en la base de datos.</p>
+  </section>
+
+  <section>
+    <h2>2. El Panel de Control (Backend)</h2>
+    <p>Al crear tu web, tendrás una parte pública (Frontend) que lee todo el mundo en internet, y una parte privada (Backend) a la que accedes añadiendo <code>/wp-admin</code> al final de tu URL. Este es tu centro de mandos:</p>
+
+    <!-- WP Dashboard Mock -->
+    <div class="wp-dashboard">
+      <div class="wp-sidebar">
+        <div class="wp-sidebar-item" style="margin-bottom: 20px; font-weight: bold; font-size: 1.1rem;">W Escritorio</div>
+        <div class="wp-sidebar-item active">📌 Entradas</div>
+        <div class="wp-sidebar-item">📸 Medios</div>
+        <div class="wp-sidebar-item">📄 Páginas</div>
+        <div class="wp-sidebar-item">💬 Comentarios</div>
+        <div class="wp-sidebar-item">🎨 Apariencia</div>
+        <div class="wp-sidebar-item">🔌 Plugins</div>
+        <div class="wp-sidebar-item">👥 Usuarios</div>
+      </div>
+      <div class="wp-content">
+        <h2 style="margin-top:0; border:none; padding:0; background:none; color: var(--secondary);">Bienvenido a WordPress</h2>
+        <p style="color: #646970;">Desde aquí gobernarás tu emisora de radio digital. Usa el menú izquierdo para navegar.</p>
+        <div style="background: #fff; padding: 15px; border-left: 4px solid var(--primary); box-shadow: 0 1px 1px rgba(0,0,0,0.04);">
+          <strong>Un vistazo:</strong> Tienes 2 Entradas, 3 Páginas y 1 Administrador.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. La Gran Diferencia: Entradas vs Páginas</h2>
+    <p>El error más común en WordPress es confundir Páginas y Entradas. Son herramientas totalmente distintas:</p>
+    
+    <div class="card-grid">
+      <div class="card" style="border-top: 4px solid #f56e28;">
+        <div style="font-size: 3rem;">📌</div>
+        <h3 style="margin: 10px 0;">Entradas (Posts)</h3>
+        <p style="font-size: 0.95rem; text-align: left;">Son artículos de noticias o episodios de podcast. <strong>Son dinámicas</strong>. Tienen fecha de publicación, autor, y lo más importante: <strong>se organizan en Categorías y Etiquetas</strong>. Cada vez que publicas una nueva, aparece automáticamente arriba del todo en el Blog.</p>
+        <div style="background: #f0f0f1; padding: 5px; font-size: 0.8rem; font-family: monospace;">Ej: "Episodio 1: IA Generativa"</div>
+      </div>
+      <div class="card" style="border-top: 4px solid #00a0d2;">
+        <div style="font-size: 3rem;">📄</div>
+        <h3 style="margin: 10px 0;">Páginas (Pages)</h3>
+        <p style="font-size: 0.95rem; text-align: left;">Son lienzos estáticos y <strong>atemporales</strong>. No tienen fecha visible, ni autor, y <strong>NO tienen categorías</strong>. Se utilizan para la estructura fija de la web.</p>
+        <br>
+        <div style="background: #f0f0f1; padding: 5px; font-size: 0.8rem; font-family: monospace;">Ej: "Sobre Nosotros", "Contacto"</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>📁 Las Categorías son obligatorias</h3>
+      <p>Cuando un periodista del equipo escriba un artículo (Entrada), debe asignarle una Categoría (por ejemplo: "Entrevistas", "Noticias Ciberseguridad", "Podcasts"). Si no lo hacéis, WordPress lo meterá en la temida categoría <em>"Sin Categorizar" (Uncategorized)</em>, dando una imagen muy poco profesional al lector.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Apariencia: Menús y Diseño de Identidad</h2>
+    <p>En el apartado <strong>Apariencia > Personalizar</strong>, es donde definimos la "marca" de nuestro programa de radio:</p>
+    <ul>
+      <li><strong>El Logotipo:</strong> Necesitaréis subir dos imágenes. Un <strong>Logotipo Horizontal</strong> para que encaje bien en la cabecera del ordenador (arriba a la izquierda), y un <strong>Logotipo Cuadrado (Icono del Sitio)</strong> para que aparezca en la pestaña del navegador y en las fotos de perfil de vuestras Redes Sociales.</li>
+      <li><strong>El Menú de Navegación:</strong> Es la barra superior de la web. En WordPress, el menú no se crea solo. Debéis ir a <em>Apariencia > Menús</em>, crear uno nuevo, e ir arrastrando las <strong>Páginas</strong> (ej. "Sobre nosotros") y las <strong>Categorías</strong> (ej. "Todos los Podcasts") que queráis que sean visibles.</li>
+    </ul>
+
+    <!-- Mini Wireframe -->
+    <div style="background: #fff; border: 2px solid #ccc; border-radius: 6px; padding: 10px; margin: 20px 0;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+        <div style="background: #e74c3c; color: white; padding: 5px 15px; font-weight: bold; border-radius: 4px; font-style: italic;">MI RADIO HORIZONTAL</div>
+        <div style="display: flex; gap: 15px; font-size: 0.9rem; color: #0073aa; font-weight: bold;">
+          <span>Inicio</span>
+          <span>Sobre el Equipo</span>
+          <span style="border-bottom: 2px solid #0073aa;">Episodios (Categoría)</span>
+        </div>
+      </div>
+      <!-- Content -->
+      <div style="height: 100px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #aaa; border: 2px dashed #ccc;">
+        Aquí irá el reproductor embebido de vuestro Podcast (iVoox/Spotify)
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Usuarios y Roles: Trabajando en Equipo</h2>
+    <p>Una redacción no la lleva una sola persona. Desde el menú <strong>Usuarios</strong> podéis invitar a vuestros compañeros. WordPress es muy estricto con la seguridad, por lo que existen diferentes niveles (Roles):</p>
+    
+    <ul style="background: #f0f6fc; padding: 20px 20px 20px 40px; border-radius: 8px; border: 1px solid #c5d9ed;">
+      <li>👑 <strong>Administrador:</strong> Tiene poder absoluto. Puede cambiar el diseño, instalar cosas y borrar la web entera. Cuidado a quién se lo dais.</li>
+      <li>✍️ <strong>Editor:</strong> Puede escribir artículos, y también puede editar o borrar los artículos que hayan escrito sus compañeros.</li>
+      <li>📝 <strong>Autor:</strong> Solo puede escribir, publicar y editar <strong>sus propios artículos</strong>. Ideal para los redactores de la radio.</li>
+      <li>👀 <strong>Suscriptor:</strong> Solo puede leer contenido privado y dejar comentarios.</li>
+    </ul>
+
+    <p><strong>¿Por qué es vital que cada uno tenga su usuario?</strong> Porque cuando publiquéis una Entrada, WordPress firmará automáticamente el artículo con vuestro nombre (Ej: <em>"Publicado por Ana"</em>). Así el profesor sabrá exactamente quién ha trabajado en qué artículo.</p>
+  </section>
+  
+  <div class="task-link">
+    <strong>🎯 Tarea Profesional Vinculada:</strong> Tarea 3 - Desarrollo de la Web Oficial de la Cadena.
+  </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

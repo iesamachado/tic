@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - Propiedad Intelectual</title>
+  <style>
+    :root {
+      --primary: #f39c12; /* Naranja CC */
+      --secondary: #2c3e50;
+      --accent: #2980b9;
+      --bg: #fdfbf7;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--accent); margin-top: 40px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    p, ul { font-size: 1.1rem; }
+    .cc-card { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; gap: 20px; align-items: center; }
+    .cc-icon { width: 60px; height: 60px; flex-shrink: 0; }
+    .alert-box { background: #ffeaa7; border-left: 5px solid #fdcb6e; padding: 20px; border-radius: 4px; margin: 30px 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div style="text-align: right; margin-bottom: 20px;">
+    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
+  </div>
+
+  <h1>7. Propiedad Intelectual y Creative Commons</h1>
+  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Derechos de autor, Copyleft y la cultura libre en internet.</p>
+
+  <section>
+    <h2>1. El Copyright (Todos los derechos reservados)</h2>
+    <p>La ley es muy estricta: en el mismo instante en que tú dibujas algo, escribes un código, o grabas una canción, adquieres automáticamente el <strong>Copyright ©</strong>. Nadie puede copiar, distribuir, ni modificar tu obra sin tu permiso firmado. Si encuentras una foto en Google Imágenes y no dice nada, <strong>tiene Copyright por defecto</strong> y no la puedes usar en tu web.</p>
+    
+    <div class="alert-box">
+      <h3 style="margin-top:0;">El Dominio Público (Public Domain)</h3>
+      <p>Los derechos patrimoniales (cobrar por una obra) expiran con el tiempo. En España, <strong>70 u 80 años después de la muerte del autor</strong>, sus obras pasan al Dominio Público. Esto significa que hoy puedes grabar un disco tocando a Beethoven y venderlo sin pagarle nada a nadie.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Creative Commons (Copyleft)</h2>
+    <p>Imagina que haces una foto increíble y quieres que la gente la use gratis, pero con la condición de que digan que es tuya. ¿Tienes que firmarles un contrato a cada uno? No. Para eso nacieron las licencias <strong>Creative Commons (CC)</strong>. Son plantillas legales que otorgan permisos por adelantado basándose en 4 iconos:</p>
+
+    <div class="cc-card">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" class="cc-icon">
+      <div>
+        <h3 style="margin: 0 0 5px 0;">Atribución (BY)</h3>
+        <p style="margin: 0;">Obligatorio. Cualquiera puede usar tu obra, pero tienen que <strong>citar tu nombre</strong> y enlazar a la obra original.</p>
+      </div>
+    </div>
+    
+    <div class="cc-card">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" class="cc-icon">
+      <div>
+        <h3 style="margin: 0 0 5px 0;">Compartir Igual (SA - Share Alike)</h3>
+        <p style="margin: 0;">El "virus" del software libre. Si alguien coge tu obra y la modifica para hacer otra cosa, están obligados a publicar esa nueva obra bajo <strong>la misma licencia exacta</strong> que la tuya. No pueden cerrarla con Copyright.</p>
+      </div>
+    </div>
+    
+    <div class="cc-card">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" class="cc-icon">
+      <div>
+        <h3 style="margin: 0 0 5px 0;">No Comercial (NC)</h3>
+        <p style="margin: 0;">Te dejo usar mi música gratis en tu vídeo de YouTube... <strong>siempre y cuando tu vídeo no esté monetizado</strong>. Nadie puede ganar dinero usando tu obra sin pagar primero.</p>
+      </div>
+    </div>
+    
+    <div class="cc-card">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" class="cc-icon">
+      <div>
+        <h3 style="margin: 0 0 5px 0;">Sin Obras Derivadas (ND - No Derivatives)</h3>
+        <p style="margin: 0;">Puedes imprimir mi foto o compartirla intacta, pero <strong>no puedes retocarla, cortarla ni meterle filtros</strong>. Úsala tal y como yo la creé, o no la uses.</p>
+      </div>
+    </div>
+
+    <h3>Combinando licencias (Ejemplos)</h3>
+    <ul style="background: white; padding: 20px 40px; border-radius: 8px; border: 1px solid #ccc;">
+      <li><strong>CC BY:</strong> La licencia más libre. Úsala para lo que quieras, incluso véndela, pero nombra al autor.</li>
+      <li><strong>CC BY-NC-SA:</strong> Cítame, no ganes dinero con ella, y si haces un remix, distribúyelo con esta misma licencia (muy típica en Wikipedia).</li>
+      <li><strong>CC0 (Creative Commons Zero):</strong> Renuncia absoluta de derechos. El autor entrega su obra directamente al Dominio Público.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. El Derecho de Cita (Fair Use)</h2>
+    <p>¿Por qué los youtubers pueden poner trozos de películas comerciales sin que les borren el vídeo? Existe una excepción a la Ley de Propiedad Intelectual llamada <strong>Derecho de Cita</strong>.</p>
+    <p>Puedes incluir fragmentos cortos de obras con Copyright cerrado en tus propios trabajos <strong>siempre que cumplas TRES condiciones</strong>:</p>
+    <ol>
+      <li>Que la obra original ya haya sido divulgada al público.</li>
+      <li>Que tu uso sea únicamente para fines docentes, o para hacer <strong>análisis, comentario o crítica periodística</strong>. (Si pones una canción de Rosalía de fondo en tu podcast solo porque "queda chula", es ilegal. Si la pones para analizar críticamente cómo usa los sintetizadores, es legal).</li>
+      <li>Que el fragmento sea corto y proporcional (no puedes subir la película entera para criticar una escena).</li>
+    </ol>
+  </section>
+
+  <div class="task-link">
+    🎯 <strong>Tarea Profesional:</strong> Tarea 4 - Juego: Radio Trivial CC
+  </div>
+
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

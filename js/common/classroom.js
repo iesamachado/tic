@@ -41,7 +41,7 @@ async function classroomFetch(token, path, options = {}) {
 //  Obtener cursos activos del profesor
 // ──────────────────────────────────────────────────────────────────────
 export async function fetchClassroomCourses(token) {
-  const data = await classroomFetch(token, '/courses?courseStates=ACTIVE');
+  const data = await classroomFetch(token, '/courses?courseStates=ACTIVE&teacherId=me');
   return data.courses || [];
 }
 

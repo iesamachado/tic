@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #2c3e50;
+      --accent: #e67e22;
+      --bg: #f8f9fa;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 800px; 
+      margin: auto; 
+      color: #333; 
+      background-color: var(--bg);
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.2rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    .header-img { margin-top: 20px; }
+    h2 { color: var(--primary); margin-top: 40px; border-left: 4px solid var(--primary); padding-left: 10px; }
+    h3 { color: var(--secondary); }
+    p { margin-bottom: 15px; font-size: 1.05rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.05rem; }
+    li { margin-bottom: 10px; }
+    code { background: #e9ecef; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-family: monospace; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .info-box { background: #fff; border: 1px solid #dee2e6; border-left: 5px solid var(--accent); padding: 20px; border-radius: 4px; margin: 25px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--accent); }
+    .task-link { margin-top: 40px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.1rem; color: #0056b3; border: 1px dashed #4a90e2; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--primary, #4a90e2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+
+    <header class="topic-header">
+      <h1>10. Desarrollo Web (HTML5 y CSS3)</h1>
+      <p class="subtitle">Los cimientos visuales de internet.</p>
+      
+      
+    <div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));">🌐 🎨</div>
+    </header>
+
+    <div class="info-box" style="background-color: #fdf5e6; border-left-color: #f39c12;">
+      <h3>🌍 El Origen: Tim Berners-Lee y el CERN</h3>
+      <p>En 1989, el científico británico <strong>Tim Berners-Lee</strong>, trabajando en el laboratorio europeo de física de partículas (CERN), inventó la <strong>World Wide Web (WWW)</strong>. Para que los científicos de todo el mundo pudieran compartir documentos fácilmente a través de internet, inventó el <strong>HTML</strong> (HyperText Markup Language).</p>
+      <p>Su invención es uno de los mayores hitos de la humanidad: democratizó el acceso a la información y creó la base sobre la que funciona el 100% de las páginas web que visitas hoy en día. Además, decidió regalar la tecnología al mundo de forma libre, sin cobrar patentes.</p>
+    </div>
+    
+    <section>
+      <h2>HTML: La Estructura (El esqueleto)</h2>
+      <p>HTML no es un lenguaje de programación, es un <strong>lenguaje de marcado</strong>. Usa etiquetas (tags) envueltas en corchetes angulares para decirle al navegador qué es cada trozo de texto. Aquí tienes las más importantes:</p>
+      
+      <ul>
+        <li><strong>Encabezados:</strong> <code>&lt;h1&gt;</code> (Título principal), <code>&lt;h2&gt;</code>, hasta <code>&lt;h6&gt;</code>.</li>
+        <li><strong>Formato de texto:</strong> <code>&lt;strong&gt;</code> (<strong>Negrita</strong>) y <code>&lt;em&gt;</code> (<em>Cursiva</em>).</li>
+        <li><strong>Saltos de línea:</strong> <code>&lt;br&gt;</code> (Line break). A diferencia de los párrafos normales, fuerza un salto de línea sin crear un bloque nuevo. <em>Ejemplo: <code>Hola&lt;br&gt;Mundo</code></em>. No tiene etiqueta de cierre.</li>
+        <li><strong>Enlaces (Links):</strong> <code>&lt;a href="https://google.com"&gt;Ir a Google&lt;/a&gt;</code>. La etiqueta <code>a</code> (Anchor) envuelve el texto que se puede clicar, y el atributo <code>href</code> indica a qué web debe saltar el navegador.</li>
+        <li><strong>Listas:</strong> <code>&lt;ul&gt;</code> (Lista desordenada, viñetas) y <code>&lt;ol&gt;</code> (Lista ordenada, números). Cada elemento de la lista va dentro de un <code>&lt;li&gt;</code>.</li>
+        <li><strong>Imágenes:</strong> <code>&lt;img src="foto.jpg" alt="Descripción"&gt;</code>. Tampoco tiene etiqueta de cierre.</li>
+      </ul>
+      
+      <div style="background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="margin-top:0;">Estructura de una Tabla</h3>
+        <p>Las tablas requieren un montaje especial con varias etiquetas anidadas:</p>
+        <ul>
+          <li><code>&lt;table&gt;</code>: Envuelve a toda la tabla entera.</li>
+          <li><code>&lt;tr&gt;</code> (Table Row): Crea una <strong>fila</strong> horizontal nueva.</li>
+          <li><code>&lt;th&gt;</code> (Table Heading): Celda de título (normalmente va en negrita).</li>
+          <li><code>&lt;td&gt;</code> (Table Data): Celda normal con datos.</li>
+        </ul>
+        <pre><code>&lt;table border="1"&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Nombre&lt;/th&gt;
+    &lt;th&gt;Nota&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Mario&lt;/td&gt;
+    &lt;td&gt;10&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+      </div>
+      
+      <div class="info-box" style="background-color: #eafaf1; border-left-color: #2ecc71;">
+        <h3>🎮 ¡Juega y aprende HTML!</h3>
+        <p>¿Quieres practicar HTML como si fuera un videojuego de plataformas? Juega a <strong><a href="https://supermarkupworld.com/" target="_blank">Super Markup World</a></strong> y salva al personaje escribiendo las etiquetas correctas para construirle puentes y escaleras.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>CSS: El Diseño (La ropa y el maquillaje)</h2>
+      <p>CSS (Cascading Style Sheets) es el lenguaje que da colores, tamaños y posiciones a las etiquetas HTML aburridas. Pero antes de pintar algo, <strong>el CSS necesita apuntar o seleccionar</strong> qué elemento HTML quiere modificar. Existen 3 formas principales de seleccionar elementos:</p>
+
+      <div style="background: #2c3e50; color: #ecf0f1; padding: 20px; border-radius: 8px; margin: 20px 0; font-family: monospace;">
+        <div style="margin-bottom: 15px;">
+          <strong style="color: #f1c40f;">1. Por Elemento (Etiqueta HTML):</strong> Afecta a TODAS las etiquetas iguales.
+          <br><code>p { color: red; }</code> <i>/* Todos los párrafos serán rojos */</i>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong style="color: #3498db;">2. Por Clase (.clase):</strong> Afecta solo a los HTML que tengan <code>class="destacado"</code>.
+          <br><code>.destacado { font-weight: bold; }</code>
+        </div>
+        <div>
+          <strong style="color: #e74c3c;">3. Por ID (#id):</strong> Afecta a un ÚNICO elemento exacto (ej. <code>id="menu-principal"</code>).
+          <br><code>#menu-principal { background: black; }</code>
+        </div>
+      </div>
+
+      <div class="info-box" style="background-color: #eafaf1; border-left-color: #2ecc71;">
+        <h3 style="margin-top:0;">🎮 ¡Juega y aprende Selectores CSS!</h3>
+        <p>¿No te queda clara la diferencia entre un ID y una clase? Domina los selectores de CSS sirviendo platos de comida en el restaurante de <strong><a href="https://flukeout.github.io/" target="_blank">CSS Diner</a></strong>. ¡Te lo explica jugando!</p>
+      </div>
+
+      <h3>1. Tipografía y Tamaño</h3>
+      <p>Podemos cambiar la fuente con <code>font-family: Arial, sans-serif;</code>. El ancho y alto de cualquier elemento (o de una imagen) se controla con <code>width: 300px;</code> y <code>height: 200px;</code>.</p>
+
+      <h3>2. Teoría del Color: RGB vs CMYK</h3>
+      <p>Para cambiar colores usamos <code>color: red;</code> (para la letra) y <code>background-color: blue;</code> (para el fondo). En la web, los colores se definen mediante el modelo <strong>RGB (Red, Green, Blue)</strong>.</p>
+      
+      <div style="text-align: center; margin: 25px 0;">
+        <img src="../normativa/rgb-cube.png" alt="Cubo de color RGB y CMYK" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <p style="font-size: 0.9rem; color: #666; font-style: italic;">Representación visual del modelo de color tridimensional.</p>
+      </div>
+
+      <ul>
+        <li><strong>RGB (Pantallas):</strong> Es un modelo aditivo basado en luz. Si mezclas los 3 colores al máximo, obtienes luz blanca (<code>rgb(255, 255, 255)</code>). Si los apagas, obtienes negro.</li>
+        <li><strong>CMYK (Impresoras):</strong> Es un modelo sustractivo basado en tinta (Cian, Magenta, Amarillo y Negro). Al mezclar todas las tintas oscureces el papel hasta llegar al negro. <em>¡Por eso los colores en pantalla siempre brillan más que impresos en papel!</em></li>
+      </ul>
+
+      <h3>3. Posicionamiento Espacial</h3>
+      <p>Por defecto, los elementos HTML caen uno debajo del otro. Pero a veces queremos romper esa regla y colocar un elemento en unas coordenadas matemáticas exactas de la pantalla:</p>
+      <ul>
+        <li><code>position: absolute;</code>: Saca al elemento del flujo normal. Ahora puedes usar <code>top: 50px;</code> y <code>left: 100px;</code> para moverlo exactamente 50 píxeles desde el borde superior y 100 desde el izquierdo, superponiéndolo a otras cosas.</li>
+        <li><code>display: none;</code>: Hace que el elemento desaparezca por completo, como si no existiera (muy útil en programación Javascript para ocultar ventanas).</li>
+      </ul>
+
+      
+    </section>
+    
+    <div class="task-link">
+      <strong>🎯 Tareas vinculadas: Mi primera web y SuperMarioBros</strong>
+      <p style="text-align: left; margin-top: 15px; font-size: 1rem; color: #333;">
+        En la tarea de <strong>Mi primera web</strong> tendrás que combinar listas, imágenes y tablas para presentarte. <br>
+        En la tarea de <strong>SuperMarioBros</strong>, partirás de una pantalla vacía y tendrás que usar <code>position: absolute;</code>, <code>top</code> y <code>left</code> para colocar a Mario, los bloques de ladrillo, los goombas y las nubes en las coordenadas exactas de la pantalla para reconstruir el Nivel 1-1.
+      </p>
+    </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

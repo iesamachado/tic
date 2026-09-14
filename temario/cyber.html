@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - Ciberseguridad Básica</title>
+  <style>
+    :root {
+      --primary: #c0392b; /* Rojo Peligro */
+      --secondary: #2c3e50;
+      --accent: #27ae60; /* Verde Seguro */
+      --bg: #fdfbf7;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--primary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    p, ul, ol { font-size: 1.1rem; }
+    
+    .threat-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .defense-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    
+    .sms-mockup { background: #dff9fb; padding: 15px; border-radius: 15px 15px 15px 0; max-width: 350px; border: 1px solid #c7ecee; font-family: Arial, sans-serif; color: #130f40; margin: 20px 0; }
+    
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--primary); font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div style="text-align: right; margin-bottom: 20px;">
+    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
+  </div>
+
+  <h1>8. Ciberseguridad Básica</h1>
+  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Amenazas modernas, ingeniería social y defensa de nuestra identidad digital.</p>
+
+  <section>
+    <h2>1. El Eslabón Más Débil: Tú</h2>
+    <p>Los sistemas modernos (como los servidores de Google o Apple) son casi imposibles de hackear a la fuerza. Por eso, los cibercriminales usan la <strong>Ingeniería Social</strong>: técnicas de manipulación psicológica diseñadas para que seas tú quien les entregue las contraseñas voluntariamente aprovechando el miedo, la urgencia o la confianza.</p>
+
+    <div class="threat-card">
+      <h3 style="margin-top:0;">Phishing, Smishing y Vishing</h3>
+      <p>Es la suplantación de identidad. El atacante se hace pasar por tu banco, Netflix o Correos.</p>
+      <ul>
+        <li><strong>Phishing:</strong> A través de un correo electrónico falso.</li>
+        <li><strong>Smishing:</strong> A través de un SMS. (Ejemplo clásico: "Su paquete ha sido retenido en aduanas. Pague 1,50€ aquí").</li>
+        <li><strong>Vishing:</strong> A través de una llamada telefónica humana simulando ser soporte técnico.</li>
+      </ul>
+      <div class="sms-mockup">
+        <strong>📱 SMS de "Correos":</strong><br>
+        Su envio ES381928 esta retenido en el almacen. Falta abonar 2,15€ de tasas. Acceda urgente a este enlace o sera devuelto: <i>http://corrreos-es-tasas.com/pago</i>
+      </div>
+      <p style="font-size: 0.9rem; color: #555;"><i>(Fíjate en las faltas de ortografía, la urgencia y que el dominio dice "corrreos" con triple R. Nunca hagas clic en enlaces de SMS).</i></p>
+    </div>
+
+    <div class="threat-card">
+      <h3 style="margin-top:0;">Ransomware (Secuestro de datos)</h3>
+      <p>El malware más destructivo de la última década. Te descargas un archivo infectado (ej. un PDF falso o un juego pirata) y, al abrirlo, <strong>encripta todos los archivos de tu disco duro con una clave militar</strong>. De repente, tus fotos, trabajos y documentos son inaccesibles y su extensión cambia a <code>.locked</code>.</p>
+      <p>Aparece una pantalla exigiéndote pagar un rescate de 1.000€ en Bitcoin para enviarte la clave. <strong>Solución real:</strong> No pagar nunca y tener siempre copias de seguridad desconectadas de internet (en discos duros externos).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Defensa Activa: Autoprotección</h2>
+    
+    <div class="defense-card">
+      <h3 style="margin-top:0; color: var(--accent);">1. Contraseñas Fuertes y Gestores</h3>
+      <p>Un ordenador moderno puede probar 10 mil millones de contraseñas por segundo. Si tu clave es "maria2005", tardará 0.01 segundos en descifrarla por <strong>Fuerza Bruta</strong>.</p>
+      <p>Las contraseñas deben ser <strong>largas</strong> (más de 12 caracteres), incluir símbolos, y sobre todo, <strong>nunca repetirse</strong> en dos webs distintas. Como es imposible memorizarlas todas, debes usar un <strong>Gestor de Contraseñas</strong> (como Bitwarden, 1Password o el llavero integrado de Google/Apple). Él las memoriza por ti.</p>
+    </div>
+
+    <div class="defense-card">
+      <h3 style="margin-top:0; color: var(--accent);">2. El Escudo Definitivo: 2FA (Doble Factor)</h3>
+      <p>Incluso si tienes la mejor contraseña del mundo, te la pueden robar en una brecha de datos de la empresa. Por eso <strong>es obligatorio activar el Autenticador de Doble Factor (2FA o MFA)</strong> en todas tus cuentas importantes (Google, Instagram, Banco).</p>
+      <p>El 2FA exige que, tras meter la contraseña, demuestres que eres tú usando algo que posees físicamente (ej. recibir un SMS, aprobar desde la app del móvil, o meter un código temporal de Google Authenticator). <strong>Si un hacker ruso roba tu contraseña, se quedará bloqueado porque no tiene tu teléfono móvil en la mano.</strong></p>
+    </div>
+
+    <div class="defense-card">
+      <h3 style="margin-top:0; color: var(--accent);">3. Conexiones Seguras (HTTPS)</h3>
+      <p>Fíjate siempre en que las webs empiecen por <strong>https://</strong> y tengan el candado. Eso significa que la conexión entre tu ordenador y la web está encriptada. Si usas una wifi pública de una cafetería y entras a una web <code>http://</code> (sin la S), cualquiera conectado al mismo router puede leer en texto plano las contraseñas que escribas.</p>
+    </div>
+  </section>
+
+  <div class="task-link">
+    🎯 <strong>Tarea Profesional:</strong> Tarea 10 - Alta en UVUS y 2FA
+  </div>
+
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

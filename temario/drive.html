@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #2c3e50;
+      --accent: #e67e22;
+      --bg: #f8f9fa;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 800px; 
+      margin: auto; 
+      color: #333; 
+      background-color: var(--bg);
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.2rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    .header-img { margin-top: 20px; }
+    h2 { color: var(--primary); margin-top: 40px; border-left: 4px solid var(--primary); padding-left: 10px; }
+    h3 { color: var(--secondary); }
+    p { margin-bottom: 15px; font-size: 1.05rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.05rem; }
+    li { margin-bottom: 10px; }
+    code { background: #e9ecef; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-family: monospace; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .info-box { background: #fff; border: 1px solid #dee2e6; border-left: 5px solid var(--accent); padding: 20px; border-radius: 4px; margin: 25px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--accent); }
+    .task-link { margin-top: 40px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.1rem; color: #0056b3; border: 1px dashed #4a90e2; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--primary, #4a90e2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+
+    <header class="topic-header">
+      <h1>2. Ofimática Colaborativa (La Nube)</h1>
+      <p class="subtitle">Productividad sincronizada sin pérdida de datos.</p>
+      <svg viewBox="0 0 87.3 76" style="max-height: 90px; margin-top: 20px;">
+  <path d="M58.3,76l29-50L58.2,1L29.3,51.1L58.3,76z" fill="#FFC107"/>
+  <path d="M58.2,1L29,1l-29,50l29.2,25l29-50L58.2,1z" fill="#1976D2"/>
+  <path d="M87.3,26H29.1L0,76h58.3L87.3,26z" fill="#4CAF50"/>
+</svg>
+    </header>
+    
+    <section>
+      <h2>1. El Ecosistema de Google Workspace</h2>
+      <p>El modelo antiguo de pasarnos archivos por pendrive llamados <code>trabajo_final_final_v3.docx</code> ha muerto. Hoy en día trabajamos en la nube (SaaS - Software as a Service), usando el navegador web sin instalar nada.</p>
+      <p>Las tres herramientas principales que usaremos (todas gratuitas con tu cuenta del instituto) son:</p>
+      <ul>
+        <li>📝 <strong>Google Docs (Documentos):</strong> El equivalente a Microsoft Word. Para redactar trabajos, memorias y guiones.</li>
+        <li>📊 <strong>Google Sheets (Hojas de cálculo):</strong> El equivalente a Excel. Para presupuestos, gráficos y bases de datos.</li>
+        <li>🎬 <strong>Google Slides (Presentaciones):</strong> El equivalente a PowerPoint. Para exponer proyectos en clase.</li>
+      </ul>
+      <div class="info-box" style="border-left-color: #27ae60; background-color: #eafaf1;">
+        <h3>⚡ El superpoder de la Nube: Edición Simultánea</h3>
+        <p>La mayor ventaja de estas herramientas es que tú y tus compañeros podéis tener el mismo documento abierto a la vez. Veréis el cursor de la otra persona moviéndose en tiempo real, escribiendo párrafos a la vez sin sobrescribir el trabajo del otro.</p>
+        <p><strong>¿Y si alguien lo borra todo por error?</strong> ¡No pasa nada! El sistema guarda automáticamente un <strong>Historial de Versiones</strong> (Archivo > Historial de versiones). Podéis navegar por el tiempo y restaurar el documento a como estaba hace 10 minutos, o ayer por la tarde.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Compartir y Permisos de Usuario</h2>
+      <p>Al hacer clic en el botón azul "Compartir" (arriba a la derecha), no basta con copiar el enlace; hay que definir <strong>quién</strong> puede entrar y <strong>qué</strong> puede hacer. Existen 3 perfiles estrictos que debes comprender:</p>
+      <ul>
+        <li>👁️ <strong>Lector (Viewer):</strong> La persona solo puede leer el documento y descargarlo, pero no puede modificar ni una coma. <em>(Se usa para enviar trabajos acabados al público general).</em></li>
+        <li>💬 <strong>Comentador (Commenter):</strong> Puede leer el documento y seleccionar partes del texto para dejar notas al margen o "sugerir" cambios. El dueño del documento verá un botón de "Aceptar" o "Rechazar" esa sugerencia. <em>(Es el perfil que DEBES asignarle a tu profesor/a para que te evalúe el trabajo y te deje correcciones sin romperte el formato).</em></li>
+        <li>✏️ <strong>Editor (Editor):</strong> Tiene poder absoluto. Puede borrar, escribir y cambiar la estructura. <em>(Úsalo SOLO para los compañeros de tu grupo de trabajo).</em></li>
+      </ul>
+
+      <div style="display: flex; gap: 15px; margin: 25px 0; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 150px; text-align: center; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👁️</div>
+          <h4 style="margin: 0; color: #2c3e50;">Lector</h4>
+          <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 5px;">Solo visualización</p>
+        </div>
+        <div style="flex: 1; min-width: 150px; text-align: center; background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #3498db; box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);">
+          <div style="font-size: 3rem; margin-bottom: 10px;">💬</div>
+          <h4 style="margin: 0; color: #3498db;">Comentador</h4>
+          <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 5px;">Sugerencias y notas</p>
+        </div>
+        <div style="flex: 1; min-width: 150px; text-align: center; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <div style="font-size: 3rem; margin-bottom: 10px;">✏️</div>
+          <h4 style="margin: 0; color: #2c3e50;">Editor</h4>
+          <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 5px;">Control total</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section>
+      <h2>3. Dominando Google Docs (Guía para trabajos académicos)</h2>
+      <p>Un documento profesional no es solo "escribir texto". Debe tener una estructura que el ordenador pueda entender. Sigue estas normas fundamentales para la entrega de tus proyectos:</p>
+
+      <h3>A) Estructura Semántica (Títulos y Subtítulos)</h3>
+      <p>El error más común de los novatos es seleccionar un texto, ponerle tamaño 20 y ponerlo en negrita para hacer un título. <strong>¡Error!</strong> El procesador de textos no sabrá que eso es un título, pensará que es texto normal grande.</p>
+      <p>Para estructurar correctamente el documento, usa el menú desplegable que pone "Texto Normal" en la barra de herramientas y selecciona:</p>
+      <ul>
+        <li><strong>Título:</strong> Solo para el título principal del trabajo (la portada).</li>
+        <li><strong>Encabezado 1 (H1):</strong> Para los capítulos principales (ej. "Introducción", "Metodología").</li>
+        <li><strong>Encabezado 2 (H2):</strong> Para subapartados dentro de un capítulo.</li>
+      </ul>
+
+      <h3>B) Generación Automática del Índice</h3>
+      <p>Si has hecho bien el paso anterior (usar Encabezados 1 y 2), ¡felicidades!, te has ahorrado horas de trabajo. Ve a una página en blanco al principio del documento, pulsa en <strong>Insertar > Índice</strong>. El ordenador leerá todos tus "Encabezados" y creará el índice automáticamente con los números de página exactos. Si añades texto y las páginas se mueven, solo tienes que darle al botón de "Actualizar índice" y todo se recalculará solo.</p>
+
+      <div style="background: #eef2f5; padding: 20px; border-radius: 8px; margin: 25px 0; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap;">
+        
+        <!-- Left: Styles Menu -->
+        <div style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #ccc; width: 200px;">
+          <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px; text-transform: uppercase;">Estilos de párrafo</div>
+          <div style="padding: 8px; font-weight: bold; font-size: 1.4rem; border-bottom: 1px solid #eee;">Título</div>
+          <div style="padding: 8px; font-weight: bold; font-size: 1.1rem; border-bottom: 1px solid #eee;">Encabezado 1</div>
+          <div style="padding: 8px; font-weight: bold; font-size: 1rem; border-bottom: 1px solid #eee; margin-left: 10px;">Encabezado 2</div>
+          <div style="padding: 8px; font-size: 0.9rem; color: #555;">Texto normal</div>
+        </div>
+
+        <div style="font-size: 2rem; color: #3498db;">➡️</div>
+
+        <!-- Right: Generated Index -->
+        <div style="background: #fff; padding: 20px; border-radius: 6px; border: 1px solid #ccc; width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <h3 style="margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Índice</h3>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+            <span>1. Introducción</span> <span>p. 2</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; margin-left: 15px; color: #555;">
+            <span>1.1 Contexto</span> <span>p. 2</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+            <span>2. Escaleta de Radio</span> <span>p. 3</span>
+          </div>
+        </div>
+
+      </div>
+
+
+      <h3>C) Portadas y Saltos de Página</h3>
+      <p>Nunca le des a la tecla <code>Enter</code> 40 veces para pasar a la página siguiente. Eso rompe el documento si luego escribes arriba. Para crear una página nueva limpia (por ejemplo, para separar la Portada del Índice), usa el <strong>Salto de Página</strong> (<code>Ctrl + Enter</code> en el teclado, o Insertar > Salto > Salto de página).</p>
+      <p>Una buena portada debe tener: Nombre del proyecto, Nombre de los integrantes, Fecha y el Logo del instituto.</p>
+
+      <h3>D) Encabezados, Pies de Página y Numeración</h3>
+      <p>Haz doble clic en el margen superior (o inferior) de la hoja. Se abrirá el editor de Encabezado/Pie de página. Lo que escribas aquí (ej. "Proyecto de Inteligencia Artificial - TIC 2") se repetirá automáticamente en todas las páginas.</p>
+      <p>Para numerar las páginas, ve a <strong>Insertar > Números de página</strong>. Asegúrate de marcar la opción de que la primera página (la Portada) sea "diferente" o empiece en cero para que el número 1 real empiece en el Índice o Introducción.</p>
+
+      <div style="margin: 25px 0; text-align: center;">
+        <svg viewBox="0 0 300 400" style="max-width: 250px; width: 100%; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.15));">
+          <!-- Hoja A4 -->
+          <rect x="10" y="10" width="280" height="380" fill="white" stroke="#bdc3c7" stroke-width="2" rx="4"/>
+          
+          <!-- Margen superior (Encabezado) -->
+          <rect x="10" y="10" width="280" height="50" fill="#f8f9fa" rx="4"/>
+          <line x1="10" y1="60" x2="290" y2="60" stroke="#bdc3c7" stroke-dasharray="4"/>
+          <text x="150" y="40" fill="#95a5a6" font-size="12" font-family="sans-serif" text-anchor="middle">Zona de Encabezado (Repetitiva)</text>
+          
+          <!-- Contenido central -->
+          <rect x="30" y="90" width="240" height="10" fill="#ecf0f1" rx="2"/>
+          <rect x="30" y="110" width="200" height="10" fill="#ecf0f1" rx="2"/>
+          <rect x="30" y="140" width="240" height="150" fill="#e8f8f5" stroke="#1abc9c" stroke-dasharray="4" rx="2"/>
+          <text x="150" y="220" fill="#1abc9c" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">Contenido / Tablas / Fotos</text>
+
+          <!-- Margen inferior (Pie) -->
+          <line x1="10" y1="340" x2="290" y2="340" stroke="#bdc3c7" stroke-dasharray="4"/>
+          <rect x="10" y="340" width="280" height="50" fill="#f8f9fa" rx="4"/>
+          <text x="150" y="370" fill="#95a5a6" font-size="12" font-family="sans-serif" text-anchor="middle">Pie de Página (Paginación: pág 3)</text>
+        </svg>
+      </div>
+
+
+      <h3>E) Inserción de Imágenes y Tablas</h3>
+      <ul>
+        <li><strong>Imágenes:</strong> (Insertar > Imagen). Una vez insertada, haz clic sobre ella para decidir cómo se comporta con el texto (En línea, Ajustar texto o Delante del texto). Lo mejor para trabajos formales es centrarla en un párrafo independiente y añadirle siempre un pie de foto explicativo.</li>
+        <li><strong>Tablas:</strong> (Insertar > Tabla). Son perfectas para hacer cronogramas, presupuestos o la <em>escaleta de tiempo</em> de un guión de radio. Evita colorear cada celda a mano; haz clic derecho dentro de la tabla y selecciona propiedades para darle bordes elegantes.</li>
+      </ul>
+    </section>
+    
+    <div class="task-link">
+      <strong>🎯 Tarea vinculada: Guión Podcast sobre Inteligencia Artificial</strong>
+      <p style="text-align: left; margin-top: 15px; font-size: 1rem; color: #333;">
+        Vais a redactar el guión colaborativo de vuestro programa de radio. Uno de vosotros deberá crear el <strong>Google Docs</strong> y añadir al resto como <strong>Editores</strong> para poder redactarlo a la vez.<br><br>
+        <strong>Requisitos obligatorios que os corregiré usando la guía superior:</strong><br>
+        1. Documento con Portada (Título, Autores, Fecha).<br>
+        2. Índice automático generado con Encabezados.<br>
+        3. Páginas numeradas en el pie de página.<br>
+        4. Inserción de una tabla a modo de "Escaleta de tiempo" (con columnas para: Minuto, Quién habla, Qué dice, Música de fondo).<br>
+        5. Compartir el documento final con mi correo (<code>[correo de tu profesor/a]</code>) dándome permisos estricots de <strong>Comentador</strong>.
+      </p>
+    </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

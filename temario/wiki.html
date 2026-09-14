@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #2c3e50;
+      --accent: #e67e22;
+      --bg: #f8f9fa;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 800px; 
+      margin: auto; 
+      color: #333; 
+      background-color: var(--bg);
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.2rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    .header-img { margin-top: 20px; }
+    h2 { color: var(--primary); margin-top: 40px; border-left: 4px solid var(--primary); padding-left: 10px; }
+    h3 { color: var(--secondary); }
+    p { margin-bottom: 15px; font-size: 1.05rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.05rem; }
+    li { margin-bottom: 10px; }
+    code { background: #e9ecef; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-family: monospace; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .info-box { background: #fff; border: 1px solid #dee2e6; border-left: 5px solid var(--accent); padding: 20px; border-radius: 4px; margin: 25px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--accent); }
+    .task-link { margin-top: 40px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.1rem; color: #0056b3; border: 1px dashed #4a90e2; }
+  </style>
+</head>
+<body>
+
+  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+    <a href="../index.html" style="background-color: var(--primary, #4a90e2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
+      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
+    </a>
+  </div>
+
+
+    <header class="topic-header">
+      <h1>6. Entornos Wikis</h1>
+      <p class="subtitle">Comunidades de conocimiento y documentación colaborativa.</p>
+      
+    <div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));">🌍</div>
+    </header>
+
+    <div class="info-box" style="background-color: #e8f4f8; border-left-color: #3498db;">
+      <h3>📚 La Historia de Wikipedia</h3>
+      <p>Lanzada el 15 de enero de 2001 por Jimmy Wales y Larry Sanger, <strong>Wikipedia</strong> nació con el objetivo de recopilar todo el conocimiento humano de forma libre, gratuita y accesible para todos. En lugar de contratar a expertos, decidieron que <em>cualquier persona con internet</em> podría escribir y editar artículos.</p>
+      <p>Hoy en día es la mayor enciclopedia de la historia de la humanidad, con decenas de millones de artículos en más de 300 idiomas. Todo su inmenso ecosistema funciona sobre <strong>MediaWiki</strong>, un software libre y de código abierto (Open Source) creado específicamente para ella, y que ahora utilizan miles de empresas e instituciones para sus propias wikis internas.</p>
+    </div>
+    
+    <section>
+      <h2>El Concepto Wiki</h2>
+      <p>La palabra "Wiki" viene del hawaiano "wiki wiki", que significa "rápido". Fue ideado por el programador Ward Cunningham en 1995. Su filosofía radica en la agilidad: la documentación no la escribe un solo webmaster estático, sino una comunidad activa. Al igual que en Google Drive, las wikis guardan un <strong>historial de versiones</strong>, por lo que si alguien "vandaliza" una página, es muy fácil revertirla a su estado anterior.</p>
+    </section>
+
+    <section>
+      <h2>Guía de Edición (Sintaxis Estándar)</h2>
+      <p>Para escribir rápidamente en una wiki no solemos usar botones (como en Word), sino un <strong>lenguaje de marcado</strong> (Wikitexto o Markdown) que el sistema traduce automáticamente a diseño visual. Aquí tienes las etiquetas imprescindibles para tu trabajo:</p>
+      
+      <table style="width:100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem;">
+        <tr style="background-color: #2c3e50; color: white;">
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Elemento</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Código a escribir</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Resultado visual</th>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Negrita</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>'''Texto en negrita'''</code> o <code>**Texto**</code></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Texto en negrita</strong></td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Títulos (h1, h2)</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>== Título ==</code><br><code>=== Subtítulo ===</code></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><span style="font-size:1.2rem; font-weight:bold; border-bottom:1px solid #ccc;">Título</span></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Enlace Interno</strong> (A otra pág. de la wiki)</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[[Nombre de la página]]</code></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><a href="#" style="color:#0056b3;">Nombre de la página</a></td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Enlace Externo</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[https://www.incibe.es Web del INCIBE]</code></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><a href="#" style="color:#0056b3;">Web del INCIBE</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Imagen</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[[Archivo:foto.jpg|thumb|Texto alternativo]]</code></td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><em>(Muestra la imagen con un pie de foto)</em></td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>Tabla simple</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;">
+            <pre style="padding:5px; margin:0; font-size:0.8rem;">{| class="wikitable"
+|-
+! Columna 1 !! Columna 2
+|-
+| Dato A || Dato B
+|}</pre>
+          </td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><em>(Genera una tabla cuadriculada)</em></td>
+        </tr>
+      </table>
+    </section>
+    
+    <div class="task-link">
+      <strong>🎯 Tarea vinculada: Wiki Ciberseguridad</strong>
+      <p style="text-align: left; margin-top: 15px; font-size: 1rem; color: #333;">
+        En esta tarea crearás tu propia página sobre una temática de ciberseguridad dentro de la wiki de clase. <br>
+        <strong>Requisitos obligatorios que debes aplicar de la tabla superior:</strong>
+      </p>
+      <ul style="text-align: left; font-size: 0.95rem; color: #333; margin-bottom: 0;">
+        <li>Crear un <strong>Título</strong> principal y al menos un <strong>Subtítulo</strong>.</li>
+        <li>Resaltar los conceptos clave en <strong>negrita</strong>.</li>
+        <li>Incluir una <strong>imagen</strong> descriptiva.</li>
+        <li>Crear una <strong>tabla</strong> comparativa o de datos.</li>
+        <li>Añadir un <strong>enlace externo</strong> (fuente de información) y conectarlo a la portada mediante un <strong>enlace interno</strong>.</li>
+      </ul>
+    </div>
+  
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>
