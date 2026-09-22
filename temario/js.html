@@ -97,8 +97,76 @@ document.addEventListener('keydown', (evento) => {
 });</code></pre>
   </section>
 
+  <section>
+    <h2>4. Programación Orientada a Objetos (OOP)</h2>
+    <p>Hasta ahora hemos usado JavaScript de forma <strong>procedimental</strong>: instrucciones que se ejecutan una tras otra. Pero hay una forma más potente de organizar el código: la <strong>Orientación a Objetos (OOP)</strong>. En lugar de funciones sueltas, creamos <strong>Clases</strong> que son como plantillas para crear objetos con sus propias propiedades y comportamientos.</p>
+
+    <h3>La Clase: una Plantilla</h3>
+    <p>Imagina que tienes que crear varios aliens para el Hex Invaders. En lugar de repetir código para cada uno, defines una plantilla:</p>
+    <pre><code>// Definimos la plantilla (Clase)
+class Alien {
+  constructor(color, posicionX) {
+    // 'this' hace referencia al objeto que se va a crear
+    this.color = color;
+    this.posicionX = posicionX;
+    this.posicionY = 0; // Todos los aliens empiezan arriba
+    this.vivo = true;
+  }
+
+  // Método: acción que puede hacer el objeto
+  caer(velocidad) {
+    this.posicionY = this.posicionY + velocidad;
+  }
+
+  explotar() {
+    this.vivo = false;
+    console.log("¡El alien " + this.color + " ha sido destruido!");
+  }
+}</code></pre>
+
+    <h3>El Objeto: una instancia de la Clase</h3>
+    <p>Una vez tienes la plantilla, puedes crear tantos aliens como quieras con <code>new</code>:</p>
+    <pre><code>// Creamos objetos usando la clase como plantilla
+const alien1 = new Alien("#FF0000", 10);
+const alien2 = new Alien("#00FF00", 42);
+const alien3 = new Alien("#0000FF", 75);
+
+// Llamamos a los métodos de cada objeto
+alien1.caer(5);
+alien2.caer(5);
+
+// Cada alien recuerda su propio estado
+console.log(alien1.posicionY); // 5
+console.log(alien2.posicionY); // 5
+
+alien1.explotar(); // "¡El alien #FF0000 ha sido destruido!"</code></pre>
+
+    <h3>Herencia: Clases que extienden a otras</h3>
+    <p>Si quisieras un "Alien Jefe" que tenga todo lo del Alien normal pero además tenga el doble de vida, usarías <code>extends</code>:</p>
+    <pre><code>class AlienJefe extends Alien {
+  constructor(color, posicionX) {
+    super(color, posicionX); // Llama al constructor del padre
+    this.vida = 3; // El jefe necesita 3 impactos para morir
+  }
+
+  recibirImpacto() {
+    this.vida--;
+    if (this.vida <= 0) {
+      this.explotar();
+    } else {
+      console.log("¡El jefe resiste! Vida restante: " + this.vida);
+    }
+  }
+}
+
+const jefe = new AlienJefe("#FF00FF", 40);
+jefe.recibirImpacto(); // "¡El jefe resiste! Vida restante: 2"
+jefe.recibirImpacto(); // "¡El jefe resiste! Vida restante: 1"
+jefe.recibirImpacto(); // "¡El alien #FF00FF ha sido destruido!"</code></pre>
+  </section>
+
   <div class="task-link">
-    🎯 <strong>Tarea Profesional:</strong> Tarea 15 - SuperMario Move Move
+    🎯 <strong>Tarea Profesional:</strong> Tarea 14 - SuperMario Move Move
   </div>
 
   <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>

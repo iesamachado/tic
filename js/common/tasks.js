@@ -21,25 +21,32 @@ export const CLASSROOM_TASKS = [
     "description": "¡Grabando! Llevad vuestro guión al estudio (SUM) y convertidlo en magia. En esta tarea entregaréis el archivo MP3 máster de vuestro podcast.\n\nEl resultado debe sonar como en las grandes emisoras profesionales: aplicad filtros, reducción de ruido, ecualización y compresores en Audacity para que las voces suenen profundas y nítidas. \n\n⚠️ REQUISITOS ESTRICTOS: El máster final en MP3 debe durar EXACTAMENTE 5 MINUTOS. Ni un segundo más, ni un segundo menos. Entregad también un 'Manual de Ingeniero de Sonido' (PDF con capturas) explicando cómo habéis limpiado el audio. Nombrad los archivos exactamente como se indica: ApellidosNombre_Tarea3.mp3 y ApellidosNombre_Tarea3.pdf\n\n📌 Criterio a evaluar: CE 4.1."
   },
   {
-    "id": "4",
+    "id": "Game_CC",
     "title": "Juego: Radio Trivial CC",
     "block": "B",
     "crit": "4.1",
     "description": "🎙️ Radio Trivial CC. Estás produciendo el podcast de la radio escolar. Responde al trivial para saber qué música o efectos puedes usar legalmente.\n\n📌 Criterio a evaluar: CE 4.1."
   },
   {
-    "id": "5",
+    "id": "4",
     "title": "Desarrollo de la Web Oficial de la Cadena",
     "block": "B",
+    "crit": "3.1, 2.2",
+    "description": "Un programa líder de audiencia necesita una plataforma digital a su altura. Desarrollad la web oficial de vuestro podcast usando WordPress.com (plan gratuito).\n\n⚠️ REQUISITOS TÉCNICOS Y DE CONTENIDO:\n1. **Páginas y Entradas:** Debéis crear tanto Páginas estáticas (ej. 'Sobre nosotros') como Entradas de blog organizadas obligatoriamente por **Categorías**.\n2. **Redacción:** Cada miembro del equipo debe redactar y publicar al menos **2 entradas distintas** sobre la temática del podcast.\n3. **Identidad Visual:** Diseñad un Logotipo Horizontal para la cabecera de la web y un Logotipo Cuadrado para los perfiles de redes sociales.\n4. **Estructura:** Menú de navegación claro, iconos enlazados a vuestras redes sociales, y dejad un espacio/página reservado para incrustar el reproductor del podcast en el futuro.\n5. **Permisos de Redacción:** Añadid a todos los miembros y al Director ([correo de tu profesor/a]) como usuarios con permisos de escritura. Esto es vital para que quede registrado el autor real de cada entrada.\n6. **Visibilidad:** La web debe ser 100% PÚBLICA. Comprobad que se puede navegar por ella abriéndola en una ventana de incógnito.\n\nENTREGABLE: Entregad la URL pública del WordPress (si subís un documento con la URL, nombradlo EXACTAMENTE ApellidosNombre_Tarea4.pdf). ¡Cualquier enlace roto baja la audiencia!\n\n⚠️ PRIVACIDAD: Se evaluará que **ningún miembro del equipo aparezca con su nombre completo** en la web pública y que la web tenga una **Política de Privacidad** básica.\n\n📌 Criterios a evaluar: CE 3.1 y CE 2.2."
+  },
+  {
+    "id": "5",
+    "title": "SEO y Analytics",
+    "block": "B",
     "crit": "3.1",
-    "description": "Un programa líder de audiencia necesita una plataforma digital a su altura. Desarrollad la web oficial de vuestro podcast usando WordPress.com (plan gratuito).\n\n⚠️ REQUISITOS TÉCNICOS Y DE CONTENIDO:\n1. **Páginas y Entradas:** Debéis crear tanto Páginas estáticas (ej. 'Sobre nosotros') como Entradas de blog organizadas obligatoriamente por **Categorías**.\n2. **Redacción:** Cada miembro del equipo debe redactar y publicar al menos **2 entradas distintas** sobre la temática del podcast.\n3. **Identidad Visual:** Diseñad un Logotipo Horizontal para la cabecera de la web y un Logotipo Cuadrado para los perfiles de redes sociales.\n4. **Estructura:** Menú de navegación claro, iconos enlazados a vuestras redes sociales, y dejad un espacio/página reservado para incrustar el reproductor del podcast en el futuro.\n5. **Permisos de Redacción:** Añadid a todos los miembros y al Director ([correo de tu profesor/a]) como usuarios con permisos de escritura. Esto es vital para que quede registrado el autor real de cada entrada.\n6. **Visibilidad:** La web debe ser 100% PÚBLICA. Comprobad que se puede navegar por ella abriéndola en una ventana de incógnito.\n\nENTREGABLE: Entregad la URL pública del WordPress (si subís un documento con la URL, nombradlo EXACTAMENTE ApellidosNombre_Tarea5.pdf). ¡Cualquier enlace roto baja la audiencia!\n\n📌 Criterio a evaluar: CE 3.1."
+    "description": "Optimiza la web del podcast para que aparezca en la primera página de Google. Mejora títulos, metas, URLs y alt-text para escalar posiciones en el ranking.\n\n📌 Criterio a evaluar: CE 3.1."
   },
   {
     "id": "6",
     "title": "Marketing: Campaña de Difusión Nacional",
     "block": "B",
-    "crit": "2.2",
-    "description": "¡Salgamos a vender el programa! Diseñad una agresiva campaña de publicidad física y digital para reventar las audiencias en el estreno.\n\nEn un documento PDF, detallad la estrategia física (cartelería urbana, pegatinas) y virtual (campañas en redes sociales). Adjuntad un archivo ZIP con todas las imágenes y creatividades diseñadas. \n\n⚠️ CONTROL DE CALIDAD: La resolución (ppi) en GIMP debe ser profesional para imprenta. Nomenclatura estricta: Los archivos a entregar deben llamarse ApellidosNombre_Tarea6.pdf y ApellidosNombre_Tarea6.zip. ¡Si el diseño está pixelado, la campaña fracasa!\n\n📌 Criterio a evaluar: CE 2.2."
+    "crit": "3.1",
+    "description": "¡Salgamos a vender el programa! Diseñad una agresiva campaña de publicidad física y digital para reventar las audiencias en el estreno.\n\nEn un documento PDF, detallad la estrategia física (cartelería urbana, pegatinas) y virtual (campañas en redes sociales). Adjuntad un archivo ZIP con todas las imágenes y creatividades diseñadas. \n\n⚠️ CONTROL DE CALIDAD: La resolución (ppi) en GIMP debe ser profesional para imprenta. Nomenclatura estricta: Los archivos a entregar deben llamarse ApellidosNombre_Tarea6.pdf y ApellidosNombre_Tarea6.zip. ¡Si el diseño está pixelado, la campaña fracasa! Tened especial cuidado con los datos personales de los miembros del equipo en la campaña.\n\n📌 Criterio a evaluar: CE 3.1."
   },
   {
     "id": "7",
@@ -70,42 +77,49 @@ export const CLASSROOM_TASKS = [
     "description": "Registrarse para obtener el UVUS. Entregar: Captura de pantalla donde se vea mi identificador y que he conseguido registrarme, y captura de pantalla donde se vea el correo empleado. Entrar en gid.us.es para probar el UVUS.\n\n📌 Criterio a evaluar: CE 2.1."
   },
   {
-    "id": "11",
+    "id": "Game_Cert",
     "title": "Juego: Certificado Arcade",
     "block": "C",
     "crit": "2.1",
     "description": "🎮 Certificado Arcade. Acompaña a nuestro personaje a sacarse el Certificado Digital en la vida real.\n\n📌 Criterio a evaluar: CE 2.1."
   },
   {
-    "id": "12",
+    "id": "11",
     "title": "Mi primera web en html",
     "block": "A",
     "crit": "3.1",
     "description": "Haz una web con dos páginas mínimo. Una presentandote sin dar datos personales tuyos y otra con tu horario en una tabla. Debe haber: lista, imagen, tabla, párrafos, negritas, enlaces externos e internos, h1 y h2. Subir a Github. Entregar URL del proyecto en github y URL de la web visible.\n\n📌 Criterio a evaluar: CE 3.1."
   },
   {
-    "id": "13",
+    "id": "12",
+    "title": "Accesibilidad WCAG",
+    "block": "A",
+    "crit": "3.1",
+    "description": "Audita tu primera web con WAVE y el checklist WCAG: alt text, contraste, navegación por teclado, etiquetas de formulario y texto de enlaces descriptivo.\n\n📌 Criterio a evaluar: CE 3.1."
+  },
+  {
+    "id": "Game_Hex",
     "title": "Juego: Hex Invaders",
     "block": "A",
     "crit": "3.1",
     "description": "👾 Hex Invaders. Practica la teoría del color web disparando a los marcianos leyendo su código CSS Hexadecimal.\n\n📌 Criterio a evaluar: CE 3.1."
   },
   {
-    "id": "14",
+    "id": "13",
     "title": "SuperMarioBros",
     "block": "A",
     "crit": "5.1",
     "description": "Tarea en github. Ubica con display absolute las imagenes de la pantalla del supermario del proyecto de ejemplo.\n\n📌 Criterio a evaluar: CE 5.1."
   },
   {
-    "id": "15",
+    "id": "14",
     "title": "SuperMario Move Move",
     "block": "A",
     "crit": "5.3",
     "description": "Añadiremos código JS. Descarga el proyecto de github classroom. En move.js añade el texto para mover a Mario. Descomentar línea en index.html. Probar de mover algún otro personaje, hacer que vaya mas rápido...\n\n📌 Criterio a evaluar: CE 5.3."
   },
   {
-    "id": "16",
+    "id": "15",
     "title": "Crea tu App",
     "block": "A",
     "crit": "5.1, 5.2, 5.3",

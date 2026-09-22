@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - Ingeniería del Software: Del Problema a la App</title>
+  <style>
+    :root {
+      --primary: #2980b9; /* azul ingeniería */
+      --secondary: #2c3e50;
+      --accent: #27ae60; /* verde proceso */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .info-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .agile-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: var(--secondary); color: white; }
+  </style>
+</head>
+<body>
+  <div style="text-align: right; margin-bottom: 20px;">
+    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
+  </div>
+
+  <h1>14. Ingeniería del Software: Del Problema a la App</h1>
+  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Diseña antes de programar: análisis de requisitos, mockups, casos de uso y testing.</p>
+
+  <section>
+    <h2>1. ¿Qué es la Ingeniería del Software?</h2>
+    <div class="info-card">
+      <p>Existe una gran diferencia entre "programar" (escribir código) e "Ingeniería del Software" (el proceso completo de crear un producto profesional).</p>
+      <p><strong>Analogía:</strong> Un albañil puede poner ladrillos, pero un arquitecto diseña el plano antes. Un ingeniero de software no empieza a programar sin requisitos y diseño previo.</p>
+      <h3>El Ciclo de Vida del Software (SDLC)</h3>
+      <ol>
+        <li><strong>Análisis:</strong> ¿Qué debe hacer la app?</li>
+        <li><strong>Diseño:</strong> ¿Cómo se verá y cómo funcionará?</li>
+        <li><strong>Codificación:</strong> Escribir el código (o pedirlo a la IA).</li>
+        <li><strong>Pruebas (Testing):</strong> Comprobar que funciona.</li>
+        <li><strong>Despliegue:</strong> Publicar la app en internet.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Metodologías de Desarrollo</h2>
+    <p>Históricamente, el software se hacía en <strong>Cascada (Waterfall)</strong>: un paso después del otro. Si en las pruebas descubrías un error, tenías que volver al principio. (Ej. Proyectos de la NASA en los 70).</p>
+    
+    <div class="agile-card">
+      <h3>Metodologías Ágiles (Agile & Scrum)</h3>
+      <p>Hoy se trabaja de forma <strong>iterativa e incremental</strong>. En lugar de hacer un plan gigante, se hacen versiones pequeñas (Sprints) cada pocas semanas.</p>
+      <ul>
+        <li><strong>Product Owner:</strong> El dueño de la visión (o cliente).</li>
+        <li><strong>Scrum Master:</strong> El facilitador del equipo.</li>
+        <li><strong>Kanban:</strong> El tablero visual (To-Do, Doing, Done) que usasteis en la Tarea 1.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Análisis de Requisitos y User Stories</h2>
+    <p>Los requisitos se dividen en:</p>
+    <ul>
+      <li><strong>Funcionales:</strong> QUÉ hace la app (ej. "El usuario puede iniciar sesión con Google").</li>
+      <li><strong>No Funcionales:</strong> CÓMO lo hace (ej. "Debe cargar en menos de 3 segundos").</li>
+    </ul>
+
+    <h3>Historias de Usuario (User Stories)</h3>
+    <p>Para no escribir manuales técnicos aburridos, usamos este formato:</p>
+    <pre><code>Como [tipo de usuario], quiero [función] para [objetivo].</code></pre>
+    <p><strong>Ejemplo:</strong> "Como jugador, quiero ver mi puntuación guardada para saber si he mejorado respecto a mi récord anterior."</p>
+  </section>
+
+  <section>
+    <h2>4. Mockups y Casos de Uso</h2>
+    <p>Un <strong>Mockup</strong> o <strong>Wireframe</strong> es un boceto visual de la app. Sirve para detectar problemas antes de perder tiempo programando. Puedes usar <em>Figma</em>, <em>Canva</em> o incluso papel y lápiz.</p>
+    
+    <h3>Casos de Uso</h3>
+    <p>Descripción detallada de cómo un usuario interactúa con la app para lograr algo:</p>
+    <table>
+      <tr>
+        <th>Nombre</th>
+        <td>Iniciar sesión en la App</td>
+      </tr>
+      <tr>
+        <th>Actor</th>
+        <td>Jugador invitado</td>
+      </tr>
+      <tr>
+        <th>Precondiciones</th>
+        <td>Estar en la pantalla principal sin sesión iniciada.</td>
+      </tr>
+      <tr>
+        <th>Flujo principal</th>
+        <td>1. El usuario pulsa "Login con Google".<br>2. Se abre ventana emergente de Firebase.<br>3. El usuario elige su cuenta.<br>4. La app lo saluda por su nombre.</td>
+      </tr>
+      <tr>
+        <th>Postcondiciones</th>
+        <td>El estado pasa a "logeado" y puede guardar partida.</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>5. Testing — Pruebas de Software</h2>
+    <p>El código generado por IA no es perfecto. Hay que probarlo sistemáticamente. Si falla, hay que crear un <strong>Bug Report</strong> (Issue en GitHub) indicando los pasos para reproducirlo y el resultado esperado.</p>
+  </section>
+
+  <div class="task-link">
+    🎯 <strong>Tarea Profesional:</strong> Tarea A1 - El Blueprint de tu App
+  </div>
+
+  <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>

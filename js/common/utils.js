@@ -247,6 +247,46 @@ export const TOPICS = {
     icon: '🚀',
     htmlPath: 'temario/js_advanced.html',
     color: '#8e44ad'
+  },
+  topic_algoritmos: {
+    id: 'topic_algoritmos',
+    name: '13. Algoritmos y Pseudocódigo',
+    description: 'Diagramas de flujo y Depuración',
+    icon: '🔀',
+    htmlPath: 'temario/algoritmos.html',
+    color: '#16a085'
+  },
+  topic_ingenieria: {
+    id: 'topic_ingenieria',
+    name: '14. Ingeniería del Software',
+    description: 'Ciclo de vida, Requisitos y Testing',
+    icon: '📐',
+    htmlPath: 'temario/ingenieria.html',
+    color: '#2980b9'
+  },
+  topic_industria: {
+    id: 'topic_industria',
+    name: '15. Industria del Software',
+    description: 'Transformación digital y Sesgos IA',
+    icon: '🏭',
+    htmlPath: 'temario/industria.html',
+    color: '#e67e22'
+  },
+  topic_seo: {
+    id: 'topic_seo',
+    name: '16. SEO y Analítica Web',
+    description: 'Posicionamiento y Search Console',
+    icon: '🔎',
+    htmlPath: 'temario/seo.html',
+    color: '#27ae60'
+  },
+  topic_accesibilidad: {
+    id: 'topic_accesibilidad',
+    name: '17. Accesibilidad Web (WCAG)',
+    description: 'Diseño para todos y validación WAVE',
+    icon: '♿',
+    htmlPath: 'temario/accesibilidad.html',
+    color: '#1abc9c'
   }
 };
 
@@ -264,13 +304,13 @@ export const GAMES_CRITERIA_MAPPING = {
 
 export const CYR_EVALUATION_DATA = {
   2: [
-    { crit: '1.1', text: 'Analizar y valorar el impacto de la industria de desarrollo de software en la sociedad actual.', block: 'A. Desarrollo de Software', current: '-', prop: '-' },
+    { crit: '1.1', text: 'Analizar y valorar el impacto de la industria de desarrollo de software en la sociedad actual.', block: 'A. Desarrollo de Software', current: '-', prop: 'Podcast IA' },
     { crit: '2.1', text: 'Emplear medidas de seguridad informática necesarias.', block: 'C. Seguridad Informática', current: 'Certificado Arcade', prop: 'Wiki Ciberseguridad, UVUS' },
-    { crit: '2.2', text: 'Proteger la privacidad en Internet.', block: 'C. Seguridad Informática', current: '-', prop: 'Wiki Ciberseguridad' },
-    { crit: '3.1', text: 'Elaborar y publicar contenidos en la web.', block: 'B. Publicación de contenidos', current: '-', prop: 'Web HTML, WordPress, Guión Podcast, Hex Invaders' },
-    { crit: '4.1', text: 'Trabajar colaborativamente respetando los derechos de autor.', block: 'B. Publicación de contenidos', current: 'CC Trivial', prop: 'Podcast Audacity, Ivoox/Spotify' },
-    { crit: '5.1', text: 'Desarrollar una variedad de aplicaciones informáticas.', block: 'A. Desarrollo de Software', current: '-', prop: 'SuperMario Move Move, Crea tu App' },
+    { crit: '2.2', text: 'Proteger la privacidad en Internet.', block: 'C. Seguridad Informática', current: '-', prop: 'Wiki Ciberseguridad, Web WordPress' },
+    { crit: '3.1', text: 'Elaborar y publicar contenidos en la web.', block: 'B. Publicación de contenidos', current: '-', prop: 'Web WordPress, SEO y Analytics, Marketing GIMP, Web HTML, Accesibilidad WCAG, Hex Invaders' },
+    { crit: '4.1', text: 'Trabajar colaborativamente respetando los derechos de autor.', block: 'B. Publicación de contenidos', current: 'CC Trivial', prop: 'Audacity, Subida iVoox' },
+    { crit: '5.1', text: 'Desarrollar una variedad de aplicaciones informáticas.', block: 'A. Desarrollo de Software', current: '-', prop: 'SuperMarioBros, Crea tu App' },
     { crit: '5.2', text: 'Aplicar los principales pasos del ciclo de vida de una aplicación.', block: 'A. Desarrollo de Software', current: '-', prop: 'Tablero Kanban, Crea tu App' },
-    { crit: '5.3', text: 'Analizar y resolver problemas de tratamiento de la información.', block: 'A. Desarrollo de Software', current: '-', prop: 'Crea tu App' }
+    { crit: '5.3', text: 'Analizar y resolver problemas de tratamiento de la información.', block: 'A. Desarrollo de Software', current: '-', prop: 'SuperMario Move Move, Crea tu App' }
   ]
 };

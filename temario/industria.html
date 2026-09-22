@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Temario TIC2 - La Industria del Software</title>
+  <style>
+    :root {
+      --primary: #e67e22; /* naranja industria */
+      --secondary: #2c3e50;
+      --accent: #8e44ad; /* morado IA */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .story-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .risk-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  </style>
+</head>
+<body>
+  <div style="text-align: right; margin-bottom: 20px;">
+    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
+  </div>
+
+  <h1>15. La Industria del Software</h1>
+  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Del Blockbuster al Netflix, de los taxis al algoritmo: cómo el software reescribe el mundo.</p>
+
+  <section>
+    <h2>1. Transformación Digital: Morir o Adaptarse</h2>
+    <div class="story-card">
+      <p><strong>Transformación digital</strong> no es usar ordenadores en lugar de papel; es repensar los modelos de negocio aprovechando la tecnología.</p>
+      <ul>
+        <li><strong>Blockbuster vs Netflix:</strong> En el año 2000, Blockbuster rechazó comprar Netflix por 50 millones. En 2010, Blockbuster quebró. Hoy Netflix vale más de 200.000 millones. Netflix entendió que el negocio no era alquilar cintas físicas, sino distribuir contenido.</li>
+        <li><strong>Taxis vs Uber:</strong> Mismo servicio, distinto modelo. Uber introdujo el algoritmo de asignación, tarificación dinámica y reputación (estrellas).</li>
+        <li><strong>Propiedad vs Acceso:</strong> Spotify cambió la idea de "comprar" un CD por pagar por el "acceso" a 80 millones de canciones.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Innovación y Tecnologías Disruptivas</h2>
+    <ul>
+      <li><strong>Inteligencia Artificial:</strong> No solo texto e imágenes. AlphaFold de DeepMind resolvió en 2021 la estructura de las proteínas, un problema que la biología llevaba 50 años sin resolver.</li>
+      <li><strong>Blockchain:</strong> Más allá del Bitcoin, se usa para trazabilidad alimentaria, contratos inteligentes y votaciones verificables.</li>
+      <li><strong>Economía de plataformas:</strong> Las App Stores democratizaron el software: un solo estudiante hoy puede publicar una app que llegue a millones de personas sin intermediarios.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Perfiles Profesionales Emergentes</h2>
+    <p>El sector tecnológico tiene desempleo cero. Las profesiones del futuro ya están aquí:</p>
+    <ul>
+      <li><strong>Desarrollador/a Full-Stack:</strong> Crea la web visible (frontend) y la base de datos (backend).</li>
+      <li><strong>Data Scientist:</strong> Extrae conocimiento a partir del Big Data para tomar decisiones.</li>
+      <li><strong>Especialista en Ciberseguridad:</strong> Altamente demandado para proteger a administraciones y empresas de ataques.</li>
+      <li><strong>Prompt Engineer:</strong> Diseña flujos de trabajo dictando instrucciones precisas a la IA generativa.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Los Riesgos: Cuando los Algoritmos Se Equivocan</h2>
+    <div class="risk-card">
+      <h3>Sesgos Algorítmicos y Discriminación</h3>
+      <p>En 2018, un algoritmo de RRHH de Amazon aprendió a descartar currículums de mujeres. ¿Por qué? Porque la IA se entrenó con los datos de contrataciones de los últimos 10 años, donde la mayoría eran hombres. <strong>La IA amplificó el sexismo histórico de los humanos.</strong></p>
+      
+      <h3>Burbujas de Filtro (Filter Bubbles)</h3>
+      <p>El algoritmo de YouTube o TikTok está diseñado para maximizar tu tiempo en pantalla. Para ello, te muestra contenido que reafirma lo que ya piensas. Consecuencia: polarización política extrema y aislamiento de opiniones contrarias.</p>
+
+      <h3>La Caja Negra</h3>
+      <p>Si un algoritmo del banco te deniega un crédito, tienes derecho a saber por qué (RGPD). El problema es que muchas redes neuronales son "cajas negras": ni sus creadores saben explicar el camino matemático exacto que llevó a la decisión.</p>
+    </div>
+  </section>
+
+  <div class="task-link">
+    🎯 <strong>Tarea Profesional:</strong> Episodio Podcast — "La industria digital: oportunidades y riesgos"
+  </div>
+
+  <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
+</body>
+</html>
