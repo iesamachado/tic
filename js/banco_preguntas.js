@@ -286,7 +286,7 @@ window.deletePregunta = async (id) => {
       console.error(e);
       showToast('Error al borrar', 'error');
     }
-  }
+  });
 };
 
 async function deleteSelected() {

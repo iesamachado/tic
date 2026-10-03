@@ -65,11 +65,11 @@ function setupEventListeners() {
   });
   
   ui.btnFinish.addEventListener('click', () => {
-    window.location.href = '../dashboard_student.html';
+    window.history.length > 1 ? window.history.back() : window.close();
   });
   
   ui.btnQuit.addEventListener('click', () => {
-    window.location.href = '../dashboard_student.html';
+    window.history.length > 1 ? window.history.back() : window.close();
   });
 }
 
@@ -81,6 +81,8 @@ function loadLevel(index) {
   
   // Limpiar input y output
   ui.sqlInput.value = '';
+  ui.sqlInput.disabled = false;
+  ui.btnExecute.disabled = false;
   if (level.isInjectionLevel) {
     ui.sqlInput.placeholder = "Ejemplo de input: password' OR '1'='1";
   } else {
@@ -143,7 +145,14 @@ function executeQuery() {
     
     // Validar si resolvió el nivel
     if (level.validate(res)) {
-      handleLevelComplete(level);
+      ui.sqlInput.disabled = true;
+      ui.btnExecute.disabled = true;
+      logOutput("[!] OBJETIVO CONSEGUIDO. Analizando datos...", false);
+      setTimeout(() => {
+        handleLevelComplete(level);
+      }, 2500); // 2.5 segundos para que el alumno pueda ver la tabla
+    } else {
+      logOutput("[SISTEMA] Los resultados de la consulta no cumplen con los objetivos de la misión. Sigue intentándolo.", true);
     }
   } catch (err) {
     logError(err.message);
@@ -214,10 +223,10 @@ async function handleLevelComplete(level) {
     // Guardar puntuación en DB
     try {
       if (classId) {
-        await saveGameResult(currentUser.uid, 'databreach', classId, 100, {});
+        await saveGameResult('databreach', currentUser.uid, classId, 250, {});
       }
       // Gamificación
-      const result = await addPointsAndCheckLogros(currentUser.uid, 100);
+      const result = await addPointsAndCheckLogros(currentUser.uid, 250);
       await awardMedal(currentUser.uid, 'hacker_novato');
       await awardMedal(currentUser.uid, 'first_blood'); // Quizás sea su primer reto
       

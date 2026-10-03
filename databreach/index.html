@@ -78,8 +78,9 @@
     <div class="db-modal-content">
       <h2 style="color: var(--success); margin-bottom: 20px;">[ ACCESO CONCEDIDO ]</h2>
       <p id="success-msg">Has logrado recuperar los datos.</p>
-      <div style="margin-top: 30px;">
-        <button id="btn-next-level" class="db-btn">CONTINUAR AL SIGUIENTE NIVEL</button>
+      <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+        <button id="btn-next-level" class="db-btn">CONTINUAR</button>
+        <button onclick="window.history.length > 1 ? window.history.back() : window.close()" class="db-btn db-btn-danger" style="background:transparent; border:1px solid var(--error); color:var(--error);">SALIR</button>
       </div>
     </div>
   </div>
@@ -91,7 +92,7 @@
       <p>Has encontrado todas las vulnerabilidades críticas del sistema.</p>
       <p style="margin-top: 10px; color: var(--text-muted);">Puntuación guardada exitosamente.</p>
       <div style="margin-top: 30px;">
-        <button id="btn-finish" class="db-btn">VOLVER AL PANEL</button>
+        <button id="btn-finish" class="db-btn">SALIR AL PANEL</button>
       </div>
     </div>
   </div>

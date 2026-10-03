@@ -163,6 +163,18 @@ body {
   display: block;
 }
 
+
+.kanban-task[data-status="testing"] {
+  background: #f4ecf7;
+  border-left-color: #9b59b6;
+}
+.kanban-task[data-status="testing"] .task-progress-bar {
+  display: block;
+}
+.kanban-task[data-status="testing"] .task-progress-fill {
+  background: #9b59b6;
+}
+
 .kanban-task[data-status="done"] {
   background: #e8f5e9;
   border-left-color: #27ae60;

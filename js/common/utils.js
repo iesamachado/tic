@@ -137,9 +137,6 @@ export const GAMES = {
     color: '#00d4ff',
     colorDark: '#008bbf'
   },
-  kanban_hero: {
-    '2º Bachillerato': 'TIC2.5.2 (Metodologías de desarrollo)'
-  },
   cc_trivial: {
     id: 'cc_trivial',
     name: 'Radio Trivial CC',

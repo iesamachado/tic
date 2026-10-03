@@ -1,16 +1,19 @@
 import { requireAuth } from '../../js/common/auth.js';
 import { addPointsAndCheckLogros, awardMedal } from '../../js/common/gamification.js';
 import { showToast } from '../../js/common/ui.js';
-import { $ } from '../../js/common/utils.js';
+import { $, getUrlParams } from '../../js/common/utils.js';
+import { saveGameResult } from '../../js/common/db.js';
 
 let currentUser = null;
 let currentProfile = null;
+let classId = null;
 
 // Configuración del Juego
 const GAME_TIME = 60;
 const WIP_LIMIT = 3;
 const TODO_LIMIT = 6;
-const POINTS_PER_TASK = 100;
+const TESTING_WIP_LIMIT = 2;
+const POINTS_PER_TASK = 15;
 
 // Estado del Juego
 let score = 0;
@@ -26,6 +29,7 @@ let tasksData = {}; // { id: { progress: 0, required: 100, isReady: false } }
 const zoneTodo = $('zone-todo');
 const zoneDoing = $('zone-doing');
 const zoneDone = $('zone-done');
+const zoneTesting = $('zone-testing');
 const scoreDisplay = $('score-display');
 const timerDisplay = $('timer-display');
 const todoCountDisplay = $('todo-count-display');
@@ -49,6 +53,7 @@ requireAuth({
   onAuthorized: (user, profile) => {
     currentUser = user;
     currentProfile = profile;
+    classId = getUrlParams().classId || null;
     $('btn-start').addEventListener('click', startGame);
   }
 });
@@ -66,6 +71,7 @@ function startGame() {
   zoneTodo.innerHTML = '';
   zoneDoing.innerHTML = '';
   zoneDone.innerHTML = '';
+  zoneTesting.innerHTML = '';
   updateHUD();
 
   // Spawner inicial
@@ -96,12 +102,14 @@ async function saveScore() {
   if (score === 0) return;
   
   try {
+    await saveGameResult('kanban_hero', currentUser.uid, classId, score, {});
     const res = await addPointsAndCheckLogros(currentUser.uid, score, null, 'tic2_users');
     
-    // Medallas específicas
-    await awardMedal(currentUser.uid, 'kanban_master');
-    if (score >= 1000) {
-      await awardMedal(currentUser.uid, 'kanban_master_oro');
+    // Medallas específicas del juego
+    await awardMedal(currentUser.uid, 'first_blood');
+    await awardMedal(currentUser.uid, 'agilista');
+    if (score >= 150) {
+      await awardMedal(currentUser.uid, 'productividad_extrema');
     }
 
     if (res && res.leagueUp) {
@@ -126,7 +134,7 @@ function spawnTask() {
   // Required progress entre 2 y 5 segundos (20 a 50 ticks)
   const reqProgress = Math.floor(Math.random() * 30) + 20;
   
-  tasksData[id] = { progress: 0, required: reqProgress, isReady: false };
+  tasksData[id] = { doingProgress: 0, testingProgress: 0, required: reqProgress, isReadyDoing: false, isReadyTesting: false };
 
   const el = document.createElement('div');
   el.className = 'kanban-task';
@@ -167,6 +175,13 @@ function gameLoop() {
       endGame('El tiempo del Sprint se ha agotado.', true);
       return;
     }
+
+    // Aumentar dificultad drásticamente de forma segura
+    if (timeLeft === 50) { clearInterval(spawnerInterval); spawnerInterval = setInterval(spawnTask, 2500); }
+    if (timeLeft === 40) { clearInterval(spawnerInterval); spawnerInterval = setInterval(spawnTask, 1800); }
+    if (timeLeft === 30) { clearInterval(spawnerInterval); spawnerInterval = setInterval(spawnTask, 1200); }
+    if (timeLeft === 20) { clearInterval(spawnerInterval); spawnerInterval = setInterval(spawnTask, 800); }
+    if (timeLeft === 10) { clearInterval(spawnerInterval); spawnerInterval = setInterval(spawnTask, 400); }
   }
 
   // Procesar tareas en Doing
@@ -174,27 +189,37 @@ function gameLoop() {
     const id = taskEl.id;
     const data = tasksData[id];
     
-    if (!data.isReady) {
-      data.progress++;
-      const pct = (data.progress / data.required) * 100;
+    if (!data.isReadyDoing) {
+      data.doingProgress++;
+      const pct = (data.doingProgress / data.required) * 100;
       taskEl.querySelector('.task-progress-fill').style.width = pct + '%';
       
-      if (data.progress >= data.required) {
-        data.isReady = true;
+      if (data.doingProgress >= data.required) {
+        data.isReadyDoing = true;
         taskEl.classList.add('ready');
       }
     }
   });
 
-  // Aumentar dificultad
-  if (timeLeft === 40 && spawnerInterval) {
-    clearInterval(spawnerInterval);
-    spawnerInterval = setInterval(spawnTask, 3000);
-  }
-  if (timeLeft === 20 && spawnerInterval) {
-    clearInterval(spawnerInterval);
-    spawnerInterval = setInterval(spawnTask, 2000);
-  }
+  // Procesar tareas en Testing
+  Array.from(zoneTesting.children).forEach(taskEl => {
+    const id = taskEl.id;
+    const data = tasksData[id];
+    
+    if (!data.isReadyTesting) {
+      data.testingProgress++;
+      const testReq = Math.max(10, Math.floor(data.required / 2));
+      const pct = (data.testingProgress / testReq) * 100;
+      taskEl.querySelector('.task-progress-fill').style.width = pct + '%';
+      
+      if (data.testingProgress >= testReq) {
+        data.isReadyTesting = true;
+        taskEl.classList.add('ready');
+      }
+    }
+  });
+
+
 }
 
 function updateHUD() {
@@ -255,24 +280,24 @@ document.querySelectorAll('.kanban-column').forEach(col => {
 
     // Reglas de Kanban
     
-    // 1. A Todo: Se puede devolver, pero reinicia el progreso
+    // 1. A Todo desde Doing: Se puede devolver, pero reinicia el progreso
     if (targetStatus === 'todo' && currentStatus === 'doing') {
       zoneTodo.appendChild(draggedTask);
       draggedTask.setAttribute('data-status', 'todo');
-      data.progress = 0;
+      data.doingProgress = 0;
       draggedTask.querySelector('.task-progress-fill').style.width = '0%';
       draggedTask.classList.remove('ready');
-      data.isReady = false;
+      data.isReadyDoing = false;
       updateHUD();
       return;
     }
 
-    // 2. A Doing: WIP Limit check
+    // 2. A Doing desde Todo
     if (targetStatus === 'doing' && currentStatus === 'todo') {
       if (zoneDoing.children.length >= WIP_LIMIT) {
-        showToast('Límite WIP Excedido', `Solo puedes tener ${WIP_LIMIT} tareas en Doing al mismo tiempo.`, 'warning', 2000);
+        showToast('Límite WIP Excedido', `Solo puedes tener ${WIP_LIMIT} tareas en Doing.`, 'warning', 2000);
         draggedTask.classList.add('shake');
-        return; // Rebota
+        return;
       }
       zoneDoing.appendChild(draggedTask);
       draggedTask.setAttribute('data-status', 'doing');
@@ -280,24 +305,41 @@ document.querySelectorAll('.kanban-column').forEach(col => {
       return;
     }
 
-    // 3. A Done: Solo si está ready
-    if (targetStatus === 'done' && currentStatus === 'doing') {
-      if (!data.isReady) {
-        showToast('Tarea Incompleta', 'La tarea aún no ha terminado de procesarse.', 'warning', 2000);
+    // 3. A Testing desde Doing
+    if (targetStatus === 'testing' && currentStatus === 'doing') {
+      if (!data.isReadyDoing) {
+        showToast('Tarea Incompleta', 'Debe terminar en Doing primero.', 'warning', 2000);
+        draggedTask.classList.add('shake');
+        return;
+      }
+      if (zoneTesting.children.length >= TESTING_WIP_LIMIT) {
+        showToast('Límite WIP Excedido', `Solo puedes tener ${TESTING_WIP_LIMIT} tareas en Testing.`, 'warning', 2000);
+        draggedTask.classList.add('shake');
+        return;
+      }
+      zoneTesting.appendChild(draggedTask);
+      draggedTask.setAttribute('data-status', 'testing');
+      draggedTask.classList.remove('ready'); // Reseteamos el estado visual
+      draggedTask.querySelector('.task-progress-fill').style.width = '0%';
+      updateHUD();
+      return;
+    }
+
+    // 4. A Done desde Testing
+    if (targetStatus === 'done' && currentStatus === 'testing') {
+      if (!data.isReadyTesting) {
+        showToast('Testing Incompleto', 'La tarea aún no ha pasado el Testing.', 'warning', 2000);
         draggedTask.classList.add('shake');
         return;
       }
       
       zoneDone.appendChild(draggedTask);
       draggedTask.setAttribute('data-status', 'done');
-      draggedTask.draggable = false; // Ya no se puede mover
+      draggedTask.draggable = false;
       draggedTask.classList.remove('ready');
       
-      // Ganar puntos
       score += POINTS_PER_TASK;
       updateHUD();
-      
-      // Animación de puntos flotantes (opcional, pero queda bien)
       return;
     }
   });

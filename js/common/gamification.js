@@ -58,6 +58,12 @@ export const MEDALS_CATALOG = [
   { id: 'dnie_master', name: 'DNIe Master', desc: 'Llega al nivel máximo de dificultad en Cert Arcade.', icon: '💳', public: true },
   { id: 'revocado', name: 'Certificado Revocado', desc: '?????', icon: '❌', public: false }, // Oculto: Fallar 3 veces un cert inválido
 
+  // Kanban Hero
+  { id: 'agilista', name: 'Agilista', desc: 'Completa un Sprint de Kanban Hero sobreviviendo hasta el final.', icon: '🏃‍♂️', public: true },
+  { id: 'multitarea', name: 'Multitarea', desc: 'Mantén el límite de WIP al máximo en Kanban Hero.', icon: '🤹', public: true },
+  { id: 'productividad_extrema', name: 'Productividad Extrema', desc: 'Consigue más de 200 puntos en Kanban Hero.', icon: '🚀', public: true },
+  { id: 'burnout', name: 'Burnout', desc: '?????', icon: '🔥', public: false }, // Oculto: Dejar que el Todo colapse muy rápido
+
   // Hex Invaders
   { id: 'matematico', name: 'Matemático', desc: 'Destruye 10 naves en Hex Invaders.', icon: '🧮', public: true },
   { id: 'francotirador_hex', name: 'Francotirador Hex', desc: 'Destruye 5 naves seguidas sin fallar un disparo.', icon: '🎯', public: true },

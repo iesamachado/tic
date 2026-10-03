@@ -1,60 +1,131 @@
 export const LEVELS = [
   {
     id: 1,
-    missionText: "<strong>OBJETIVO:</strong> Encuentra el correo electrónico del CEO (director general).<br><br><strong>INFO:</strong> Se cree que su apellido es 'Smith'. Utiliza una consulta SQL básica para buscar en la tabla <code>empleados</code>.",
-    setupSQL: [
-      "CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, cargo STRING, email STRING)",
-      "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'Ventas', 'alice@corp.com')",
-      "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'CEO', 'bsmith_secret@corp.com')",
-      "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'IT', 'cdavis@corp.com')"
-    ],
-    schema: [
-      { table: 'empleados', cols: [{name: 'id', type: 'INT'}, {name: 'nombre', type: 'STR'}, {name: 'apellido', type: 'STR'}, {name: 'cargo', type: 'STR'}, {name: 'email', type: 'STR'}] }
-    ],
-    validate: (res) => {
-      // res es el array de objetos devuelto por alasql
-      if (!res || res.length === 0) return false;
-      // Comprobar si en alguna fila y columna está el email secreto
-      return res.some(row => Object.values(row).includes('bsmith_secret@corp.com'));
+    missionText: `<strong>OBJETIVO:</strong> Explorar la tabla de departamentos.<br><br><strong>INFO:</strong> Tienes en el panel izquierdo el esquema completo de la base de datos de la corporación. Para empezar la auditoría, haz un volcado completo de la tabla <code>departamentos</code> usando <code>SELECT * FROM departamentos</code>.`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT * FROM departamentos",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
     },
-    successMsg: "Has localizado el correo del CEO. Buen trabajo de reconocimiento inicial."
+    successMsg: "¡Excelente! Has volcado tu primera tabla. Observa cómo los departamentos tienen un 'id' que los identifica."
   },
   {
     id: 2,
-    missionText: "<strong>OBJETIVO:</strong> Iniciar sesión como administrador aprovechando una Inyección SQL (SQLi).<br><br><strong>INFO:</strong> El sistema de login ejecuta esta consulta por detrás:<br><code>SELECT * FROM usuarios WHERE username = 'admin' AND password = '[TU_INPUT]'</code><br><br>Escribe tu <strong>[TU_INPUT]</strong> exacto en la consola (sin el SELECT) para engañar a la base de datos y que la condición siempre sea verdadera.",
-    setupSQL: [
-      "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)",
-      "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd!', 'ADMIN')",
-      "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"
-    ],
-    schema: [
-      { table: 'usuarios', cols: [{name: 'id', type: 'INT'}, {name: 'username', type: 'STR'}, {name: 'password', type: 'STR'}, {name: 'role', type: 'STR'}] }
-    ],
-    // Para este nivel, sobreescribiremos la lógica en game.js para que en vez de ejecutar su input como SQL libre, 
-    // ejecute el SELECT inyectando el input del usuario.
-    isInjectionLevel: true,
-    validate: (res) => {
-      if (!res || res.length === 0) return false;
-      return res.some(row => row.username === 'admin');
+    missionText: `<strong>OBJETIVO:</strong> Filtrar empleados de IT.<br><br><strong>INFO:</strong> Sabemos que el departamento de IT tiene el <code>id = 2</code>. Extrae todos los datos de la tabla <code>empleados</code> que pertenezcan a ese departamento.<br><br><em>Pista: Usa la cláusula WHERE con id_departamento.</em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT * FROM empleados WHERE id_departamento = 2",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
     },
-    successMsg: "¡Bypass de autenticación exitoso! Has logrado saltarte el login usando una inyección tautológica (' OR '1'='1)."
+    successMsg: "Filtrado correcto. Identificar a los empleados técnicos es clave en una auditoría."
   },
   {
     id: 3,
-    missionText: "<strong>OBJETIVO:</strong> Recuperar el código nuclear oculto.<br><br><strong>INFO:</strong> Existe una tabla secreta llamada <code>proyectos_clasificados</code>. Necesitamos el código del proyecto llamado 'OMEGA'.",
-    setupSQL: [
-      "CREATE TABLE proyectos_clasificados (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN)",
-      "INSERT INTO proyectos_clasificados VALUES (1, 'ALPHA', 'X-992', true)",
-      "INSERT INTO proyectos_clasificados VALUES (2, 'OMEGA', 'NUK3-88B-XYZ', true)",
-      "INSERT INTO proyectos_clasificados VALUES (3, 'DELTA', '000-111', false)"
-    ],
-    schema: [
-      { table: 'proyectos_clasificados', cols: [{name: 'id', type: 'INT'}, {name: 'nombre', type: 'STR'}, {name: 'codigo_secreto', type: 'STR'}, {name: 'activo', type: 'BOOL'}] }
-    ],
-    validate: (res) => {
-      if (!res || res.length === 0) return false;
-      return res.some(row => Object.values(row).includes('NUK3-88B-XYZ'));
+    missionText: `<strong>OBJETIVO:</strong> Encontrar el email de la directora ejecutiva.<br><br><strong>INFO:</strong> Necesitamos contactar a la CEO, pero solo queremos ver su nombre y su email (no el resto de datos).<br><br><em>Pista: <code>SELECT nombre, email FROM empleados WHERE cargo = 'CEO'</code></em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT nombre, email FROM empleados WHERE cargo = 'CEO'",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
     },
-    successMsg: "Has extraído la información clasificada. Auditoría completada."
+    successMsg: "¡Perfecto! Extraer solo las columnas necesarias reduce el ruido de la base de datos."
+  },
+  {
+    id: 4,
+    missionText: `<strong>OBJETIVO:</strong> Ordenar los proyectos.<br><br><strong>INFO:</strong> Queremos un listado de todos los proyectos ordenados por su nombre alfabéticamente de la A a la Z.<br><br><em>Pista: Añade <code>ORDER BY nombre ASC</code> al final de tu SELECT.</em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT * FROM proyectos ORDER BY nombre ASC",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "Muy bien. El ORDER BY es crucial para presentar la información de forma legible."
+  },
+  {
+    id: 5,
+    missionText: `<strong>OBJETIVO:</strong> Buscar coincidencias parciales.<br><br><strong>INFO:</strong> Sabemos que hay un empleado cuyo apellido empieza por 'Smi', pero no recordamos el resto. Encuentra todos sus datos.<br><br><em>Pista: <code>WHERE apellido LIKE 'Smi%'</code> (El % actúa como comodín).</em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT * FROM empleados WHERE apellido LIKE 'Smi%'",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "Gran trabajo. El operador LIKE te salvará cuando no tengas el dato exacto."
+  },
+  {
+    id: 6,
+    missionText: `<strong>OBJETIVO:</strong> Filtrado múltiple (AND).<br><br><strong>INFO:</strong> Busca en la tabla <code>proyectos</code> aquel que esté <code>activo = true</code> AND (y) que su <code>id_responsable = 6</code>. Devuelve todas sus columnas.`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT * FROM proyectos WHERE activo = true AND id_responsable = 6",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "¡Código OMEGA localizado! Usar múltiples filtros te da precisión quirúrgica."
+  },
+  {
+    id: 7,
+    missionText: `<strong>OBJETIVO:</strong> Relacionar tablas (JOIN).<br><br><strong>INFO:</strong> ¿En qué edificio trabaja Charlie? Une las tablas de empleados y departamentos.<br><br><em>Pista: <code>SELECT empleados.nombre, departamentos.edificio FROM empleados JOIN departamentos ON empleados.id_departamento = departamentos.id WHERE empleados.nombre = 'Charlie'</code></em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT empleados.nombre, departamentos.edificio FROM empleados JOIN departamentos ON empleados.id_departamento = departamentos.id WHERE empleados.nombre = 'Charlie'",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "¡Nivel avanzado desbloqueado! Acabas de hacer tu primer JOIN relacional."
+  },
+  {
+    id: 8,
+    missionText: `<strong>OBJETIVO:</strong> Contar empleados.<br><br><strong>INFO:</strong> ¿Cuántos empleados hay en total en la empresa? Devuelve solo la cantidad.<br><br><em>Pista: <code>SELECT COUNT(*) FROM empleados</code></em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT COUNT(*) FROM empleados",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "Correcto. Las funciones de agregación como COUNT te permiten hacer estadísticas rápidas."
+  },
+  {
+    id: 9,
+    missionText: `<strong>OBJETIVO:</strong> Iniciar sesión como administrador (SQL Injection).<br><br><strong>INFO:</strong> El panel secreto ejecuta: <code>SELECT * FROM usuarios WHERE username = 'admin' AND password = '[TU_INPUT]'</code><br>Engaña al sistema para que inicie sesión.<br><br><em>Escribe solo tu inyección en consola, por ejemplo: <code>' OR '1'='1</code></em>`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    isInjectionLevel: true,
+    validate: function(res) {
+      if (!res || res.length === 0) return false;
+      return res.some(row => row.username === 'admin');
+    },
+    successMsg: "¡Bypass exitoso! La inyección SQL es una de las vulnerabilidades web más críticas."
+  },
+  {
+    id: 10,
+    missionText: `<strong>OBJETIVO:</strong> Descubrir la contraseña del admin.<br><br><strong>INFO:</strong> Ahora que estás dentro, necesitas extraer la contraseña real del usuario 'admin' de la tabla <code>usuarios</code>. Muestra solo la columna <code>password</code> del administrador.`,
+    setupSQL: ["CREATE TABLE empleados (id INT, nombre STRING, apellido STRING, email STRING, cargo STRING, id_departamento INT)", "INSERT INTO empleados VALUES (1, 'Alice', 'Johnson', 'alice@corp.com', 'Ventas', 1)", "INSERT INTO empleados VALUES (2, 'Bob', 'Smith', 'bsmith@corp.com', 'Analista', 2)", "INSERT INTO empleados VALUES (3, 'Charlie', 'Davis', 'cdavis@corp.com', 'Desarrollador', 2)", "INSERT INTO empleados VALUES (4, 'Diana', 'Perez', 'dperez@corp.com', 'Recursos Humanos', 3)", "INSERT INTO empleados VALUES (5, 'Eve', 'Black', 'eblack_ceo@corp.com', 'CEO', 4)", "INSERT INTO empleados VALUES (6, 'Frank', 'Castle', 'fcastle@corp.com', 'Seguridad', 2)", "CREATE TABLE departamentos (id INT, nombre STRING, edificio STRING)", "INSERT INTO departamentos VALUES (1, 'Comercial', 'Edificio A')", "INSERT INTO departamentos VALUES (2, 'IT', 'Edificio B')", "INSERT INTO departamentos VALUES (3, 'RRHH', 'Edificio A')", "INSERT INTO departamentos VALUES (4, 'Direcci\u00f3n', 'Planta Alta')", "CREATE TABLE proyectos (id INT, nombre STRING, codigo_secreto STRING, activo BOOLEAN, id_responsable INT)", "INSERT INTO proyectos VALUES (1, 'Migraci\u00f3n Cloud', 'CLD-99', true, 3)", "INSERT INTO proyectos VALUES (2, 'Proyecto OMEGA', 'NUK3-88B-XYZ', true, 6)", "INSERT INTO proyectos VALUES (3, 'Redise\u00f1o Web', 'WEB-01', false, 2)", "CREATE TABLE usuarios (id INT, username STRING, password STRING, role STRING)", "INSERT INTO usuarios VALUES (1, 'admin', 's3cr3t_p4ssW0rd_123!', 'ADMIN')", "INSERT INTO usuarios VALUES (2, 'guest', 'guest', 'USER')"],
+    schema: [{"table": "empleados", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "apellido", "type": "STR"}, {"name": "email", "type": "STR"}, {"name": "cargo", "type": "STR"}, {"name": "id_departamento", "type": "INT"}]}, {"table": "departamentos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "edificio", "type": "STR"}]}, {"table": "proyectos", "cols": [{"name": "id", "type": "INT"}, {"name": "nombre", "type": "STR"}, {"name": "codigo_secreto", "type": "STR"}, {"name": "activo", "type": "BOOL"}, {"name": "id_responsable", "type": "INT"}]}, {"table": "usuarios", "cols": [{"name": "id", "type": "INT"}, {"name": "username", "type": "STR"}, {"name": "password", "type": "STR"}, {"name": "role", "type": "STR"}]}],
+    expectedQuery: "SELECT password FROM usuarios WHERE username = 'admin'",
+    validate: function(res) {
+      if (!res || !Array.isArray(res)) return false;
+      const expected = alasql(this.expectedQuery);
+      return JSON.stringify(res) === JSON.stringify(expected);
+    },
+    successMsg: "¡Contraseña obtenida! Has completado con éxito todas las fases de la auditoría."
   }
 ];

@@ -630,17 +630,29 @@ export async function getStudentBestScore(studentId, gameId, classId) {
 
 /** Ranking de la clase para un juego (mejor score por alumno) */
 export async function getClassRanking(classId, gameId) {
-  const results = await getClassResults(classId, gameId, 500);
+  const results = await getClassResults(classId, gameId, 1000);
 
-  // Agrupa por alumno → mejor score
-  const bestByStudent = {};
+  // Agrupar por (studentId + gameId) para obtener el mejor score de CADA juego por alumno
+  const bestPerGame = {};
   for (const r of results) {
-    if (!bestByStudent[r.studentId] || r.score > bestByStudent[r.studentId].score) {
-      bestByStudent[r.studentId] = r;
+    const key = r.studentId + "_" + r.gameId;
+    if (!bestPerGame[key] || r.score > bestPerGame[key].score) {
+      bestPerGame[key] = r;
     }
   }
 
-  return Object.values(bestByStudent).sort((a, b) => b.score - a.score);
+  // Ahora, sumar los mejores scores de cada juego por alumno
+  const totalByStudent = {};
+  for (const key in bestPerGame) {
+    const r = bestPerGame[key];
+    if (!totalByStudent[r.studentId]) {
+      totalByStudent[r.studentId] = { studentId: r.studentId, score: 0, _games: {} };
+    }
+    totalByStudent[r.studentId].score += r.score;
+    totalByStudent[r.studentId]._games[r.gameId] = r.score;
+  }
+
+  return Object.values(totalByStudent).sort((a, b) => b.score - a.score);
 }
 
 // ══════════════════════════════════════════════════════════════════

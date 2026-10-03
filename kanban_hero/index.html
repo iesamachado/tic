@@ -20,14 +20,14 @@
       <h1>Kanban Hero</h1>
       <p style="margin-top: 15px; color: var(--text-muted); font-size: 1.1rem;">
         Bienvenido al simulador ágil. Las tareas caerán en el <strong>To-Do</strong>.<br><br>
-        1. Arrástralas al <strong>Doing</strong> para que tu equipo las trabaje.<br>
+        1. Arrástralas al <strong>Doing</strong> para trabajarlas.<br>
         2. <strong>¡CUIDADO!</strong> Tienes un límite WIP de 3. Si metes más de 3 en Doing, rebotarán.<br>
-        3. Cuando terminen (se pongan verdes), llévalas a <strong>Done</strong> para ganar puntos.<br>
+        3. Cuando terminen en Doing, pásalas a <strong>Testing</strong> (WIP: 2). Al acabar el test, llévalas a <strong>Done</strong>.<br>
         4. Si el To-Do se llena con más de 6 tareas, el proyecto fracasa.
       </p>
       <button id="btn-start" class="btn btn-primary btn--lg" style="margin-top: 25px; width: 100%;">¡Empezar Sprint!</button>
       <div style="margin-top: 15px;">
-        <button onclick="window.close()" class="btn btn-ghost">Salir</button>
+        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href = '../dashboard_student.html'" class="btn btn-ghost">Salir</button>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@
       </p>
       <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
         <button id="btn-restart" class="btn btn-primary">Jugar de Nuevo</button>
-        <button onclick="window.close()" class="btn btn-outline">Salir</button>
+        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href = '../dashboard_student.html'" class="btn btn-outline">Salir</button>
       </div>
     </div>
   </div>
@@ -67,6 +67,9 @@
       <div class="todo-danger">
         <span class="label">Peligro To-Do:</span>
         <span id="todo-count-display">0</span> / 6
+      </div>
+      <div>
+        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href = '../dashboard_student.html'" class="btn btn-ghost" style="color: #e74c3c; border: 1px solid #e74c3c; padding: 4px 10px; font-size: 0.9rem;">Salir</button>
       </div>
     </header>
 
@@ -90,6 +93,18 @@
         </div>
         <div class="kanban-column-body" id="zone-doing">
           <!-- Tareas arrastradas aquí -->
+        </div>
+      </div>
+
+      
+      <!-- TESTING -->
+      <div class="kanban-column" id="col-testing" data-status="testing">
+        <div class="kanban-column-header" style="background: #9b59b6; color: white;">
+          Testing (WIP: max 2)
+          <div style="font-size: 0.8rem; opacity: 0.8;">Verificando</div>
+        </div>
+        <div class="kanban-column-body" id="zone-testing">
+          <!-- Tareas en test aquí -->
         </div>
       </div>
 
