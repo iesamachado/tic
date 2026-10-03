@@ -137,6 +137,9 @@ export const GAMES = {
     color: '#00d4ff',
     colorDark: '#008bbf'
   },
+  kanban_hero: {
+    '2º Bachillerato': 'TIC2.5.2 (Metodologías de desarrollo)'
+  },
   cc_trivial: {
     id: 'cc_trivial',
     name: 'Radio Trivial CC',
@@ -146,14 +149,34 @@ export const GAMES = {
     gamePath: 'cc_trivial/index.html',
     color: '#f5a623',
     colorDark: '#c4841a'
+  },
+  kanban_hero: {
+    id: 'kanban_hero',
+    name: 'Kanban Hero',
+    description: 'Simulador de organización ágil. Arrastra tareas y respeta los límites WIP para que el proyecto no fracase.',
+    icon: '📋',
+    type: 'arcade',
+    gamePath: 'kanban_hero/index.html',
+    color: '#e74c3c',
+    colorDark: '#c0392b'
+  },
+  databreach: {
+    id: 'databreach',
+    name: 'Data Breach',
+    description: 'Audita el sistema mediante consultas e inyecciones SQL para conseguir banderas secretas.',
+    icon: '💻',
+    type: 'puzzle',
+    gamePath: 'databreach/index.html',
+    color: '#10b981',
+    colorDark: '#059669'
   }
 };
 
 export const TOPICS = {
   topic_kanban: {
     id: 'topic_kanban',
-    name: '1. Metodologías Ágiles (Kanban)',
-    description: 'Organización y ciclo de vida',
+    name: '1. Ingeniería e Industria del Software',
+    description: 'Kanban, Ciclo de vida y Transformación digital',
     icon: '📋',
     htmlPath: 'temario/kanban.html',
     color: '#4a90e2'
@@ -166,127 +189,53 @@ export const TOPICS = {
     htmlPath: 'temario/drive.html',
     color: '#34a853'
   },
-  topic_audacity: {
-    id: 'topic_audacity',
-    name: '3. Edición de Audio',
-    description: 'Mesas de mezcla, podcasting y Audacity',
-    icon: '🎙️',
-    htmlPath: 'temario/audacity.html',
+  topic_multimedia: {
+    id: 'topic_multimedia',
+    name: '3. Edición Multimedia y Propiedad Intelectual',
+    description: 'Audacity, GIMP y Derechos de autor',
+    icon: '🎨',
+    htmlPath: 'temario/multimedia.html',
     color: '#f39c12'
   },
-  topic_gimp: {
-    id: 'topic_gimp',
-    name: '4. Edición de Imagen',
-    description: 'Resoluciones, capas y GIMP',
-    icon: '🎨',
-    htmlPath: 'temario/gimp.html',
-    color: '#8e44ad'
-  },
-  topic_wordpress: {
-    id: 'topic_wordpress',
-    name: '5. Gestores de Contenido (WordPress)',
-    description: 'Creación de sitios web con CMS',
+  topic_cms: {
+    id: 'topic_cms',
+    name: '4. CMS, Wikis y SEO',
+    description: 'WordPress, Wikis, SEO y Analítica Web',
     icon: '📰',
-    htmlPath: 'temario/wordpress.html',
+    htmlPath: 'temario/cms.html',
     color: '#2980b9'
   },
-  topic_wiki: {
-    id: 'topic_wiki',
-    name: '6. Entornos Wikis',
-    description: 'Documentación colaborativa',
-    icon: '📖',
-    htmlPath: 'temario/wiki.html',
-    color: '#16a085'
-  },
-  topic_cc: {
-    id: 'topic_cc',
-    name: '7. Propiedad Intelectual',
-    description: 'Creative Commons y Derechos de autor',
-    icon: '©️',
-    htmlPath: 'temario/cc.html',
-    color: '#f5a623',
-    colorDark: '#c4841a'
-  },
-  topic_cyber: {
+    topic_cyber: {
     id: 'topic_cyber',
-    name: '8. Ciberseguridad Básica',
-    description: 'Contraseñas, 2FA y Privacidad',
+    name: '5. Ciberseguridad y Privacidad',
+    description: 'Malware, Privacidad, Certificados Digitales y Riesgos',
     icon: '🔐',
     htmlPath: 'temario/cyber.html',
     color: '#d0021b'
   },
-  topic_cert: {
-    id: 'topic_cert',
-    name: '9. Certificados Digitales',
-    description: 'Firma electrónica y FNMT',
-    icon: '🏛️',
-    htmlPath: 'temario/cert.html',
-    color: '#00d4ff',
-    colorDark: '#008bbf'
-  },
   topic_html: {
     id: 'topic_html',
-    name: '10. Desarrollo Web (HTML/CSS)',
-    description: 'Estructura visual de internet',
+    name: '6. Desarrollo Web y Accesibilidad',
+    description: 'HTML, CSS, Diseño Universal y WCAG',
     icon: '🌐',
     htmlPath: 'temario/html.html',
     color: '#e34c26'
   },
-    topic_js: {
+  topic_js: {
     id: 'topic_js',
-    name: '11. Programación JavaScript',
-    description: 'Lógica, DOM y Eventos',
+    name: '7. Programación (Algoritmos, JS y SQL)',
+    description: 'Diagramas, Lógica JS, DOM y BD Básicas',
     icon: '💻',
     htmlPath: 'temario/js.html',
     color: '#f1c40f'
   },
   topic_js_adv: {
     id: 'topic_js_adv',
-    name: '12. JS Avanzado y Antigravity',
+    name: '8. JS Avanzado y Antigravity',
     description: 'Web Apps, Firebase y Agentes IA',
     icon: '🚀',
     htmlPath: 'temario/js_advanced.html',
-    color: '#8e44ad'
-  },
-  topic_algoritmos: {
-    id: 'topic_algoritmos',
-    name: '13. Algoritmos y Pseudocódigo',
-    description: 'Diagramas de flujo y Depuración',
-    icon: '🔀',
-    htmlPath: 'temario/algoritmos.html',
-    color: '#16a085'
-  },
-  topic_ingenieria: {
-    id: 'topic_ingenieria',
-    name: '14. Ingeniería del Software',
-    description: 'Ciclo de vida, Requisitos y Testing',
-    icon: '📐',
-    htmlPath: 'temario/ingenieria.html',
-    color: '#2980b9'
-  },
-  topic_industria: {
-    id: 'topic_industria',
-    name: '15. Industria del Software',
-    description: 'Transformación digital y Sesgos IA',
-    icon: '🏭',
-    htmlPath: 'temario/industria.html',
-    color: '#e67e22'
-  },
-  topic_seo: {
-    id: 'topic_seo',
-    name: '16. SEO y Analítica Web',
-    description: 'Posicionamiento y Search Console',
-    icon: '🔎',
-    htmlPath: 'temario/seo.html',
-    color: '#27ae60'
-  },
-  topic_accesibilidad: {
-    id: 'topic_accesibilidad',
-    name: '17. Accesibilidad Web (WCAG)',
-    description: 'Diseño para todos y validación WAVE',
-    icon: '♿',
-    htmlPath: 'temario/accesibilidad.html',
-    color: '#1abc9c'
+    color: '#34495e'
   }
 };
 
@@ -296,6 +245,9 @@ export const GAMES_CRITERIA_MAPPING = {
   },
   cert_arcade: {
     '2º Bachillerato': 'TIC2.2.1 (Medidas de seguridad) / TIC2.2.2 (Privacidad en Internet)'
+  },
+  kanban_hero: {
+    '2º Bachillerato': 'TIC2.5.2 (Metodologías de desarrollo)'
   },
   cc_trivial: {
     '2º Bachillerato': 'TIC2.4.1 (Trabajo colaborativo y derechos) / TIC2.3.1 (Contenidos en la web)'

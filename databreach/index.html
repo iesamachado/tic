@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataBreach — Auditoría de Sistemas</title>
+  <link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/common/design-system.css">
+  <link rel="stylesheet" href="../css/common/reset.css">
+  <link rel="stylesheet" href="../css/common/components.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/alasql@4"></script>
+</head>
+<body class="db-body">
+
+  <div id="game-container">
+    
+    <!-- Topbar -->
+    <header class="db-header">
+      <div class="db-header-left">
+        <i class="fas fa-terminal"></i>
+        <span>DataBreach_v1.2.sys // AUTORIZACIÓN: <span id="user-display">--</span></span>
+      </div>
+      <div class="db-header-right">
+        <button id="btn-quit" class="btn btn-ghost" style="color:var(--error); padding: 4px 8px;">[SALIR]</button>
+      </div>
+    </header>
+
+    <div class="db-main">
+      
+      <!-- Panel Izquierdo: Misión y Esquema -->
+      <aside class="db-sidebar">
+        <div class="db-panel">
+          <h2 class="db-panel-title">Misión // Nivel <span id="level-display">1</span></h2>
+          <div id="mission-text" class="db-mission-text">
+            Cargando misión...
+          </div>
+        </div>
+
+        <div class="db-panel" style="flex-grow: 1;">
+          <h2 class="db-panel-title">Esquema Base de Datos</h2>
+          <div id="schema-viewer" class="db-schema">
+            <!-- Tables and columns injected here -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Panel Central: Output y Consola -->
+      <div class="db-content">
+        
+        <!-- Output -->
+        <div class="db-output" id="query-output">
+          <div class="db-welcome">
+            <div>Iniciando sesión segura... OK.</div>
+            <div>Cargando base de datos corporativa... OK.</div>
+            <div>Esperando instrucciones SQL.</div>
+          </div>
+        </div>
+
+        <!-- Consola (Input) -->
+        <div class="db-console">
+          <div class="db-console-prompt">admin@corp-db:~$</div>
+          <textarea id="sql-input" class="db-console-input" spellcheck="false" placeholder="Escribe tu consulta SQL aquí y presiona Ctrl+Enter para ejecutar..."></textarea>
+          <div class="db-console-actions">
+            <button id="btn-execute" class="db-btn">EJECUTAR <span class="key-hint">(Ctrl+Enter)</span></button>
+            <button id="btn-reset" class="db-btn db-btn-danger">RESET DB</button>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Pantalla de Victoria / Transición de nivel -->
+  <div id="modal-success" class="db-modal">
+    <div class="db-modal-content">
+      <h2 style="color: var(--success); margin-bottom: 20px;">[ ACCESO CONCEDIDO ]</h2>
+      <p id="success-msg">Has logrado recuperar los datos.</p>
+      <div style="margin-top: 30px;">
+        <button id="btn-next-level" class="db-btn">CONTINUAR AL SIGUIENTE NIVEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla de Victoria Final -->
+  <div id="modal-finish" class="db-modal">
+    <div class="db-modal-content" style="border-color: #f59e0b;">
+      <h2 style="color: #f59e0b; margin-bottom: 20px;">[ AUDITORÍA COMPLETADA ]</h2>
+      <p>Has encontrado todas las vulnerabilidades críticas del sistema.</p>
+      <p style="margin-top: 10px; color: var(--text-muted);">Puntuación guardada exitosamente.</p>
+      <div style="margin-top: 30px;">
+        <button id="btn-finish" class="db-btn">VOLVER AL PANEL</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/levels.js"></script>
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

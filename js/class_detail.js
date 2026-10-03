@@ -1,3 +1,5 @@
+import { collection, query, where, getDocs, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { db } from './common/db.js';
 import { requireAuth, currentUser, currentProfile, classroomToken, refreshClassroomToken, isAdmin } from './common/auth.js';
 import {
   getClass, updateClass, getClassMembers, getClassAssignments,
@@ -5,6 +7,7 @@ import {
   getClassRanking, addStudentsToClass, removeStudentFromClass, getStudentResultsInClass,
   getStudentBestScore
 } from './common/db.js';
+import { MEDALS_CATALOG } from './common/gamification.js';
 import { createClassroomAssignment, syncClassroomGrades } from './common/classroom.js';
 import { renderHeader, showToast, showLoading, hideLoading, renderPodium, renderRankingTable } from './common/ui.js';
 import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams, copyToClipboard } from './common/utils.js';
@@ -34,6 +37,7 @@ requireAuth({
       }
 
       initPage(user, profile);
+      members = await getClassMembers(classData.id);
       await loadGamesTab();
       await loadTopicsTab();
     } catch (err) {
@@ -72,6 +76,8 @@ function initPage(user, profile) {
       if (tab === 'students')    await loadStudentsTab();
       if (tab === 'assignments') await loadAssignmentsTab();
       if (tab === 'results')     await loadResultsTab();
+      if (tab === 'exams')       await loadExamsTab();
+      if (tab === 'theory')      await loadTheoryTab();
     });
   });
 
@@ -154,7 +160,9 @@ async function loadTopicsTab() {
           <small>${escapeHtml(t.description)}</small>
         </div>
       </div>
-      <div class="game-toggle-actions">
+      
+      <div class="game-toggle-actions" style="display:flex; align-items:center; gap:10px;">
+        <a href="${t.htmlPath}" target="_blank" class="btn btn-ghost btn--sm" title="Abrir y ver temario" style="text-decoration:none; padding:4px 8px;">👀 Ver</a>
         <label class="toggle-switch" title="${enabled.includes(t.id) ? 'Ocultar' : 'Mostrar'}">
           <input type="checkbox" 
                  id="toggle-topic-${t.id}"
@@ -202,6 +210,8 @@ async function loadStudentsTab() {
 
   try {
     members = await getClassMembers(classData.id);
+    
+    renderGamificationDashboard(members, classData.id);
 
     if (members.length === 0) {
       list.innerHTML = '';
@@ -223,18 +233,18 @@ async function loadStudentsTab() {
       btn.addEventListener('click', async () => {
         const studentId = btn.dataset.studentId;
         const studentName = btn.dataset.studentName || 'este alumno';
-        if (!confirm(`¿Eliminar a ${studentName} de la clase?`)) return;
-
-        try {
-          showLoading('Eliminando alumno...');
-          await removeStudentFromClass(classData.id, studentId);
-          showToast('Alumno eliminado', `${studentName} ya no pertenece a la clase.`, 'info');
-          await loadStudentsTab();
-        } catch (err) {
-          showToast('Error', err.message, 'error');
-        } finally {
-          hideLoading();
-        }
+        showModal('Eliminar Alumno', `¿Eliminar a ${studentName} de la clase?`, async () => {
+          try {
+            showLoading('Eliminando alumno...');
+            await removeStudentFromClass(classData.id, studentId);
+            showToast('Alumno eliminado', `${studentName} ya no pertenece a la clase.`, 'info');
+            await loadStudentsTab();
+          } catch (err) {
+            showToast('Error', err.message, 'error');
+          } finally {
+            hideLoading();
+          }
+        });
       });
     });
 
@@ -250,8 +260,10 @@ async function loadStudentsTab() {
 }
 
 function renderStudentRow(m) {
-  const displayName = m.displayNameAnonymized || m.displayName || m.name || m.email || 'Alumno';
-  const identifier = m.uid || m.email;
+  const displayName = m.displayNameAnonymized || m.displayName || m.name || m.email?.split('@')[0] || 'Alumno';
+  const identifier = m.uid || m.email || m.id;
+  const pts = m.puntosTotal || m.totalScore || 0;
+  const medalsCount = m.logros ? m.logros.length : 0;
 
   if (m.pending) {
     return `<div class="student-row student-row--pending" style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-3); padding:var(--space-3); border-bottom:1px solid var(--border);">
@@ -272,21 +284,32 @@ function renderStudentRow(m) {
   }
 
   return `<div class="student-row" style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-3); padding:var(--space-3); border-bottom:1px solid var(--border);">
-    <div style="display:flex; align-items:center; gap:var(--space-3);">
+    <div style="display:flex; align-items:center; gap:var(--space-3); flex: 1;">
       <img class="student-row-avatar"
-           src="${escapeHtml(m.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.uid}`)}"
+           src="${escapeHtml(m.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${identifier}`)}"
            alt="${escapeHtml(displayName)}"
-           onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${m.uid}'">
+           onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${identifier}'">
       <div class="student-row-info">
         <strong>${escapeHtml(displayName)}</strong>
         <small style="display:block; color:var(--text-muted);">${escapeHtml(m.email || '')}</small>
       </div>
     </div>
+    
+    <div style="display:flex; align-items:center; gap:var(--space-3); margin-right: 15px;">
+      <div style="text-align: right; min-width: 100px;">
+        <span style="font-weight: bold; color: #f39c12; font-size: 1.1rem;">⭐ ${pts} pts</span><br>
+        <span style="font-size: 0.85rem; color: #7f8c8d;">🏅 ${medalsCount} medallas</span>
+      </div>
+    </div>
+
     <div style="display:flex; align-items:center; gap:var(--space-2);">
       <span class="badge ${m.source === 'classroom' ? 'badge--accent' : 'badge--muted'}">
         ${m.source === 'classroom' ? 'Classroom' : 'Directo / PIN'}
       </span>
-      <button class="btn btn-ghost btn--sm" data-action="view-history" data-student-id="${escapeHtml(m.uid)}" data-student-name="${escapeHtml(displayName)}" title="Ver historial de partidas" style="padding:4px 8px;">
+      <button class="btn btn-ghost btn--sm" onclick="window._showMedallas('${escapeHtml(identifier)}')" title="Ver medallas" style="padding:4px 8px; font-size:1.2rem;">
+        🏅
+      </button>
+      <button class="btn btn-ghost btn--sm" data-action="view-history" data-student-id="${escapeHtml(identifier)}" data-student-name="${escapeHtml(displayName)}" title="Ver historial de partidas" style="padding:4px 8px;">
         📊
       </button>
       <button class="btn btn-ghost btn--sm" data-action="remove-student" data-student-id="${escapeHtml(identifier)}" data-student-name="${escapeHtml(displayName)}" title="Eliminar de la clase" style="color:var(--error); padding:4px 8px;">
@@ -635,7 +658,7 @@ async function renderResults() {
     const ranking = await getClassRanking(classData.id, activeGameFilter || null);
 
     // Enriquecer con perfiles
-    const enriched = await Promise.all(ranking.map(async r => {
+    const enrichedRaw = await Promise.all(ranking.map(async r => {
       let member = members.find(m => m.uid === r.studentId);
       
       // Si el jugador no está en la lista de alumnos (ej: es el profesor jugando), buscamos su perfil
@@ -649,10 +672,13 @@ async function renderResults() {
 
       return {
         ...r,
-        displayNameAnonymized: member?.displayNameAnonymized || member?.displayName || 'Desconocido',
+        role: member?.role || 'student',
+        displayNameAnonymized: member?.displayNameAnonymized || member?.displayName || member?.name || member?.email?.split('@')[0] || 'Desconocido',
         photoURL: member?.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${r.studentId}`
       };
     }));
+
+    const enriched = enrichedRaw.filter(r => r.role !== 'teacher' && r.role !== 'admin');
 
     renderPodium(enriched, 'results-podium');
     renderRankingTable(enriched, 'results-ranking');
@@ -680,6 +706,111 @@ async function renderResults() {
 function setupModals(user) {
 
 
+
+  // Modal: Generar Examen Test
+  const modalExam = $('modal-new-exam');
+  const btnNewExam = $('btn-new-exam');
+  
+  if ($('gen-topic')) {
+    let html = '<option value="">Todos los bloques</option>';
+    for (const key in TOPICS) {
+      html += `<option value="${key}">${TOPICS[key].name}</option>`;
+    }
+    $('gen-topic').innerHTML = html;
+  }
+  btnNewExam?.addEventListener('click', () => {
+    $('gen-titulo').value = '';
+    $('gen-preview-container').style.display = 'none';
+    currentPreviewPreguntas = [];
+    $('btn-save-examen').disabled = true;
+    modalExam.classList.add('modal-backdrop--visible');
+  });
+  
+  $('btn-close-new-exam')?.addEventListener('click', () => modalExam.classList.remove('modal-backdrop--visible'));
+  $('btn-cancel-new-exam')?.addEventListener('click', () => modalExam.classList.remove('modal-backdrop--visible'));
+
+  $('btn-preview-examen')?.addEventListener('click', async () => {
+    const topic = $('gen-topic').value;
+    const num = parseInt($('gen-num').value);
+
+    try {
+      showLoading('Buscando preguntas...');
+      const q = query(collection(db, "preguntas"));
+      const snap = await getDocs(q);
+      
+      let validQuestions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      
+      if (topic) {
+        validQuestions = validQuestions.filter(p => p.topic === topic);
+      }
+
+      if (validQuestions.length === 0) {
+        showToast('Atención', 'No hay preguntas en el banco para este filtro.', 'warning');
+        return;
+      }
+
+      validQuestions.sort(() => Math.random() - 0.5);
+      currentPreviewPreguntas = validQuestions.slice(0, num);
+
+      $('gen-preview-container').style.display = 'block';
+      $('gen-preview-count').textContent = currentPreviewPreguntas.length;
+      $('gen-preview-list').innerHTML = currentPreviewPreguntas.map((p, i) => {
+        const topicName = p.topic && TOPICS[p.topic] ? TOPICS[p.topic].name : (p.topic || 'Sin bloque');
+        return `
+        <div style="margin-bottom: var(--space-2); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);">
+          <strong>${i+1}.</strong> <span class="badge badge--primary" style="font-size:0.7em;">${topicName}</span> ${p.enunciado}
+        </div>
+      `}).join('');
+
+      $('btn-save-examen').disabled = false;
+    } catch (e) {
+      console.error(e);
+      showToast('Error', 'Error al cargar preguntas', 'error');
+    } finally {
+      hideLoading();
+    }
+  });
+
+  $('btn-save-examen')?.addEventListener('click', async () => {
+    const titulo = $('gen-titulo').value || 'Examen Test';
+    const tiempo = parseInt($('gen-tiempo').value);
+
+    try {
+      showLoading('Guardando examen...');
+
+      const examenData = {
+        claseId: classData.id,
+        titulo,
+        tiempoMinutos: tiempo,
+        estado: 'oculto',
+        creadoEn: serverTimestamp()
+      };
+
+      // Limpiar datos sensibles
+      const preguntasSeguras = currentPreviewPreguntas.map(p => {
+        return {
+          id: p.id,
+          enunciado: p.enunciado,
+          topic: p.topic || '',
+          ce: p.ce || null,
+          criterio: p.criterio || 'N/A',
+          opciones: p.opciones.map(o => ({ texto: o.texto })) 
+        };
+      });
+      examenData.preguntas = preguntasSeguras;
+
+      await addDoc(collection(db, "examenes_test"), examenData);
+      showToast('Éxito', 'Examen guardado como borrador (oculto).', 'success');
+      
+      modalExam.classList.remove('modal-backdrop--visible');
+      await loadExamsTab();
+    } catch (e) {
+      console.error(e);
+      showToast('Error', 'Error al crear examen', 'error');
+    } finally {
+      hideLoading();
+    }
+  });
 
   // Modal nueva tarea
   const modalAssignment = $('modal-new-assignment');
@@ -862,4 +993,292 @@ function setupModals(user) {
       hideLoading();
     }
   });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  TAB: EXÁMENES Y GENERADOR
+// ══════════════════════════════════════════════════════════════
+
+let currentPreviewPreguntas = [];
+let unsubscribeExams = null;
+
+async function loadExamsTab() {
+  const tbody = $('examenes-test-list');
+  if (!tbody) return;
+
+  const q = query(collection(db, "examenes_test"), where("claseId", "==", classData.id));
+  
+  if(unsubscribeExams) unsubscribeExams();
+  
+  unsubscribeExams = onSnapshot(q, (snap) => {
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: var(--space-6); color: var(--text-muted);">No hay exámenes test para esta clase.</td></tr>';
+      return;
+    }
+    
+    let html = '';
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      let stateBadge = '';
+      if(d.estado === 'activo') stateBadge = '<span class="badge badge--success">Activo (En curso)</span>';
+      else if(d.estado === 'cerrado') stateBadge = '<span class="badge badge--muted">Cerrado</span>';
+      else if(d.estado === 'oculto') stateBadge = '<span class="badge badge--warning">Oculto (Borrador)</span>';
+      else stateBadge = `<span class="badge badge--warning">${d.estado}</span>`;
+                        
+      const dateStr = d.creadoEn ? d.creadoEn.toDate().toLocaleString('es-ES') : 'Recién creado';
+      
+      html += `
+        <tr>
+          <td><strong>${escapeHtml(d.titulo)}</strong></td>
+          <td>${d.preguntas ? d.preguntas.length : 0} <span class="text-muted" style="font-size:0.8em">preguntas</span></td>
+          <td>${d.tiempoMinutos} <span class="text-muted" style="font-size:0.8em">min</span></td>
+          <td>${stateBadge}</td>
+          <td style="font-size:0.8em; color:var(--text-muted);">${dateStr}</td>
+          <td style="text-align: right; display:flex; gap:4px; justify-content:flex-end;">
+            <a href="examen_resultados.html?id=${docSnap.id}" class="btn btn-ghost btn--sm" title="Ver Resultados / Configurar">⚙️</a>
+            <button class="btn btn-ghost btn--sm" style="color:var(--error);" onclick="window._deleteExamenTest('${docSnap.id}')" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  });
+}
+
+window._activarExamenTest = async (id) => {
+  showModal('Activar Examen', '¿Activar este examen? Los alumnos de la clase empezarán a verlo en su panel y el tiempo global empezará a contar desde este instante.', async () => {
+    await updateDoc(doc(db, "examenes_test", id), { estado: 'activo', activadoEn: serverTimestamp() });
+    showToast('Examen activado', 'Visible para los alumnos', 'success');
+  });
+};
+
+window._cerrarExamenTest = async (id) => {
+  showModal('Cerrar Examen', '¿Cerrar el examen? Los alumnos no podrán entregar más respuestas.', async () => {
+    await updateDoc(doc(db, "examenes_test", id), { estado: 'cerrado' });
+    showToast('Examen cerrado', 'Ya no admite respuestas', 'info');
+  });
+};
+
+window._deleteExamenTest = async (id) => {
+  showModal('Eliminar Examen', '¿Eliminar examen por completo? Se borrarán todas las respuestas e intentos asociados.', async () => {
+    try {
+      const q = query(collection(db, "respuestas_test"), where("examenId", "==", id));
+      const snap = await getDocs(q);
+      
+      const deletePromises = [];
+      snap.forEach(d => {
+        deletePromises.push(deleteDoc(doc(db, "respuestas_test", d.id)));
+      });
+      await Promise.all(deletePromises);
+      await deleteDoc(doc(db, "examenes_test", id));
+      
+      showToast('Examen eliminado', `Se eliminó el examen y ${snap.size} intentos`, 'success');
+    } catch(e) {
+      console.error(e);
+      showToast('Error', 'No se pudo eliminar el examen', 'error');
+    }
+  });
+};
+
+// ══════════════════════════════════════════════════════════════
+//  GAMIFICACION - RENDER PODIO Y GREMIOS
+// ══════════════════════════════════════════════════════════════
+function renderGamificationDashboard(membersList, classId) {
+  window._lastMembers = membersList; // Guardar para el modal de medallas
+  const podioContainer = $('podio-container');
+  const gremiosContainer = $('gremios-container');
+  
+  if (!podioContainer || !gremiosContainer) return;
+
+  const topAlumnos = [...membersList]
+    .sort((a,b) => (b.puntosTotal || b.totalScore || 0) - (a.puntosTotal || a.totalScore || 0))
+    .slice(0,5);
+
+  if (topAlumnos.length === 0) {
+    podioContainer.innerHTML = '<div class="text-muted" style="text-align:center;">No hay alumnos.</div>';
+  } else {
+    podioContainer.innerHTML = topAlumnos.map((a, i) => `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); border-radius: ${i===0?'8px 8px 0 0':''}; background: ${i===0?'#fff9c4': i===1?'#f5f5f5': i===2?'#ffe0b2':'transparent'};">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem; font-weight: bold; width: 30px;">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1)+'.'}</span>
+          <div>
+            <div style="font-weight: bold; font-size: 1.1rem;">${escapeHtml(a.displayNameAnonymized || a.displayName || a.name || a.email?.split('@')[0] || 'Alumno')}</div>
+            <div style="font-size: 0.8rem; color: #7f8c8d;">${escapeHtml((a.gremios?.[classId] || a.gremio) || 'Sin gremio')}</div>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <span style="background: #f1c40f; color: #fff; padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.9rem;">⭐ ${a.puntosTotal || a.totalScore || 0} pts</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let scores = {};
+  let totalPts = 0;
+  
+  membersList.forEach(a => {
+    const pts = a.puntosTotal || a.totalScore || 0;
+    const gremioActual = a.gremios?.[classId] || a.gremio;
+    if (gremioActual) {
+      if (!scores[gremioActual]) scores[gremioActual] = { pts: 0, count: 0 };
+      scores[gremioActual].pts += pts;
+      scores[gremioActual].count += 1;
+      totalPts += pts;
+    }
+  });
+
+  const sortedGremios = Object.entries(scores).sort((a,b) => b[1].pts - a[1].pts);
+  
+  if (sortedGremios.length === 0) {
+    gremiosContainer.innerHTML = '<div class="text-muted" style="text-align:center;">Ningún alumno tiene gremio asignado.</div>';
+  } else {
+    gremiosContainer.innerHTML = sortedGremios.map(([name, data], idx) => `
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <strong style="display:flex; align-items:center; gap: 8px;">
+            ${idx === 0 ? '👑' : ''} ${escapeHtml(name)}
+          </strong>
+          <span style="font-weight: bold; color: #2c3e50;">${data.pts} pts</span>
+        </div>
+        <div style="width: 100%; height: 10px; background-color: #ecf0f1; border-radius: 5px; overflow: hidden;">
+          <div style="height: 100%; background-color: #3498db; width: ${totalPts > 0 ? (data.pts / totalPts) * 100 : 0}%"></div>
+        </div>
+        <div style="font-size: 0.8rem; color: #7f8c8d; text-align: right; margin-top: 2px;">
+          ${data.count} miembro${data.count !== 1 ? 's' : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+window._showMedallas = function(uidStr) {
+  const membersList = window._lastMembers || [];
+  const alumno = membersList.find(m => m.uid === uidStr || m.email === uidStr || m.id === uidStr);
+  if (!alumno) return;
+
+  $('medallas-alumno-nombre').textContent = alumno.displayNameAnonymized || alumno.displayName || alumno.name || alumno.email?.split('@')[0] || 'Alumno';
+  const container = $('medallas-alumno-list');
+
+  const logros = alumno.logros || [];
+  
+  container.innerHTML = MEDALS_CATALOG.map(cat => {
+    const isUnlocked = logros.some(l => l.id === cat.id);
+    const isHidden = !cat.public && !isUnlocked;
+    
+    const displayIcon = isHidden ? '❓' : (cat.icon || '🏅');
+    const displayName = isHidden ? 'Logro Oculto' : cat.name;
+    const displayDesc = isHidden ? 'Descubre cómo desbloquearlo jugando...' : cat.desc;
+
+    return `
+      <div style="display:flex; align-items:center; gap: 15px; background:${isUnlocked ? '#fff' : '#f9f9f9'}; padding: 10px; border-radius: 8px; border-left: 4px solid ${isUnlocked ? '#f1c40f' : '#bdc3c7'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05); opacity: ${isUnlocked ? '1' : '0.6'}; transition: all 0.2s;">
+        <div style="font-size: 2.5rem; filter: ${isUnlocked ? 'drop-shadow(0 2px 2px rgba(0,0,0,0.2))' : 'grayscale(100%)'};">${displayIcon}</div>
+        <div>
+          <div style="font-weight: bold; font-size: 1.1rem; color: ${isUnlocked ? '#2c3e50' : '#7f8c8d'};">${escapeHtml(displayName)}</div>
+          <div style="font-size: 0.9rem; color: #7f8c8d;">${escapeHtml(displayDesc || '')}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  $('modal-medallas').classList.add('modal-backdrop--visible');
+}
+
+
+// ══════════════════════════════════════════════════════════════
+//  TESTS DE TEORÍA
+// ══════════════════════════════════════════════════════════════
+async function loadTheoryTab() {
+  const tbody = $('theory-results-list');
+  if (!tbody) return;
+
+  try {
+    if (!members || members.length === 0) {
+      // Intentar cargar por si el profe ha entrado directo a esta pestaña sin pasar por Alumnos
+      members = await getClassMembers(classData.id);
+    }
+    if (!members || members.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay alumnos en esta clase.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando resultados... <i class="fas fa-spinner fa-spin"></i></td></tr>';
+
+    // Batch fetch in chunks of 10
+    const studentIds = members.map(m => m.uid || m.id);
+    let allResults = [];
+    
+    for (let i = 0; i < studentIds.length; i += 10) {
+      const chunk = studentIds.slice(i, i + 10);
+      const q = query(collection(db, "tic2_tests_teoria"), where("uid", "in", chunk));
+      const snap = await getDocs(q);
+      snap.forEach(d => {
+        allResults.push({ id: d.id, ...d.data() });
+      });
+    }
+
+    // Agrupar por alumno y tema, quedarse con el último intento
+    let grouped = {};
+    allResults.forEach(r => {
+      const key = `${r.uid}_${r.topicKey}`;
+      if (!grouped[key]) {
+        grouped[key] = { ...r, attempts: 1 };
+      } else {
+        grouped[key].attempts += 1;
+        const timeCurrent = grouped[key].fecha && grouped[key].fecha.toMillis ? grouped[key].fecha.toMillis() : 0;
+        const timeNew = r.fecha && r.fecha.toMillis ? r.fecha.toMillis() : 0;
+        if (timeNew > timeCurrent) {
+           const attempts = grouped[key].attempts;
+           grouped[key] = { ...r, attempts };
+        }
+      }
+    });
+    
+    let finalResults = Object.values(grouped);
+
+    finalResults.sort((a, b) => {
+      const timeA = a.fecha && a.fecha.toMillis ? a.fecha.toMillis() : 0;
+      const timeB = b.fecha && b.fecha.toMillis ? b.fecha.toMillis() : 0;
+      return timeB - timeA;
+    });
+
+    if (finalResults.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Aún no se ha realizado ningún test de teoría.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = finalResults.map(r => {
+      let fDate = "Desconocida";
+      if (r.fecha && r.fecha.toDate) {
+        fDate = r.fecha.toDate().toLocaleString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      }
+      const isPassed = r.score >= 5;
+      const isGold = r.score >= 9;
+      
+      return `
+        <tr>
+          <td style="font-weight:bold;">
+            ${escapeHtml(r.alumnoNombre || 'Desconocido')}
+            ${r.attempts > 1 ? `<br><span class="badge" style="background:#e74c3c; font-size:0.7em; margin-top:4px;">${r.attempts} intentos</span>` : ''}
+          </td>
+          <td><span class="badge badge--primary">${escapeHtml(r.topicTitle || r.topicKey)}</span></td>
+          <td style="font-size:0.85em; color:var(--text-muted);">${fDate}</td>
+          <td>
+            <span style="font-size: 1.2rem; font-weight: bold; color: ${isPassed ? 'var(--success)' : 'var(--danger)'};">
+              ${r.score.toFixed(2)}
+            </span>
+            ${isGold ? ' <span title="Sobresaliente">🥇</span>' : ''}
+            ${!isPassed ? ' <span title="Suspenso">💀</span>' : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error al cargar los resultados.</td></tr>';
+  }
+}
+
+if ($('btn-refresh-theory')) {
+  $('btn-refresh-theory').addEventListener('click', loadTheoryTab);
 }

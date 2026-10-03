@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="TIC2Hub — Panel del alumno. Accede a tus clases y juegos habilitados por tu docente.">
   <title>TIC2Hub — Mi Dashboard</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 
   <link rel="stylesheet" href="css/common/design-system.css">
   <link rel="stylesheet" href="css/common/reset.css">
@@ -51,6 +51,8 @@
         </div>
       </div>
 
+
+
       <!-- Mis Clases + Juegos -->
       <section class="animate-fade-up delay-2" aria-labelledby="my-classes-title">
         <div class="section-header">
@@ -70,6 +72,57 @@
         <div id="student-classes-list" class="student-classes-list">
           <div class="class-card skeleton" style="height:180px"></div>
           <div class="class-card skeleton" style="height:180px"></div>
+        </div>
+      </section>
+
+      <!-- Exámenes Pendientes (Cajas) -->
+      <section class="animate-fade-up delay-2" aria-labelledby="active-exams-title" id="section-active-exams" style="display:none; margin-top: var(--space-6);">
+        <div class="section-header">
+          <h2 class="section-title" id="active-exams-title">📝 Exámenes Pendientes</h2>
+        </div>
+        <div id="active-exams-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-4);"></div>
+      </section>
+
+      <!-- Historial de Exámenes Formales (Lista) -->
+      <section class="animate-fade-up delay-2" aria-labelledby="history-exams-title" id="section-history-exams" style="display:none; margin-top: var(--space-6);">
+        <div class="section-header">
+          <h2 class="section-title" id="history-exams-title">📝 Historial de Exámenes</h2>
+        </div>
+        <div class="card">
+          <table class="ranking-table" style="width:100%">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Examen</th>
+                <th style="text-align:left;">Clase</th>
+                <th style="text-align:center;">Preguntas</th>
+                <th style="text-align:right;">Acción / Nota</th>
+              </tr>
+            </thead>
+            <tbody id="history-exams-list"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Historial de Tests de Teoría -->
+      <section class="animate-fade-up delay-3" aria-labelledby="theory-title" id="section-theory" style="display:none; margin-top: var(--space-6);">
+        <div class="section-header">
+          <h2 class="section-title" id="theory-title">🧠 Historial de Tests de Teoría</h2>
+        </div>
+        <div class="alert alert--info" style="margin-bottom: var(--space-4);">
+          <span>ℹ️</span> <strong>Nota:</strong> Puedes repetir los tests de teoría tantas veces como quieras para mejorar. <strong>El profesor solo tendrá en cuenta la nota de tu último intento.</strong>
+        </div>
+        <div class="card" id="theory-card">
+          <table class="ranking-table" id="theory-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Tema</th>
+                <th>Aciertos</th>
+                <th>Nota (Sobre 10)</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="theory-tbody"></tbody>
+          </table>
         </div>
       </section>
 

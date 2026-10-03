@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIC2Hub — Resultados del Examen Test</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .stat-label {
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+    .stat-card--success .stat-value { color: var(--success); }
+    .stat-card--error .stat-value { color: var(--error); }
+    .stat-card--warning .stat-value { color: var(--warning); }
+    
+    .print-area { display: none; }
+    
+    @media print {
+      body * { visibility: hidden; }
+      .print-area, .print-area * { visibility: visible; color: black !important; background: white !important; }
+      .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block;
+      }
+      .page-break { page-break-after: always; }
+      .print-header { border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; }
+      .print-q { margin-bottom: 15px; }
+      .print-opt { margin-left: 20px; margin-bottom: 5px; }
+    }
+  </style>
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+      
+      <header class="dashboard-header animate-fade-up">
+        <a href="#" id="back-link" class="back-link">← Volver a la Clase</a>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: var(--space-2); flex-wrap: wrap; gap: var(--space-3);">
+          <div>
+            <h1 class="dashboard-title" id="ex-title" style="margin: 0;">Cargando...</h1>
+            <p class="dashboard-subtitle" id="ex-meta">---</p>
+          </div>
+          <div style="display: flex; gap: var(--space-2);">
+            <button class="btn btn-ghost" id="btn-print"><span style="margin-right:8px;">🖨️</span> Generar Examen en PDF / Papel</button>
+            <button class="btn btn-outline" id="btn-toggle-state" style="display: none; border-width: 2px;"></button>
+            <button class="btn btn-primary" id="btn-toggle-results">Publicar Notas a Alumnos</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="class-tabs animate-fade-up delay-1">
+        <button class="tab-btn tab-btn--active" data-tab="entregas">📝 Entregas de Alumnos</button>
+        <button class="tab-btn" data-tab="analisis">📊 Análisis Curricular</button>
+      </div>
+
+      <!-- TAB: ENTREGAS -->
+      <section id="tab-entregas" class="tab-content tab-content--active animate-fade-up delay-2">
+        <div class="card" style="padding: 0; overflow-x: auto;">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Alumno</th>
+                <th>Fecha de Entrega</th>
+                <th>Aciertos / Fallos / Blancos</th>
+                <th>Nota (Sobre 10)</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="resultados-list">
+              <tr><td colspan="5" style="text-align: center; padding: var(--space-6); color: var(--text-muted);">Cargando entregas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: ANÁLISIS -->
+      <section id="tab-analisis" class="tab-content animate-fade-up delay-2" style="display: none;">
+        <div id="analysis-container">
+          <div style="padding: var(--space-6); text-align: center; color: var(--text-muted);">Cargando datos...</div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Revisar Estudiante -->
+  <div id="modal-review" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box modal-box--wide">
+      <div class="modal-header">
+        <h3>Revisión de: <span id="review-student-name"></span></h3>
+        <button class="modal-close" id="btn-close-review">✕</button>
+      </div>
+      <div class="modal-body" id="review-student-body" style="max-height: 60vh; overflow-y: auto;">
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal: Detalle Pregunta -->
+  <div id="modal-qdetail" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Detalles de la Pregunta</h3>
+        <button class="modal-close" id="btn-close-qdetail">✕</button>
+      </div>
+      <div class="modal-body" id="qdetail-body">
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Contenedor oculto para imprimir el examen -->
+  <div id="print-area" class="print-area"></div>
+
+  <script type="module" src="js/examen_resultados.js"></script>
+</body>
+</html>

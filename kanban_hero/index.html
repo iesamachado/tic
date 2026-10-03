@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Hero — TIC2Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
+  
+  <link rel="stylesheet" href="../css/common/design-system.css">
+  <link rel="stylesheet" href="../css/common/reset.css">
+  <link rel="stylesheet" href="../css/common/components.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Overlay de Inicio -->
+  <div id="start-screen" class="game-overlay">
+    <div class="game-modal animate-fade-up">
+      <div class="game-icon">📋</div>
+      <h1>Kanban Hero</h1>
+      <p style="margin-top: 15px; color: var(--text-muted); font-size: 1.1rem;">
+        Bienvenido al simulador ágil. Las tareas caerán en el <strong>To-Do</strong>.<br><br>
+        1. Arrástralas al <strong>Doing</strong> para que tu equipo las trabaje.<br>
+        2. <strong>¡CUIDADO!</strong> Tienes un límite WIP de 3. Si metes más de 3 en Doing, rebotarán.<br>
+        3. Cuando terminen (se pongan verdes), llévalas a <strong>Done</strong> para ganar puntos.<br>
+        4. Si el To-Do se llena con más de 6 tareas, el proyecto fracasa.
+      </p>
+      <button id="btn-start" class="btn btn-primary btn--lg" style="margin-top: 25px; width: 100%;">¡Empezar Sprint!</button>
+      <div style="margin-top: 15px;">
+        <button onclick="window.close()" class="btn btn-ghost">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay de Fin (Game Over / Tiempo) -->
+  <div id="end-screen" class="game-overlay" style="display: none; background: rgba(0,0,0,0.85);">
+    <div class="game-modal animate-fade-up">
+      <h1 id="end-title">¡Proyecto Finalizado!</h1>
+      <p id="end-reason" style="color: var(--text-muted); margin-bottom: 20px;"></p>
+      
+      <div style="font-size: 4rem; margin: 10px 0; color: #f1c40f;" id="end-score">0</div>
+      <div style="font-size: 1.2rem; font-weight: bold; color: var(--text-base);">Puntos Conseguidos</div>
+      
+      <p style="margin-top: 20px; font-size: 0.95rem; color: var(--text-muted);">
+        (Los puntos se han guardado automáticamente en tu perfil)
+      </p>
+      <div style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
+        <button id="btn-restart" class="btn btn-primary">Jugar de Nuevo</button>
+        <button onclick="window.close()" class="btn btn-outline">Salir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Escenario de Juego -->
+  <div id="game-ui">
+    <header class="game-header">
+      <div class="score-board">
+        <span class="label">Puntos:</span>
+        <span id="score-display">0</span>
+      </div>
+      <div class="timer-board">
+        <span class="label">Tiempo:</span>
+        <span id="timer-display">60</span>s
+      </div>
+      <div class="todo-danger">
+        <span class="label">Peligro To-Do:</span>
+        <span id="todo-count-display">0</span> / 6
+      </div>
+    </header>
+
+    <main class="kanban-board">
+      
+      <!-- TO-DO -->
+      <div class="kanban-column" id="col-todo" data-status="todo">
+        <div class="kanban-column-header" style="background: #e74c3c; color: white;">
+          To-Do (Backlog)
+        </div>
+        <div class="kanban-column-body" id="zone-todo">
+          <!-- Tareas caen aquí -->
+        </div>
+      </div>
+
+      <!-- DOING -->
+      <div class="kanban-column" id="col-doing" data-status="doing">
+        <div class="kanban-column-header" style="background: #f39c12; color: white;">
+          Doing (WIP: max 3)
+          <div style="font-size: 0.8rem; opacity: 0.8;">Trabajo en curso</div>
+        </div>
+        <div class="kanban-column-body" id="zone-doing">
+          <!-- Tareas arrastradas aquí -->
+        </div>
+      </div>
+
+      <!-- DONE -->
+      <div class="kanban-column" id="col-done" data-status="done">
+        <div class="kanban-column-header" style="background: #27ae60; color: white;">
+          Done
+          <div style="font-size: 0.8rem; opacity: 0.8;">Completadas</div>
+        </div>
+        <div class="kanban-column-body" id="zone-done">
+          <!-- Tareas terminadas aquí -->
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>

@@ -147,8 +147,7 @@ function renderTeacherList() {
       const newRole = current === 'admin' ? 'teacher' : 'admin';
       const roleName = newRole === 'admin' ? 'Administrador' : 'Docente';
 
-      if (!confirm(`¿Cambiar el rol de ${email} a "${roleName}"?`)) return;
-
+      showModal('Cambiar Rol', `¿Cambiar el rol de ${email} a "${roleName}"?`, async () => {
       try {
         showLoading('Actualizando rol...');
         await authorizeTeacher(email, { role: newRole, addedBy: currentUser.email });
@@ -165,18 +164,18 @@ function renderTeacherList() {
   container.querySelectorAll('[data-action="remove"]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const email = btn.dataset.email;
-      if (!confirm(`¿Revocar el acceso docente a ${email}?\nYa no podrá iniciar sesión como profesor.`)) return;
-
-      try {
-        showLoading('Revocando acceso...');
-        await removeAllowedTeacher(email);
-        showToast('Acceso revocado', `${email} ha sido eliminado de la lista de docentes autorizados.`, 'info');
-        await loadTeachers();
-      } catch (err) {
-        showToast('Error', err.message, 'error');
-      } finally {
-        hideLoading();
-      }
+      showModal('Revocar Acceso', `¿Revocar el acceso docente a ${email}? Ya no podrá iniciar sesión como profesor.`, async () => {
+        try {
+          showLoading('Revocando acceso...');
+          await removeAllowedTeacher(email);
+          showToast('Acceso revocado', `${email} ha sido eliminado de la lista de docentes autorizados.`, 'info');
+          await loadTeachers();
+        } catch (err) {
+          showToast('Error', err.message, 'error');
+        } finally {
+          hideLoading();
+        }
+      });
     });
   });
 }

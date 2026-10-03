@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIC2Hub — Banco de Preguntas Test</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  
+  <style>
+    .filters-bar {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+      background: var(--bg-card);
+      padding: var(--space-4);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .filters-bar select, .filters-bar input {
+      flex: 1;
+      min-width: 150px;
+    }
+    .question-row {
+      display: grid;
+      grid-template-columns: 40px 200px 80px 100px 1fr 100px 100px;
+      gap: var(--space-2);
+      align-items: center;
+      padding: var(--space-3);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .question-row:last-child {
+      border-bottom: none;
+    }
+    .question-row:hover {
+      background: var(--bg-surface);
+    }
+    .question-header {
+      font-weight: bold;
+      background: var(--bg-surface);
+      border-bottom: 2px solid var(--border);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+    
+    .coverage-card {
+      background: var(--bg-card);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+    }
+    .coverage-header {
+      background: var(--bg-surface);
+      padding: var(--space-3) var(--space-4);
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .coverage-body {
+      padding: var(--space-3);
+    }
+    .coverage-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .coverage-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .question-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 300px;
+    }
+    
+    /* Modals */
+    .modal-box--large {
+      max-width: 800px;
+    }
+    .option-group {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+      margin-bottom: var(--space-2);
+    }
+  </style>
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container">
+
+      <header class="dashboard-header animate-fade-up">
+        <a href="dashboard_teacher.html" class="back-link">← Volver a Mis Clases</a>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: var(--space-2); flex-wrap: wrap; gap: var(--space-3);">
+          <div>
+            <h1 class="dashboard-title" style="margin: 0;">Banco de Preguntas Test</h1>
+            <p class="dashboard-subtitle">Gestiona las preguntas del currículo de Bachillerato.</p>
+          </div>
+          <div>
+            <button class="btn btn-primary" id="btn-nueva-pregunta">
+              ➕ Nueva Pregunta
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Filtros -->
+      <section class="animate-fade-up delay-1">
+        <div class="filters-bar">
+          <select id="filter-topic" class="form-input">
+            <option value="">Todos los Bloques de Teoría</option>
+          </select>
+          <input type="text" id="filter-text" class="form-input" placeholder="Buscar enunciado...">
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-2); margin-bottom: var(--space-4);">
+          <button class="btn btn-ghost" id="btn-show-coverage">📊 Ver Cobertura</button>
+          <button class="btn btn-ghost" id="btn-import-json">📥 Importar JSON</button>
+          <input type="file" id="file-import-json" accept=".json" style="display: none;">
+          <button class="btn btn-danger" id="btn-delete-selected" disabled>🗑️ Borrar Seleccionados (<span id="delete-count">0</span>)</button>
+        </div>
+      </section>
+
+      <!-- Tabla de Preguntas -->
+      <section class="card animate-fade-up delay-2" style="padding: 0;">
+        <div class="question-row question-header">
+          <div><input type="checkbox" id="chk-all"></div>
+          <div>Curso</div>
+          <div>CE</div>
+          <div>Criterio</div>
+          <div>Enunciado</div>
+          <div>Dificultad</div>
+          <div style="text-align: right;">Acciones</div>
+        </div>
+        
+        <div id="preguntas-list">
+          <div style="padding: var(--space-6); text-align: center; color: var(--text-muted);">Cargando preguntas...</div>
+        </div>
+        
+        <!-- Paginación -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4); border-top: var(--border-width) solid var(--border);">
+          <div class="text-muted" style="font-size: var(--text-sm);" id="page-info">Mostrando...</div>
+          <div style="display: flex; gap: var(--space-2);">
+            <button class="btn btn-ghost btn--sm" id="btn-prev-page" disabled>Anterior</button>
+            <button class="btn btn-ghost btn--sm" id="btn-next-page" disabled>Siguiente</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal Pregunta -->
+  <div id="modal-pregunta" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box modal-box--large">
+      <div class="modal-header">
+        <h3 id="modal-pregunta-title">Nueva Pregunta</h3>
+        <button class="modal-close" id="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-pregunta" novalidate>
+          <input type="hidden" id="p-id">
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Bloque de Teoría (Topic)</label>
+              <select id="p-topic" required>
+                <!-- Opciones por JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dificultad</label>
+              <select id="p-dificultad" required>
+                <option value="baja">1 - Baja</option>
+                <option value="media">2 - Media</option>
+                <option value="alta">3 - Alta</option>
+              </select>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+            <div class="form-group">
+              <label class="form-label">Competencia Específica (CE)</label>
+              <input type="number" id="p-ce" min="1" max="5" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Criterio de Evaluación (ej: 1.1)</label>
+              <input type="text" id="p-criterio" placeholder="Opcional">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label class="form-label">Enunciado</label>
+            <textarea id="p-enunciado" rows="3" required></textarea>
+          </div>
+
+          <h4 style="margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border);">Opciones (Marca la correcta)</h4>
+          
+          <div class="option-group">
+            <input type="radio" name="p-correcta" value="0" class="p-correcta" required>
+            <input type="text" class="form-input p-opcion" placeholder="Opción A" style="flex: 1;" required>
+          </div>
+          <div class="option-group">
+            <input type="radio" name="p-correcta" value="1" class="p-correcta">
+            <input type="text" class="form-input p-opcion" placeholder="Opción B" style="flex: 1;" required>
+          </div>
+          <div class="option-group">
+            <input type="radio" name="p-correcta" value="2" class="p-correcta">
+            <input type="text" class="form-input p-opcion" placeholder="Opción C" style="flex: 1;" required>
+          </div>
+          <div class="option-group">
+            <input type="radio" name="p-correcta" value="3" class="p-correcta">
+            <input type="text" class="form-input p-opcion" placeholder="Opción D" style="flex: 1;" required>
+          </div>
+
+          <div class="modal-footer" style="padding:0; margin-top:var(--space-5); border:none">
+            <button type="button" class="btn btn-ghost" id="btn-cancel-modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-pregunta">Guardar Pregunta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cobertura -->
+  <div id="modal-cobertura" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box modal-box--large">
+      <div class="modal-header">
+        <h3>📊 Informe de Cobertura Curricular</h3>
+        <button class="modal-close" id="btn-close-cobertura">✕</button>
+      </div>
+      <div class="modal-body" id="cobertura-body" style="max-height: 60vh; overflow-y: auto;">
+        <!-- Acordeón dinámico -->
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/banco_preguntas.js"></script>
+</body>
+</html>

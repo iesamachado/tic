@@ -1,5 +1,7 @@
 import { setupAuthListener } from "../../js/common/auth.js";
+import { showToast } from '../../js/common/ui.js';
 import { saveGameResult } from "../../js/common/db.js";
+import { addPointsAndCheckLogros, awardMedal } from "../../js/common/gamification.js";
 
 const GAME_ID = 'hex_invaders';
 let currentUser = null;
@@ -219,6 +221,14 @@ async function endGame() {
   if (currentUser) {
     try {
       await saveGameResult(GAME_ID, currentUser.uid, classId, score);
+      
+      const result = await addPointsAndCheckLogros(currentUser.uid, score, null, 'tic2_users');
+      await awardMedal(currentUser.uid, 'first_blood', 'tic2_users');
+      
+      if (result.leagueUp) {
+        showToast('¡Nueva Liga Desbloqueada!', `¡Has ascendido a la ${result.newLeague.name} ${result.newLeague.icon}!`, 'success', 5000);
+      }
+      
       console.log('Puntuación Hex Invaders guardada.');
     } catch (e) {
       console.error('Error al guardar puntuación:', e);

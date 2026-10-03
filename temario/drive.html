@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Temario TIC2</title>
+<link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
   <style>
     :root {
       --primary: #4a90e2;
@@ -42,6 +43,12 @@
   </style>
 </head>
 <body>
+
+<div style="position: sticky; top: -30px; background: inherit; padding: 10px 0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1);">
+  <button onclick="window.history.length > 1 ? window.history.back() : window.close()" style="background: #2c3e50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">⬅ Volver</button>
+  <button onclick="window.togglePresentation()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📺 Presentar</button>
+</div>
+
 
   <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
     <a href="../index.html" style="background-color: var(--primary, #4a90e2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
@@ -188,9 +195,175 @@
         <li><strong>Imágenes:</strong> (Insertar > Imagen). Una vez insertada, haz clic sobre ella para decidir cómo se comporta con el texto (En línea, Ajustar texto o Delante del texto). Lo mejor para trabajos formales es centrarla en un párrafo independiente y añadirle siempre un pie de foto explicativo.</li>
         <li><strong>Tablas:</strong> (Insertar > Tabla). Son perfectas para hacer cronogramas, presupuestos o la <em>escaleta de tiempo</em> de un guión de radio. Evita colorear cada celda a mano; haz clic derecho dentro de la tabla y selecciona propiedades para darle bordes elegantes.</li>
       </ul>
+
+    </section>
+
+    <section>
+      <h2>4. Hojas de Cálculo (Google Sheets / Microsoft Excel)</h2>
+      <p>Mientras que el procesador de texto sirve para redactar, la hoja de cálculo es el cerebro numérico de la ofimática. Está dividida en <strong>Celdas</strong>, que nacen de la intersección de Columnas (letras A, B, C...) y Filas (números 1, 2, 3...).</p>
+      
+      <div style="margin: 25px 0; text-align: center;">
+        <svg viewBox="0 0 400 200" style="max-width: 350px; width: 100%; filter: drop-shadow(0px 5px 15px rgba(0,0,0,0.1));">
+          <!-- Background -->
+          <rect x="0" y="0" width="400" height="200" fill="#f8f9fa" rx="8" />
+          
+          <!-- Formula Bar -->
+          <rect x="10" y="10" width="380" height="30" fill="#fff" border="1" stroke="#bdc3c7" rx="4" />
+          <text x="20" y="30" fill="#2c3e50" font-family="monospace" font-weight="bold" font-size="14">fx</text>
+          <line x1="45" y1="15" x2="45" y2="35" stroke="#bdc3c7" />
+          <text x="55" y="30" fill="#27ae60" font-family="monospace" font-size="14">=SUMA(B2:B4)</text>
+          
+          <!-- Grid -->
+          <!-- Headers Column -->
+          <rect x="10" y="50" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <rect x="10" y="75" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="30" y="92" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">1</text>
+          <rect x="10" y="100" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="30" y="117" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">2</text>
+          <rect x="10" y="125" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="30" y="142" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">3</text>
+          <rect x="10" y="150" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="30" y="167" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">4</text>
+          <rect x="10" y="175" width="40" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="30" y="192" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">5</text>
+
+          <!-- Header Rows -->
+          <rect x="50" y="50" width="113" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="106" y="67" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">A</text>
+          <rect x="163" y="50" width="113" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="219" y="67" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">B</text>
+          <rect x="276" y="50" width="114" height="25" fill="#e9ecef" stroke="#bdc3c7" />
+          <text x="333" y="67" fill="#7f8c8d" font-family="sans-serif" font-size="12" text-anchor="middle">C</text>
+
+          <!-- Cells A -->
+          <rect x="50" y="75" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="55" y="92" fill="#333" font-family="sans-serif" font-size="12">Gastos</text>
+          <rect x="50" y="100" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="55" y="117" fill="#333" font-family="sans-serif" font-size="12">Servidor</text>
+          <rect x="50" y="125" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="55" y="142" fill="#333" font-family="sans-serif" font-size="12">Dominio</text>
+          <rect x="50" y="150" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="55" y="167" fill="#333" font-family="sans-serif" font-size="12">Publicidad</text>
+          <rect x="50" y="175" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="55" y="192" fill="#333" font-family="sans-serif" font-weight="bold" font-size="12">Total:</text>
+
+          <!-- Cells B -->
+          <rect x="163" y="75" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="270" y="92" fill="#333" font-family="monospace" font-size="12" text-anchor="end">Mes 1</text>
+          
+          <!-- Highlighted block -->
+          <rect x="163" y="100" width="113" height="75" fill="#e8f5e9" stroke="#27ae60" stroke-width="2" />
+          
+          <rect x="163" y="100" width="113" height="25" fill="transparent" stroke="#27ae60" />
+          <text x="270" y="117" fill="#2c3e50" font-family="monospace" font-size="12" text-anchor="end">45.00€</text>
+          <rect x="163" y="125" width="113" height="25" fill="transparent" stroke="#27ae60" />
+          <text x="270" y="142" fill="#2c3e50" font-family="monospace" font-size="12" text-anchor="end">12.50€</text>
+          <rect x="163" y="150" width="113" height="25" fill="transparent" stroke="#27ae60" />
+          <text x="270" y="167" fill="#2c3e50" font-family="monospace" font-size="12" text-anchor="end">20.00€</text>
+          
+          <rect x="163" y="175" width="113" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="270" y="192" fill="#27ae60" font-family="monospace" font-weight="bold" font-size="12" text-anchor="end">77.50€</text>
+
+          <!-- Cells C -->
+          <rect x="276" y="75" width="114" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="385" y="92" fill="#333" font-family="monospace" font-size="12" text-anchor="end">Mes 2</text>
+          <rect x="276" y="100" width="114" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="385" y="117" fill="#7f8c8d" font-family="monospace" font-size="12" text-anchor="end">45.00€</text>
+          <rect x="276" y="125" width="114" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="385" y="142" fill="#7f8c8d" font-family="monospace" font-size="12" text-anchor="end">0.00€</text>
+          <rect x="276" y="150" width="114" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="385" y="167" fill="#7f8c8d" font-family="monospace" font-size="12" text-anchor="end">25.00€</text>
+          <rect x="276" y="175" width="114" height="25" fill="#fff" stroke="#bdc3c7" />
+          <text x="385" y="192" fill="#7f8c8d" font-family="monospace" font-weight="bold" font-size="12" text-anchor="end">70.00€</text>
+        </svg>
+      </div>
+      
+      <h3>Fórmulas y Funciones Básicas</h3>
+      <p>El verdadero potencial de una hoja de cálculo no es hacer tablas bonitas, sino automatizar cálculos matemáticos. Todas las fórmulas deben empezar obligatoriamente con el signo igual (<code>=</code>).</p>
+      <ul>
+        <li><code>=SUMA(A1:A10)</code>: Suma todos los valores numéricos comprendidos desde la celda A1 hasta la A10.</li>
+        <li><code>=PROMEDIO(B1:B5)</code>: Calcula la media aritmética de las celdas seleccionadas (muy útil para calcular la nota media de la evaluación).</li>
+        <li><code>=CONTAR(C1:C20)</code>: Cuenta cuántas celdas de ese rango tienen números (ignorando las que tienen texto o están vacías).</li>
+        <li><code>=MAX(D1:D100)</code> / <code>=MIN(D1:D100)</code>: Devuelve el valor más alto o más bajo de un rango.</li>
+      </ul>
+      <p>Al igual que en Docs, varias personas pueden estar editando distintas celdas en tiempo real, y el <strong>historial de versiones</strong> te permite recuperar una fórmula compleja que alguien haya borrado por error.</p>
+    </section>
+
+    <section>
+      <h2>5. Presentaciones (Google Slides / PowerPoint)</h2>
+      <p>Una presentación de diapositivas NO es un documento de Word puesto en grande. Sirve como <strong>apoyo visual</strong> para cuando estás hablando en público.</p>
+      
+      <div style="margin: 25px 0; text-align: center;">
+        <svg viewBox="0 0 400 220" style="max-width: 400px; width: 100%; filter: drop-shadow(0px 5px 15px rgba(0,0,0,0.1));">
+          <!-- Background Window -->
+          <rect x="0" y="0" width="400" height="220" fill="#ecf0f1" rx="6" />
+          
+          <!-- Top bar -->
+          <rect x="0" y="0" width="400" height="30" fill="#f1c40f" rx="6" />
+          <rect x="0" y="15" width="400" height="15" fill="#f1c40f" />
+          <circle cx="15" cy="15" r="4" fill="#fff" opacity="0.8" />
+          <circle cx="30" cy="15" r="4" fill="#fff" opacity="0.8" />
+          <text x="50" y="20" fill="#8e44ad" font-family="sans-serif" font-weight="bold" font-size="12">Presentación Proyecto.slides</text>
+
+          <!-- Sidebar Thumbnail -->
+          <rect x="0" y="30" width="80" height="190" fill="#fff" />
+          <line x1="80" y1="30" x2="80" y2="220" stroke="#bdc3c7" />
+          
+          <!-- Thumb 1 -->
+          <text x="5" y="52" fill="#7f8c8d" font-size="10">1</text>
+          <rect x="15" y="40" width="55" height="35" fill="#f8f9fa" stroke="#bdc3c7" rx="2" />
+          <rect x="25" y="45" width="35" height="4" fill="#3498db" rx="1" />
+          
+          <!-- Thumb 2 (Active) -->
+          <text x="5" y="97" fill="#3498db" font-weight="bold" font-size="10">2</text>
+          <rect x="13" y="83" width="59" height="39" fill="#ebf5fb" stroke="#3498db" stroke-width="2" rx="2" />
+          <rect x="15" y="85" width="55" height="35" fill="#fff" rx="1" />
+          <rect x="20" y="90" width="20" height="4" fill="#2c3e50" rx="1" />
+          <circle cx="45" cy="105" r="8" fill="#e74c3c" />
+
+          <!-- Thumb 3 -->
+          <text x="5" y="142" fill="#7f8c8d" font-size="10">3</text>
+          <rect x="15" y="130" width="55" height="35" fill="#f8f9fa" stroke="#bdc3c7" rx="2" />
+          <rect x="35" y="140" width="15" height="15" fill="#2ecc71" rx="1" />
+
+          <!-- Main Slide Canvas -->
+          <rect x="100" y="45" width="280" height="160" fill="#fff" stroke="#ccc" rx="4" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+          
+          <!-- Slide Content -->
+          <text x="130" y="75" fill="#2c3e50" font-family="sans-serif" font-weight="bold" font-size="18">Crecimiento Anual</text>
+          <line x1="130" y1="85" x2="350" y2="85" stroke="#f1c40f" stroke-width="3" />
+          
+          <!-- Chart -->
+          <!-- Axes -->
+          <line x1="140" y1="180" x2="330" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          <line x1="140" y1="100" x2="140" y2="180" stroke="#7f8c8d" stroke-width="2" />
+          
+          <!-- Bars -->
+          <rect x="160" y="150" width="30" height="30" fill="#3498db" rx="2" />
+          <text x="175" y="145" fill="#3498db" font-family="sans-serif" font-weight="bold" font-size="10" text-anchor="middle">Q1</text>
+          
+          <rect x="210" y="130" width="30" height="50" fill="#e74c3c" rx="2" />
+          <text x="225" y="125" fill="#e74c3c" font-family="sans-serif" font-weight="bold" font-size="10" text-anchor="middle">Q2</text>
+          
+          <rect x="260" y="160" width="30" height="20" fill="#2ecc71" rx="2" />
+          <text x="275" y="155" fill="#2ecc71" font-family="sans-serif" font-weight="bold" font-size="10" text-anchor="middle">Q3</text>
+          
+          <rect x="310" y="110" width="30" height="70" fill="#9b59b6" rx="2" />
+          <text x="325" y="105" fill="#9b59b6" font-family="sans-serif" font-weight="bold" font-size="10" text-anchor="middle">Q4</text>
+          
+        </svg>
+      </div>
+      <p>Errores comunes que debes evitar en clase:</p>
+      <ul>
+        <li><strong>Exceso de texto:</strong> Nadie quiere leer un muro de texto en la pantalla mientras hablas. Usa solo ideas clave (bullet points).</li>
+        <li><strong>Leer la diapositiva:</strong> El público lee más rápido de lo que tú hablas. Si te limitas a leer la pantalla, sobras en la sala.</li>
+        <li><strong>Contrastes pobres:</strong> Letra amarilla sobre fondo blanco es ilegible. <em>Tip: El modo presentación de esta web usa fondo muy claro y letra muy oscura precisamente para que se vea perfecto en el proyector de clase.</em></li>
+      </ul>
+      <p>A nivel colaborativo, mientras uno de los miembros de tu grupo busca imágenes para la diapositiva 3, otro puede estar redactando los títulos de la diapositiva 4. Además, herramientas comerciales modernas como <strong>Canva</strong> han ganado mucho terreno frente a PowerPoint o Slides por ofrecer plantillas de diseño mucho más impactantes.</p>
     </section>
     
     <div class="task-link">
+
       <strong>🎯 Tarea vinculada: Guión Podcast sobre Inteligencia Artificial</strong>
       <p style="text-align: left; margin-top: 15px; font-size: 1rem; color: #333;">
         Vais a redactar el guión colaborativo de vuestro programa de radio. Uno de vosotros deberá crear el <strong>Google Docs</strong> y añadir al resto como <strong>Editores</strong> para poder redactarlo a la vez.<br><br>
@@ -204,5 +377,5 @@
     </div>
   
 <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
-</body>
+<script type="module" src="gamify_temario.js"></script></body>
 </html>

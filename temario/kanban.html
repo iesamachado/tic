@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Temario TIC2</title>
-  <style>
+<meta charset="utf-8"/>
+<title>Temario TIC2</title>
+<link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
+<style>
     :root {
       --primary: #4a90e2;
       --secondary: #2c3e50;
@@ -40,77 +42,149 @@
     .info-box h3 { margin-top: 0; color: var(--accent); }
     .task-link { margin-top: 40px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.1rem; color: #0056b3; border: 1px dashed #4a90e2; }
   </style>
-</head>
+<style>
+    :root {
+      --primary: #2980b9; /* azul ingeniería */
+      --secondary: #2c3e50;
+      --accent: #27ae60; /* verde proceso */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .info-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .agile-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: var(--secondary); color: white; }
+  </style><style>
+    :root {
+      --primary: #e67e22; /* naranja industria */
+      --secondary: #2c3e50;
+      --accent: #8e44ad; /* morado IA */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .story-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .risk-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  </style><style>
+    :root {
+      --primary: #2980b9; /* azul ingeniería */
+      --secondary: #2c3e50;
+      --accent: #27ae60; /* verde proceso */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .info-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .agile-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: var(--secondary); color: white; }
+  </style><style>
+    :root {
+      --primary: #e67e22; /* naranja industria */
+      --secondary: #2c3e50;
+      --accent: #8e44ad; /* morado IA */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .story-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .risk-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  </style></head>
 <body>
 
-  <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
-    <a href="../index.html" style="background-color: var(--primary, #4a90e2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s;">
-      <span style="font-size: 1.2rem;">🏠</span> Volver al Dashboard
-    </a>
-  </div>
+<div style="position: sticky; top: -30px; background: inherit; padding: 10px 0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1);">
+  <button onclick="window.history.length > 1 ? window.history.back() : window.close()" style="background: #2c3e50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">⬅ Volver</button>
+  <button onclick="window.togglePresentation()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📺 Presentar</button>
+</div>
 
-
-    <header class="topic-header">
-      <h1>1. Metodologías de Desarrollo</h1>
-      <p class="subtitle">Gestión de proyectos, modelos de ciclo de vida y trabajo en equipo.</p>
-      <div style="font-size: 4rem; text-align: center; margin-top: 10px;">📋</div>
-    </header>
-    
-    <section>
-      <h2>Evolución de las Metodologías</h2>
-      <p>Crear software, un videojuego o incluso un podcast requiere organización. A lo largo de la historia, han existido diferentes formas de enfocar la gestión de proyectos:</p>
-      
-      <h3>1. Modelo en Cascada (Waterfall)</h3>
-      <p>Es el modelo tradicional. Se diseña todo sobre papel durante meses, luego se programa, luego se prueba y finalmente se lanza. Su mayor defecto es que es muy rígido: si el cliente cambia de opinión en la fase de pruebas, hay que tirar todo el trabajo a la basura y empezar de cero.</p>
-
-      <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
-        <svg viewBox="0 0 400 160" style="width:100%; max-width: 400px; margin: 0 auto; display:block; overflow:visible;">
-          <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#7f8c8d" />
-            </marker>
-          </defs>
-          <rect x="10" y="10" width="100" height="30" fill="#3498db" rx="4"/>
-          <text x="60" y="30" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle">1. Requisitos</text>
-          
-          <rect x="80" y="40" width="100" height="30" fill="#2980b9" rx="4"/>
-          <text x="130" y="60" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle">2. Diseño</text>
-          
-          <rect x="150" y="70" width="100" height="30" fill="#2471a3" rx="4"/>
-          <text x="200" y="90" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle">3. Programación</text>
-          
-          <rect x="220" y="100" width="100" height="30" fill="#1f618d" rx="4"/>
-          <text x="270" y="120" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle">4. Pruebas</text>
-          
-          <rect x="290" y="130" width="100" height="30" fill="#154360" rx="4"/>
-          <text x="340" y="150" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle">5. Lanzamiento</text>
-
-          <path d="M 60 40 L 60 55 L 75 55" stroke="#7f8c8d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-          <path d="M 130 70 L 130 85 L 145 85" stroke="#7f8c8d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-          <path d="M 200 100 L 200 115 L 215 115" stroke="#7f8c8d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-          <path d="M 270 130 L 270 145 L 285 145" stroke="#7f8c8d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-        </svg>
-      </div>
-
-      
-      <h3>2. Desarrollo en Espiral</h3>
-      <p>Propuesto por Barry Boehm en 1986, este modelo supuso una revolución porque introdujo el concepto de <strong>gestión de riesgos</strong> y el desarrollo iterativo. En lugar de hacer el proyecto entero de una vez, se dan "vueltas" en espiral:</p>
-      <ul>
-        <li><strong>Fase 1 (Determinar objetivos):</strong> Se decide qué pequeña parte del proyecto se va a hacer (ej. "Mover a Mario").</li>
-        <li><strong>Fase 2 (Análisis de riesgos):</strong> Se evalúa qué puede salir mal técnica o económicamente.</li>
-        <li><strong>Fase 3 (Desarrollo y Pruebas):</strong> Se programa esa pequeña parte y se crea un prototipo jugable.</li>
-        <li><strong>Fase 4 (Planificación):</strong> Se revisa con el cliente y se planifica la siguiente vuelta de la espiral.</li>
-      </ul>
-      <p><strong>Ventajas:</strong> Minimiza los riesgos catastróficos, ya que el cliente ve prototipos funcionales constantemente y se puede rectificar el rumbo en cada "vuelta".</p>
-
-      <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
-        <svg viewBox="0 0 300 240" style="width:100%; max-width: 300px; margin: 0 auto; display:block;">
-          <!-- Axes -->
-          <line x1="150" y1="20" x2="150" y2="220" stroke="#ccc" stroke-dasharray="4"/>
-          <line x1="40" y1="120" x2="260" y2="120" stroke="#ccc" stroke-dasharray="4"/>
-          
-          <!-- Spiral Path -->
-          <path d="M 150 120 
+<header class="topic-header">
+<h1>1. Metodologías de Desarrollo</h1>
+<p class="subtitle">Gestión de proyectos, modelos de ciclo de vida y trabajo en equipo.</p>
+<div style="font-size: 4rem; text-align: center; margin-top: 10px;">📋</div>
+</header>
+<section>
+<h2>Evolución de las Metodologías</h2>
+<p>Crear software, un videojuego o incluso un podcast requiere organización. A lo largo de la historia, han existido diferentes formas de enfocar la gestión de proyectos:</p>
+<h3>1. Modelo en Cascada (Waterfall)</h3>
+<p>Es el modelo tradicional. Se diseña todo sobre papel durante meses, luego se programa, luego se prueba y finalmente se lanza. Su mayor defecto es que es muy rígido: si el cliente cambia de opinión en la fase de pruebas, hay que tirar todo el trabajo a la basura y empezar de cero.</p>
+<div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
+<svg style="width:100%; max-width: 400px; margin: 0 auto; display:block; overflow:visible;" viewbox="0 0 400 160">
+<defs>
+<marker id="arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="5" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#7f8c8d"></path>
+</marker>
+</defs>
+<rect fill="#3498db" height="30" rx="4" width="100" x="10" y="10"></rect>
+<text fill="white" font-family="sans-serif" font-size="12" text-anchor="middle" x="60" y="30">1. Requisitos</text>
+<rect fill="#2980b9" height="30" rx="4" width="100" x="80" y="40"></rect>
+<text fill="white" font-family="sans-serif" font-size="12" text-anchor="middle" x="130" y="60">2. Diseño</text>
+<rect fill="#2471a3" height="30" rx="4" width="100" x="150" y="70"></rect>
+<text fill="white" font-family="sans-serif" font-size="12" text-anchor="middle" x="200" y="90">3. Programación</text>
+<rect fill="#1f618d" height="30" rx="4" width="100" x="220" y="100"></rect>
+<text fill="white" font-family="sans-serif" font-size="12" text-anchor="middle" x="270" y="120">4. Pruebas</text>
+<rect fill="#154360" height="30" rx="4" width="100" x="290" y="130"></rect>
+<text fill="white" font-family="sans-serif" font-size="12" text-anchor="middle" x="340" y="150">5. Lanzamiento</text>
+<path d="M 60 40 L 60 55 L 75 55" fill="none" marker-end="url(#arrow)" stroke="#7f8c8d" stroke-width="2"></path>
+<path d="M 130 70 L 130 85 L 145 85" fill="none" marker-end="url(#arrow)" stroke="#7f8c8d" stroke-width="2"></path>
+<path d="M 200 100 L 200 115 L 215 115" fill="none" marker-end="url(#arrow)" stroke="#7f8c8d" stroke-width="2"></path>
+<path d="M 270 130 L 270 145 L 285 145" fill="none" marker-end="url(#arrow)" stroke="#7f8c8d" stroke-width="2"></path>
+</svg>
+</div>
+<h3>2. Desarrollo en Espiral</h3>
+<p>Propuesto por Barry Boehm en 1986, este modelo supuso una revolución porque introdujo el concepto de <strong>gestión de riesgos</strong> y el desarrollo iterativo. En lugar de hacer el proyecto entero de una vez, se dan "vueltas" en espiral:</p>
+<ul>
+<li><strong>Fase 1 (Determinar objetivos):</strong> Se decide qué pequeña parte del proyecto se va a hacer (ej. "Mover a Mario").</li>
+<li><strong>Fase 2 (Análisis de riesgos):</strong> Se evalúa qué puede salir mal técnica o económicamente.</li>
+<li><strong>Fase 3 (Desarrollo y Pruebas):</strong> Se programa esa pequeña parte y se crea un prototipo jugable.</li>
+<li><strong>Fase 4 (Planificación):</strong> Se revisa con el cliente y se planifica la siguiente vuelta de la espiral.</li>
+</ul>
+<p><strong>Ventajas:</strong> Minimiza los riesgos catastróficos, ya que el cliente ve prototipos funcionales constantemente y se puede rectificar el rumbo en cada "vuelta".</p>
+<div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
+<svg style="width:100%; max-width: 300px; margin: 0 auto; display:block;" viewbox="0 0 300 240">
+<!-- Axes -->
+<line stroke="#ccc" stroke-dasharray="4" x1="150" x2="150" y1="20" y2="220"></line>
+<line stroke="#ccc" stroke-dasharray="4" x1="40" x2="260" y1="120" y2="120"></line>
+<!-- Spiral Path -->
+<path d="M 150 120 
                    A 10 10 0 0 1 160 130 
                    A 20 20 0 0 1 130 130 
                    A 30 30 0 0 1 160 90
@@ -119,163 +193,250 @@
                    A 60 60 0 0 1 90 120
                    A 70 70 0 0 1 150 50
                    A 80 80 0 0 1 230 130
-                   A 90 90 0 0 1 150 210" 
-                stroke="#8e44ad" stroke-width="3" fill="none"/>
-                
-          <!-- Labels -->
-          <text x="210" y="40" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">1. Objetivos</text>
-          <text x="70" y="40" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">2. Riesgos</text>
-          <text x="70" y="220" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">3. Prototipo</text>
-          <text x="210" y="220" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif" text-anchor="middle">4. Revisión</text>
-        </svg>
-      </div>
+                   A 90 90 0 0 1 150 210" fill="none" stroke="#8e44ad" stroke-width="3"></path>
+<!-- Labels -->
+<text fill="#333" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="40">1. Objetivos</text>
+<text fill="#333" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" x="70" y="40">2. Riesgos</text>
+<text fill="#333" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" x="70" y="220">3. Prototipo</text>
+<text fill="#333" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" x="210" y="220">4. Revisión</text>
+</svg>
+</div>
+<h3>3. Manifiesto Ágil (Agile)</h3>
+<p>Hoy en día, la industria utiliza metodologías Ágiles (como Scrum o Kanban). La idea principal es la <strong>adaptabilidad</strong>: entregar pequeños trozos de software funcionando cada 2 o 3 semanas, priorizando la comunicación constante del equipo por encima de la documentación excesiva.</p>
+<div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
+<svg style="width:100%; max-width: 200px; margin: 0 auto; display:block;" viewbox="0 0 200 200">
+<defs>
+<marker id="arrow-green" markerheight="8" markerwidth="8" orient="auto" refx="8" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#2ecc71"></path>
+</marker>
+</defs>
+<path d="M 100 20 A 80 80 0 0 1 180 100" fill="none" marker-end="url(#arrow-green)" stroke="#2ecc71" stroke-width="8"></path>
+<path d="M 180 100 A 80 80 0 0 1 100 180" fill="none" marker-end="url(#arrow-green)" stroke="#2ecc71" stroke-width="8"></path>
+<path d="M 100 180 A 80 80 0 0 1 20 100" fill="none" marker-end="url(#arrow-green)" stroke="#2ecc71" stroke-width="8"></path>
+<path d="M 20 100 A 80 80 0 0 1 100 20" fill="none" marker-end="url(#arrow-green)" stroke="#2ecc71" stroke-width="8"></path>
+<text fill="#27ae60" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle" x="100" y="105">ÁGIL</text>
+<text fill="#333" font-family="sans-serif" font-size="10" font-weight="bold" x="150" y="45">Planifica</text>
+<text fill="#333" font-family="sans-serif" font-size="10" font-weight="bold" x="175" y="155">Desarrolla</text>
+<text fill="#333" font-family="sans-serif" font-size="10" font-weight="bold" x="40" y="170">Prueba</text>
+<text fill="#333" font-family="sans-serif" font-size="10" font-weight="bold" x="30" y="60">Lanza</text>
+</svg>
+</div>
+</section>
+<section>
+<h2>El Sistema Kanban</h2>
+<p>Originario de las fábricas de coches Toyota en Japón, Kanban (que significa "tarjeta visual" en japonés) es un sistema ágil extremadamente popular para gestionar el flujo de trabajo de un equipo de forma transparente.</p>
+<div style="display: flex; gap: 15px; margin: 20px 0; background: #2c3e50; padding: 20px; border-radius: 8px; color: #333; overflow-x: auto;">
+<!-- Column 1 -->
+<div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+<h4 style="margin: 0 0 10px 0; color: #7f8c8d; border-bottom: 2px solid #bdc3c7; padding-bottom: 5px;">TO DO (Backlog)</h4>
+<div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #e74c3c;">
+<div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Crear Base de Datos</div>
+<div style="font-size: 0.75rem; color: #7f8c8d;">Añadir Firebase al proyecto.</div>
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #f1c40f;">
+<div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Diseñar Logo</div>
+<div style="font-size: 0.75rem; color: #7f8c8d;">Usar Illustrator para el icono.</div>
+</div>
+</div>
+<!-- Column 2 -->
+<div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+<h4 style="margin: 0 0 10px 0; color: #2980b9; border-bottom: 2px solid #3498db; padding-bottom: 5px;">DOING (WIP: 2)</h4>
+<div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #2ecc71;">
+<div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Maquetar Home</div>
+<div style="font-size: 0.75rem; color: #7f8c8d;">HTML5 y CSS3 de la pantalla inicial.</div>
+</div>
+</div>
+<!-- Column 3 -->
+<div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+<h4 style="margin: 0 0 10px 0; color: #27ae60; border-bottom: 2px solid #2ecc71; padding-bottom: 5px;">DONE</h4>
+<div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #95a5a6; opacity: 0.7;">
+<div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Recopilar Requisitos</div>
+<div style="font-size: 0.75rem; color: #7f8c8d;">Reunión inicial con el cliente.</div>
+</div>
+<div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #95a5a6; opacity: 0.7;">
+<div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Configurar Repositorio</div>
+<div style="font-size: 0.75rem; color: #7f8c8d;">Crear cuenta en Github.</div>
+</div>
+</div>
+</div>
+<h3>Las 3 Columnas Básicas</h3>
+<p>Un tablero Kanban clásico está dividido en columnas por las que van "viajando" las tarjetas de tareas:</p>
+<ul>
+<li><strong>To Do (Por hacer):</strong> La pila de tareas pendientes de iniciar. Se suele llamar "Backlog".</li>
+<li><strong>Doing (En progreso):</strong> Lo que los miembros del equipo están trabajando activamente en este momento.</li>
+<li><strong>Done (Hecho):</strong> Tareas terminadas, probadas y entregadas.</li>
+</ul>
+<div class="info-box" style="border-left-color: #e74c3c;">
+<h3>⚠️ Concepto Clave: El límite WIP</h3>
+<p>El secreto de Kanban es el límite <strong>WIP (Work In Progress)</strong>. La columna "Doing" tiene un cupo máximo (por ejemplo, 3 tareas). Ningún trabajador puede arrastrar una tarea nueva a "Doing" si el límite está lleno. Esto obliga al equipo a ayudarse mutuamente para terminar las tareas atascadas antes de empezar otras nuevas. <em>¡Menos empezar y más terminar!</em></p>
+</div>
+<h3>Herramientas Digitales para Kanban</h3>
+<p>Hoy en día nadie usa post-its en la pared, todo se gestiona en la nube. Algunas de las herramientas más usadas en la industria son:</p>
+<ul>
+<li><strong><a href="https://trello.com" target="_blank">Trello</a>:</strong> La más famosa y sencilla. Es gratuita, muy visual y usa el sistema de tarjetas clásico. Ideal para estudiantes.</li>
+<li><strong><a href="https://www.atlassian.com/software/jira" target="_blank">Jira</a>:</strong> El estándar en grandes empresas de programación. Más compleja, con gráficas de rendimiento y gestión de bugs.</li>
+<li><strong><a href="https://asana.com" target="_blank">Asana</a> / <a href="https://www.notion.so" target="_blank">Notion</a>:</strong> Herramientas modernas que combinan tableros Kanban con documentos y calendarios colaborativos.</li>
+<li><strong><a href="https://github.com/features/issues" target="_blank">GitHub Projects</a>:</strong> Integrado directamente con el código fuente para que las tareas se muevan solas al hacer "commits".</li>
+</ul>
+<div class="info-box" style="border-left-color: #3498db; background-color: #ebf5fb;">
+<h3>Preguntas Frecuentes sobre estas plataformas</h3>
+<ul style="margin-bottom:0;">
+<li><strong>¿Son multiusuario?</strong> Sí. El trabajo colaborativo es su pilar. Trabajas en tiempo real (si alguien mueve una tarjeta, tú lo ves al instante).</li>
+<li><strong>¿Se puede ver un tablero global?</strong> Sí, todos los miembros del equipo ven el mismo tablero (Board View).</li>
+<li><strong>¿Se pueden asignar tareas?</strong> Sí. Cada tarjeta (tarea) tiene un apartado "Members" o "Asignados" donde pones la cara del responsable.</li>
+<li><strong>¿Se pueden insertar imágenes?</strong> Sí, puedes adjuntar fotos, PDFs, enlaces a Google Drive e incluir capturas directamente en la tarjeta.</li>
+<li><strong>¿Puedo definir mis propias columnas?</strong> Sí, aunque lo estándar es ToDo/Doing/Done, puedes añadir las que quieras (ej. "En Revisión", "Bloqueado", "Ideas").</li>
+<li><strong>¿Cuál es el coste?</strong> Todas las mencionadas tienen un <strong>plan gratuito (Free Tier)</strong> generoso y sin límite de tiempo, ideal para el colegio y proyectos personales.</li>
+</ul>
+</div>
+</section>
+<section>
+<h2>La Industria del Software: Más que programar</h2>
+<p>Las metodologías ágiles como Kanban no surgieron en el vacío: son la respuesta de la <strong>industria del desarrollo de software</strong> a la necesidad de entregar productos de calidad en un mundo que cambia a velocidad de vértigo. Entender esta industria es entender cómo funciona buena parte de la economía digital del siglo XXI.</p>
+<h3>Modelos de Negocio del Software</h3>
+<ul>
+<li><strong>Software Propietario:</strong> Pagas una licencia para usarlo. El código fuente es secreto. Ejemplos: Microsoft Office, Adobe Photoshop.</li>
+<li><strong>Software Libre / Open Source:</strong> El código fuente es público. Cualquiera puede usarlo, modificarlo y redistribuirlo. Ejemplos: Linux, Firefox, LibreOffice, el propio Audacity que usamos en clase.</li>
+<li><strong>SaaS (Software como Servicio):</strong> No compras el programa, te suscribes. El software vive en la nube. Ejemplos: Spotify, Netflix, Google Workspace, Trello.</li>
+<li><strong>Freemium:</strong> Versión básica gratuita + funciones avanzadas de pago. Modelo de WordPress.com, Canva, GitHub.</li>
+</ul>
+<h3>Automatización, IA y el Mercado Laboral</h3>
+<p>La automatización de tareas mediante software e Inteligencia Artificial está transformando radicalmente el mercado laboral:</p>
+<ul>
+<li>Trabajos rutinarios y repetitivos (contabilidad básica, atención al cliente sencilla, conducción) están siendo automatizados.</li>
+<li>Al mismo tiempo, se crean nuevos perfiles como <strong>ingenieros de prompts</strong>, <strong>analistas de datos</strong> o <strong>especialistas en ciberseguridad</strong>.</li>
+<li>La <strong>brecha digital</strong> (quienes saben usar la tecnología vs. quienes no) se convierte en una brecha económica real.</li>
+</ul>
+<div style="background: #e8f4f8; border-left: 5px solid #2980b9; padding: 20px; border-radius: 4px; margin: 20px 0;">
+<h3 style="margin-top:0; color: #2980b9;">💡 Para reflexionar</h3>
+<p>Los algoritmos de recomendación de TikTok, YouTube o Spotify deciden qué ves y escuchas. Estos algoritmos son software diseñado por personas con sesgos y objetivos concretos (maximizar el tiempo en pantalla). <strong>¿Es eso un riesgo o una oportunidad?</strong> ¿Quién debería controlar estos algoritmos?</p>
+</div>
+</section>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+
+<h1>14. Ingeniería del Software: Del Problema a la App</h1>
+<p style="font-size: 1.2rem; color: #666; font-style: italic;">Diseña antes de programar: análisis de requisitos, mockups, casos de uso y testing.</p>
+<section>
+<h2>1. ¿Qué es la Ingeniería del Software?</h2>
+<div class="info-card">
+<p>Existe una gran diferencia entre "programar" (escribir código) e "Ingeniería del Software" (el proceso completo de crear un producto profesional).</p>
+<p><strong>Analogía:</strong> Un albañil puede poner ladrillos, pero un arquitecto diseña el plano antes. Un ingeniero de software no empieza a programar sin requisitos y diseño previo.</p>
+<h3>El Ciclo de Vida del Software (SDLC)</h3>
+<ol>
+<li><strong>Análisis:</strong> ¿Qué debe hacer la app?</li>
+<li><strong>Diseño:</strong> ¿Cómo se verá y cómo funcionará?</li>
+<li><strong>Codificación:</strong> Escribir el código (o pedirlo a la IA).</li>
+<li><strong>Pruebas (Testing):</strong> Comprobar que funciona.</li>
+<li><strong>Despliegue:</strong> Publicar la app en internet.</li>
+</ol>
+</div>
+</section>
+<section>
+<h2>2. Metodologías de Desarrollo</h2>
+<p>Históricamente, el software se hacía en <strong>Cascada (Waterfall)</strong>: un paso después del otro. Si en las pruebas descubrías un error, tenías que volver al principio. (Ej. Proyectos de la NASA en los 70).</p>
+<div class="agile-card">
+<h3>Metodologías Ágiles (Agile &amp; Scrum)</h3>
+<p>Hoy se trabaja de forma <strong>iterativa e incremental</strong>. En lugar de hacer un plan gigante, se hacen versiones pequeñas (Sprints) cada pocas semanas.</p>
+<ul>
+<li><strong>Product Owner:</strong> El dueño de la visión (o cliente).</li>
+<li><strong>Scrum Master:</strong> El facilitador del equipo.</li>
+<li><strong>Kanban:</strong> El tablero visual (To-Do, Doing, Done) que usasteis en la Tarea 1.</li>
+</ul>
+</div>
+</section>
+<section>
+<h2>3. Análisis de Requisitos y User Stories</h2>
+<p>Los requisitos se dividen en:</p>
+<ul>
+<li><strong>Funcionales:</strong> QUÉ hace la app (ej. "El usuario puede iniciar sesión con Google").</li>
+<li><strong>No Funcionales:</strong> CÓMO lo hace (ej. "Debe cargar en menos de 3 segundos").</li>
+</ul>
+<h3>Historias de Usuario (User Stories)</h3>
+<p>Para no escribir manuales técnicos aburridos, usamos este formato:</p>
+<pre><code>Como [tipo de usuario], quiero [función] para [objetivo].</code></pre>
+<p><strong>Ejemplo:</strong> "Como jugador, quiero ver mi puntuación guardada para saber si he mejorado respecto a mi récord anterior."</p>
+</section>
+<section>
+<h2>4. Mockups y Casos de Uso</h2>
+<p>Un <strong>Mockup</strong> o <strong>Wireframe</strong> es un boceto visual de la app. Sirve para detectar problemas antes de perder tiempo programando. Puedes usar <em>Figma</em>, <em>Canva</em> o incluso papel y lápiz.</p>
+<h3>Casos de Uso</h3>
+<p>Descripción detallada de cómo un usuario interactúa con la app para lograr algo:</p>
+<table>
+<tr>
+<th>Nombre</th>
+<td>Iniciar sesión en la App</td>
+</tr>
+<tr>
+<th>Actor</th>
+<td>Jugador invitado</td>
+</tr>
+<tr>
+<th>Precondiciones</th>
+<td>Estar en la pantalla principal sin sesión iniciada.</td>
+</tr>
+<tr>
+<th>Flujo principal</th>
+<td>1. El usuario pulsa "Login con Google".<br/>2. Se abre ventana emergente de Firebase.<br/>3. El usuario elige su cuenta.<br/>4. La app lo saluda por su nombre.</td>
+</tr>
+<tr>
+<th>Postcondiciones</th>
+<td>El estado pasa a "logeado" y puede guardar partida.</td>
+</tr>
+</table>
+</section>
+<section>
+<h2>5. Testing — Pruebas de Software</h2>
+<p>El código generado por IA no es perfecto. Hay que probarlo sistemáticamente. Si falla, hay que crear un <strong>Bug Report</strong> (Issue en GitHub) indicando los pasos para reproducirlo y el resultado esperado.</p>
+</section>
 
 
-      <h3>3. Manifiesto Ágil (Agile)</h3>
-      <p>Hoy en día, la industria utiliza metodologías Ágiles (como Scrum o Kanban). La idea principal es la <strong>adaptabilidad</strong>: entregar pequeños trozos de software funcionando cada 2 o 3 semanas, priorizando la comunicación constante del equipo por encima de la documentación excesiva.</p>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
 
-      <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin: 15px 0; text-align: center;">
-        <svg viewBox="0 0 200 200" style="width:100%; max-width: 200px; margin: 0 auto; display:block;">
-          <defs>
-            <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#2ecc71" />
-            </marker>
-          </defs>
-          <path d="M 100 20 A 80 80 0 0 1 180 100" stroke="#2ecc71" stroke-width="8" fill="none" marker-end="url(#arrow-green)"/>
-          <path d="M 180 100 A 80 80 0 0 1 100 180" stroke="#2ecc71" stroke-width="8" fill="none" marker-end="url(#arrow-green)"/>
-          <path d="M 100 180 A 80 80 0 0 1 20 100" stroke="#2ecc71" stroke-width="8" fill="none" marker-end="url(#arrow-green)"/>
-          <path d="M 20 100 A 80 80 0 0 1 100 20" stroke="#2ecc71" stroke-width="8" fill="none" marker-end="url(#arrow-green)"/>
-          <text x="100" y="105" fill="#27ae60" font-size="20" font-weight="bold" font-family="sans-serif" text-anchor="middle">ÁGIL</text>
-          <text x="150" y="45" fill="#333" font-size="10" font-family="sans-serif" font-weight="bold">Planifica</text>
-          <text x="175" y="155" fill="#333" font-size="10" font-family="sans-serif" font-weight="bold">Desarrolla</text>
-          <text x="40" y="170" fill="#333" font-size="10" font-family="sans-serif" font-weight="bold">Prueba</text>
-          <text x="30" y="60" fill="#333" font-size="10" font-family="sans-serif" font-weight="bold">Lanza</text>
-        </svg>
-      </div>
+<h1>15. La Industria del Software</h1>
+<p style="font-size: 1.2rem; color: #666; font-style: italic;">Del Blockbuster al Netflix, de los taxis al algoritmo: cómo el software reescribe el mundo.</p>
+<section>
+<h2>1. Transformación Digital: Morir o Adaptarse</h2>
+<div class="story-card">
+<p><strong>Transformación digital</strong> no es usar ordenadores en lugar de papel; es repensar los modelos de negocio aprovechando la tecnología.</p>
+<ul>
+<li><strong>Blockbuster vs Netflix:</strong> En el año 2000, Blockbuster rechazó comprar Netflix por 50 millones. En 2010, Blockbuster quebró. Hoy Netflix vale más de 200.000 millones. Netflix entendió que el negocio no era alquilar cintas físicas, sino distribuir contenido.</li>
+<li><strong>Taxis vs Uber:</strong> Mismo servicio, distinto modelo. Uber introdujo el algoritmo de asignación, tarificación dinámica y reputación (estrellas).</li>
+<li><strong>Propiedad vs Acceso:</strong> Spotify cambió la idea de "comprar" un CD por pagar por el "acceso" a 80 millones de canciones.</li>
+</ul>
+</div>
+</section>
+<section>
+<h2>2. Innovación y Tecnologías Disruptivas</h2>
+<ul>
+<li><strong>Inteligencia Artificial:</strong> No solo texto e imágenes. AlphaFold de DeepMind resolvió en 2021 la estructura de las proteínas, un problema que la biología llevaba 50 años sin resolver.</li>
+<li><strong>Blockchain:</strong> Más allá del Bitcoin, se usa para trazabilidad alimentaria, contratos inteligentes y votaciones verificables.</li>
+<li><strong>Economía de plataformas:</strong> Las App Stores democratizaron el software: un solo estudiante hoy puede publicar una app que llegue a millones de personas sin intermediarios.</li>
+</ul>
+</section>
+<section>
+<h2>3. Perfiles Profesionales Emergentes</h2>
+<p>El sector tecnológico tiene desempleo cero. Las profesiones del futuro ya están aquí:</p>
+<ul>
+<li><strong>Desarrollador/a Full-Stack:</strong> Crea la web visible (frontend) y la base de datos (backend).</li>
+<li><strong>Data Scientist:</strong> Extrae conocimiento a partir del Big Data para tomar decisiones.</li>
+<li><strong>Especialista en Ciberseguridad:</strong> Altamente demandado para proteger a administraciones y empresas de ataques.</li>
+<li><strong>Prompt Engineer:</strong> Diseña flujos de trabajo dictando instrucciones precisas a la IA generativa.</li>
+</ul>
+</section>
+<section>
+<h2>4. Los Riesgos: Cuando los Algoritmos Se Equivocan</h2>
+<div class="risk-card">
+<h3>Sesgos Algorítmicos y Discriminación</h3>
+<p>En 2018, un algoritmo de RRHH de Amazon aprendió a descartar currículums de mujeres. ¿Por qué? Porque la IA se entrenó con los datos de contrataciones de los últimos 10 años, donde la mayoría eran hombres. <strong>La IA amplificó el sexismo histórico de los humanos.</strong></p>
+<h3>Burbujas de Filtro (Filter Bubbles)</h3>
+<p>El algoritmo de YouTube o TikTok está diseñado para maximizar tu tiempo en pantalla. Para ello, te muestra contenido que reafirma lo que ya piensas. Consecuencia: polarización política extrema y aislamiento de opiniones contrarias.</p>
+<h3>La Caja Negra</h3>
+<p>Si un algoritmo del banco te deniega un crédito, tienes derecho a saber por qué (RGPD). El problema es que muchas redes neuronales son "cajas negras": ni sus creadores saben explicar el camino matemático exacto que llevó a la decisión.</p>
+</div>
+</section>
 
-    </section>
 
-    <section>
-      <h2>El Sistema Kanban</h2>
-      <p>Originario de las fábricas de coches Toyota en Japón, Kanban (que significa "tarjeta visual" en japonés) es un sistema ágil extremadamente popular para gestionar el flujo de trabajo de un equipo de forma transparente.</p>
-      
-      
-      <div style="display: flex; gap: 15px; margin: 20px 0; background: #2c3e50; padding: 20px; border-radius: 8px; color: #333; overflow-x: auto;">
-        <!-- Column 1 -->
-        <div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
-          <h4 style="margin: 0 0 10px 0; color: #7f8c8d; border-bottom: 2px solid #bdc3c7; padding-bottom: 5px;">TO DO (Backlog)</h4>
-          <div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #e74c3c;">
-            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Crear Base de Datos</div>
-            <div style="font-size: 0.75rem; color: #7f8c8d;">Añadir Firebase al proyecto.</div>
-          </div>
-          <div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #f1c40f;">
-            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Diseñar Logo</div>
-            <div style="font-size: 0.75rem; color: #7f8c8d;">Usar Illustrator para el icono.</div>
-          </div>
-        </div>
-
-        <!-- Column 2 -->
-        <div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
-          <h4 style="margin: 0 0 10px 0; color: #2980b9; border-bottom: 2px solid #3498db; padding-bottom: 5px;">DOING (WIP: 2)</h4>
-          <div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #2ecc71;">
-            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Maquetar Home</div>
-            <div style="font-size: 0.75rem; color: #7f8c8d;">HTML5 y CSS3 de la pantalla inicial.</div>
-          </div>
-        </div>
-
-        <!-- Column 3 -->
-        <div style="flex: 1; min-width: 200px; background: #ecf0f1; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
-          <h4 style="margin: 0 0 10px 0; color: #27ae60; border-bottom: 2px solid #2ecc71; padding-bottom: 5px;">DONE</h4>
-          <div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #95a5a6; opacity: 0.7;">
-            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Recopilar Requisitos</div>
-            <div style="font-size: 0.75rem; color: #7f8c8d;">Reunión inicial con el cliente.</div>
-          </div>
-          <div style="background: #fff; padding: 12px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #95a5a6; opacity: 0.7;">
-            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px;">Configurar Repositorio</div>
-            <div style="font-size: 0.75rem; color: #7f8c8d;">Crear cuenta en Github.</div>
-          </div>
-        </div>
-      </div>
-
-      
-      <h3>Las 3 Columnas Básicas</h3>
-      <p>Un tablero Kanban clásico está dividido en columnas por las que van "viajando" las tarjetas de tareas:</p>
-      <ul>
-        <li><strong>To Do (Por hacer):</strong> La pila de tareas pendientes de iniciar. Se suele llamar "Backlog".</li>
-        <li><strong>Doing (En progreso):</strong> Lo que los miembros del equipo están trabajando activamente en este momento.</li>
-        <li><strong>Done (Hecho):</strong> Tareas terminadas, probadas y entregadas.</li>
-      </ul>
-      
-      <div class="info-box" style="border-left-color: #e74c3c;">
-        <h3>⚠️ Concepto Clave: El límite WIP</h3>
-        <p>El secreto de Kanban es el límite <strong>WIP (Work In Progress)</strong>. La columna "Doing" tiene un cupo máximo (por ejemplo, 3 tareas). Ningún trabajador puede arrastrar una tarea nueva a "Doing" si el límite está lleno. Esto obliga al equipo a ayudarse mutuamente para terminar las tareas atascadas antes de empezar otras nuevas. <em>¡Menos empezar y más terminar!</em></p>
-      </div>
-
-      
-      <h3>Herramientas Digitales para Kanban</h3>
-      <p>Hoy en día nadie usa post-its en la pared, todo se gestiona en la nube. Algunas de las herramientas más usadas en la industria son:</p>
-      <ul>
-        <li><strong><a href="https://trello.com" target="_blank">Trello</a>:</strong> La más famosa y sencilla. Es gratuita, muy visual y usa el sistema de tarjetas clásico. Ideal para estudiantes.</li>
-        <li><strong><a href="https://www.atlassian.com/software/jira" target="_blank">Jira</a>:</strong> El estándar en grandes empresas de programación. Más compleja, con gráficas de rendimiento y gestión de bugs.</li>
-        <li><strong><a href="https://asana.com" target="_blank">Asana</a> / <a href="https://www.notion.so" target="_blank">Notion</a>:</strong> Herramientas modernas que combinan tableros Kanban con documentos y calendarios colaborativos.</li>
-        <li><strong><a href="https://github.com/features/issues" target="_blank">GitHub Projects</a>:</strong> Integrado directamente con el código fuente para que las tareas se muevan solas al hacer "commits".</li>
-      </ul>
-
-      <div class="info-box" style="border-left-color: #3498db; background-color: #ebf5fb;">
-        <h3>Preguntas Frecuentes sobre estas plataformas</h3>
-        <ul style="margin-bottom:0;">
-          <li><strong>¿Son multiusuario?</strong> Sí. El trabajo colaborativo es su pilar. Trabajas en tiempo real (si alguien mueve una tarjeta, tú lo ves al instante).</li>
-          <li><strong>¿Se puede ver un tablero global?</strong> Sí, todos los miembros del equipo ven el mismo tablero (Board View).</li>
-          <li><strong>¿Se pueden asignar tareas?</strong> Sí. Cada tarjeta (tarea) tiene un apartado "Members" o "Asignados" donde pones la cara del responsable.</li>
-          <li><strong>¿Se pueden insertar imágenes?</strong> Sí, puedes adjuntar fotos, PDFs, enlaces a Google Drive e incluir capturas directamente en la tarjeta.</li>
-          <li><strong>¿Puedo definir mis propias columnas?</strong> Sí, aunque lo estándar es ToDo/Doing/Done, puedes añadir las que quieras (ej. "En Revisión", "Bloqueado", "Ideas").</li>
-          <li><strong>¿Cuál es el coste?</strong> Todas las mencionadas tienen un <strong>plan gratuito (Free Tier)</strong> generoso y sin límite de tiempo, ideal para el colegio y proyectos personales.</li>
-        </ul>
-      </div>
-    </section>
-
-  <section>
-    <h2>La Industria del Software: Más que programar</h2>
-    <p>Las metodologías ágiles como Kanban no surgieron en el vacío: son la respuesta de la <strong>industria del desarrollo de software</strong> a la necesidad de entregar productos de calidad en un mundo que cambia a velocidad de vértigo. Entender esta industria es entender cómo funciona buena parte de la economía digital del siglo XXI.</p>
-
-    <h3>Modelos de Negocio del Software</h3>
-    <ul>
-      <li><strong>Software Propietario:</strong> Pagas una licencia para usarlo. El código fuente es secreto. Ejemplos: Microsoft Office, Adobe Photoshop.</li>
-      <li><strong>Software Libre / Open Source:</strong> El código fuente es público. Cualquiera puede usarlo, modificarlo y redistribuirlo. Ejemplos: Linux, Firefox, LibreOffice, el propio Audacity que usamos en clase.</li>
-      <li><strong>SaaS (Software como Servicio):</strong> No compras el programa, te suscribes. El software vive en la nube. Ejemplos: Spotify, Netflix, Google Workspace, Trello.</li>
-      <li><strong>Freemium:</strong> Versión básica gratuita + funciones avanzadas de pago. Modelo de WordPress.com, Canva, GitHub.</li>
-    </ul>
-
-    <h3>Automatización, IA y el Mercado Laboral</h3>
-    <p>La automatización de tareas mediante software e Inteligencia Artificial está transformando radicalmente el mercado laboral:</p>
-    <ul>
-      <li>Trabajos rutinarios y repetitivos (contabilidad básica, atención al cliente sencilla, conducción) están siendo automatizados.</li>
-      <li>Al mismo tiempo, se crean nuevos perfiles como <strong>ingenieros de prompts</strong>, <strong>analistas de datos</strong> o <strong>especialistas en ciberseguridad</strong>.</li>
-      <li>La <strong>brecha digital</strong> (quienes saben usar la tecnología vs. quienes no) se convierte en una brecha económica real.</li>
-    </ul>
-
-    <div style="background: #e8f4f8; border-left: 5px solid #2980b9; padding: 20px; border-radius: 4px; margin: 20px 0;">
-      <h3 style="margin-top:0; color: #2980b9;">💡 Para reflexionar</h3>
-      <p>Los algoritmos de recomendación de TikTok, YouTube o Spotify deciden qué ves y escuchas. Estos algoritmos son software diseñado por personas con sesgos y objetivos concretos (maximizar el tiempo en pantalla). <strong>¿Es eso un riesgo o una oportunidad?</strong> ¿Quién debería controlar estos algoritmos?</p>
-    </div>
-  </section>
-    
-    <div class="task-link">
-      <strong>🎯 Tarea vinculada: Tablero Kanban Colaborativo</strong>
-      <p style="text-align: left; margin-top: 15px; font-size: 1rem; color: #333;">
-        En esta tarea vais a aprender a usar estas herramientas de forma práctica trabajando en equipos de 2 o 3 personas. Podéis usar <strong>Trello</strong> (la más recomendada) para organizaros.<br><br>
-        <strong>Paso a paso de lo que se pide en la tarea:</strong>
-      </p>
-      <ol style="text-align: left; font-size: 0.95rem; color: #333; margin-bottom: 0;">
-        <li><strong>Crear el tablero y colaborar:</strong> Una persona crea un tablero en blanco y debe invitar a los otros miembros del grupo para que sea multiusuario. El tablero simulará vuestra convivencia ("Compañeros de piso") o un "Grupo de estudio".</li>
-        <li><strong>Distribución de columnas:</strong> Podéis mantener ToDo, Doing, Done, o crear vuestras propias columnas si el proyecto lo requiere.</li>
-        <li><strong>Creación de tareas:</strong> <em>Cada persona</em> del grupo debe crear un mínimo de 4 tareas reales (ej. "Comprar leche", "Hacer resumen de TIC", etc.).</li>
-        <li><strong>Asignación:</strong> Las tareas deben tener asignado a un responsable (que aparezca su avatar en la tarjeta).</li>
-        <li><strong>Flujo (WIP):</strong> Debe haber tareas repartidas por todas las columnas, demostrando que el proyecto está "vivo".</li>
-        <li><strong>Entrega al profesor:</strong> Debéis invitar a mi correo (<code>[correo de tu profesor/a]</code>) al tablero para que yo también lo vea, y entregar TODOS Y TODAS la URL pública del tablero en Classroom.</li>
-      </ol>
-    </div>
-
-<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
-</body>
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: #2c3e50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div><script type="module" src="gamify_temario.js"></script></body>
 </html>

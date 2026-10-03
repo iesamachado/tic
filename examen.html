@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIC2Hub — Examen Test</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  
+  <style>
+    body { background-color: var(--bg-body); color: var(--text-primary); display: flex; flex-direction: column; min-height: 100vh; }
+    .exam-header { background: var(--bg-surface); border-bottom: 2px solid var(--border); padding: var(--space-3) var(--space-4); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: var(--space-3); }
+    .timer { font-size: 1.5rem; font-weight: bold; font-family: monospace; color: var(--primary); }
+    .timer.danger { color: var(--error); animation: pulse 1s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .q-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-bottom: 20px; }
+    .q-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; border: 2px solid #ccc; background: white; color: #888; transition: all 0.2s; font-size: 1.1rem; }
+    .q-btn:hover { background: #f8f9fa; border-color: #999; }
+    .q-btn.answered { background: var(--accent); color: var(--text-primary); border-color: var(--text-primary); box-shadow: 2px 2px 0px var(--text-primary); }
+    .q-btn.active { border: 3px solid var(--text-primary); transform: scale(1.1) translate(-1px, -1px); box-shadow: 3px 3px 0px var(--text-primary); color: var(--text-primary); }
+    .q-btn.answered.active { background: var(--accent); color: var(--text-primary); }
+    
+    .option-label { display: block; padding: 15px 20px; margin-bottom: 15px; background: #f8f9fa; border: 2px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.2s; font-size: 1.1rem; }
+    .option-label:hover { background: #eef2f5; border-color: #bdc3c7; }
+    .option-label.selected { background: var(--accent-light, #FFB2EF); border-color: var(--text-primary); box-shadow: 4px 4px 0px var(--text-primary); transform: translate(-2px, -2px); color: var(--text-primary); font-weight: 500; }
+    .option-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #bdc3c7; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; background: transparent; }
+    .option-circle.checked { border-color: var(--accent); background: var(--accent); }
+    
+    .layout-examen { display: flex; flex-wrap: wrap; gap: var(--space-5); width: 100%; }
+    .layout-sidebar { flex: 0 0 250px; border-right: 1px solid var(--border); padding-right: var(--space-4); }
+    .layout-main { flex: 1; min-width: 300px; display: flex; flex-direction: column; }
+    @media (max-width: 768px) {
+      .layout-sidebar { flex: 1 1 100%; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: var(--space-4); }
+    }
+  </style>
+</head>
+<body class="page">
+
+  <div class="exam-header" id="exam-header">
+    <div>
+      <h3 style="margin:0; color: var(--warning);" id="ex-title">Cargando Examen...</h3>
+      <div style="font-size: var(--text-sm); color: var(--text-muted);" id="ex-student"></div>
+    </div>
+    <div style="text-align: center;">
+      <div class="timer" id="timer">--:--</div>
+      <div style="font-size: var(--text-xs); color: var(--text-muted);">Tiempo restante</div>
+    </div>
+    <div>
+      <button class="btn btn-primary" id="btn-entregar" style="font-weight: bold; padding: 10px 20px;">✓ Entregar Examen</button>
+    </div>
+  </div>
+
+  <main class="page-content" style="flex-grow: 1; display: flex; flex-direction: column;">
+    <div class="container" style="flex-grow: 1; display: flex; flex-direction: column;">
+      
+      <!-- UI Examen Activo -->
+      <div id="exam-ui" class="layout-examen" style="display: none;">
+        
+        <!-- Sidebar (Navegación) -->
+        <div class="layout-sidebar">
+          <h4 style="margin-bottom: var(--space-3); color: var(--text-secondary);">Navegación</h4>
+          <div class="q-grid" id="q-nav"></div>
+          
+          <div style="margin-top: var(--space-5); font-size: var(--text-sm); color: var(--text-muted);">
+            <div style="margin-bottom: 4px;"><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--primary); margin-right:8px;"></span> Respondidas: <strong id="count-ans" style="color:var(--text-primary)">0</strong></div>
+            <div><span style="display:inline-block; width:10px; height:10px; border-radius:50%; border:2px solid var(--border); margin-right:8px;"></span> Pendientes: <strong id="count-pend" style="color:var(--text-primary)">0</strong></div>
+          </div>
+        </div>
+
+        <!-- Pregunta Principal -->
+        <div class="layout-main">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+            <h2 style="margin: 0; color: var(--primary);">Pregunta <span id="q-current-num">1</span> de <span id="q-total-num">X</span></h2>
+            <span class="badge badge--muted" id="q-tema-badge"></span>
+          </div>
+          
+          <div style="font-size: 1.25rem; font-weight: 500; margin-bottom: var(--space-5);" id="q-text">
+            <!-- Enunciado -->
+          </div>
+
+          <div id="q-options" style="flex-grow: 1; margin-bottom: var(--space-4);">
+            <!-- Opciones -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; padding-top: var(--space-4); border-top: 1px solid var(--border); margin-top: auto;">
+            <button class="btn btn-ghost" id="btn-prev">← Anterior</button>
+            <button class="btn btn-ghost" id="btn-next">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UI Pantalla de Carga -->
+      <div id="loading-ui" style="text-align: center; padding: 100px 20px;">
+        <h2 style="color: var(--primary);">Preparando tu examen...</h2>
+        <p style="color: var(--text-muted);">Por favor, espera unos segundos.</p>
+      </div>
+
+      <!-- UI Examen Finalizado / Resultados -->
+      <div id="finished-ui" style="display: none; text-align: center; padding: 40px 20px;">
+        <div style="font-size: 4rem; color: var(--success); margin-bottom: var(--space-3);">✓</div>
+        <h1 style="margin-bottom: var(--space-2);">Examen Entregado</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: var(--space-5);">Tus respuestas han sido registradas correctamente.</p>
+        
+        <div id="grade-container" style="display: none; background: var(--bg-card); border: 2px solid var(--success); border-radius: var(--radius-md); padding: var(--space-5); max-width: 400px; margin: 0 auto var(--space-5) auto;">
+          <h3 style="color: var(--success); margin-bottom: var(--space-2);">Tu Nota</h3>
+          <div style="font-size: 4rem; font-weight: bold; color: var(--text-primary); line-height: 1;" id="final-grade">-</div>
+          
+          <div style="display: flex; justify-content: space-around; margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+            <div>
+              <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);" id="stat-correct">0</div>
+              <div style="font-size: var(--text-xs); color: var(--text-muted);">Aciertos</div>
+            </div>
+            <div>
+              <div style="font-size: 1.5rem; font-weight: bold; color: var(--error);" id="stat-incorrect">0</div>
+              <div style="font-size: var(--text-xs); color: var(--text-muted);">Errores</div>
+            </div>
+            <div>
+              <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);" id="stat-blank">0</div>
+              <div style="font-size: var(--text-xs); color: var(--text-muted);">Blancos</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="review-container" style="display: none; text-align: left; max-width: 800px; margin: 0 auto var(--space-5) auto;">
+          <h3 style="border-bottom: 2px solid var(--border); padding-bottom: var(--space-2); margin-bottom: var(--space-4); color: var(--warning);">Revisión del Examen</h3>
+          <div id="review-list"></div>
+        </div>
+
+        <div>
+          <a href="dashboard_student.html" class="btn btn-primary">Volver a mis clases</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/examen.js"></script>
+</body>
+</html>

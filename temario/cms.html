@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Temario TIC2 - WordPress</title>
+<style>
+    :root {
+      --primary: #0073aa; /* WordPress Blue */
+      --secondary: #1d2327; /* WP Dark */
+      --accent: #d63638; /* WP Red alert */
+      --bg: #f0f0f1; /* WP Light Gray */
+      --text: #3c434a;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 850px; 
+      margin: auto; 
+      color: var(--text); 
+      background-color: #fff;
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.5rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    h2 { color: var(--primary); margin-top: 50px; border-left: 4px solid var(--primary); padding-left: 15px; font-size: 1.8rem; background: #f8f9fa; padding: 10px 15px; border-radius: 0 8px 8px 0; }
+    h3 { color: var(--secondary); font-size: 1.4rem; margin-top: 30px; }
+    p { margin-bottom: 15px; font-size: 1.1rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    code { background: var(--bg); padding: 3px 6px; border-radius: 4px; color: var(--accent); font-family: monospace; font-weight: bold; }
+    .info-box { background: #fff; border: 1px solid #c3c4c7; border-left: 5px solid var(--primary); padding: 25px; border-radius: 4px; margin: 30px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--primary); font-size: 1.3rem; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #f0f6fc; border-radius: 8px; font-size: 1.2rem; color: #0366d6; border: 2px dashed #0073aa; font-weight: bold; }
+    
+    /* WordPress UI Mocks */
+    .wp-dashboard { display: flex; border: 1px solid #c3c4c7; border-radius: 4px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .wp-sidebar { width: 200px; background: var(--secondary); color: #fff; padding: 20px 0; font-size: 0.95rem; }
+    .wp-sidebar-item { padding: 10px 20px; cursor: default; display: flex; align-items: center; gap: 10px; }
+    .wp-sidebar-item:hover, .wp-sidebar-item.active { background: #2c3338; color: #72aee6; border-left: 4px solid #72aee6; padding-left: 16px; }
+    .wp-content { flex: 1; background: #f0f0f1; padding: 30px; }
+    
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card { background: #fff; border: 1px solid #dcdcde; padding: 20px; border-radius: 4px; text-align: center; }
+  </style>
+<style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #2c3e50;
+      --accent: #e67e22;
+      --bg: #f8f9fa;
+    }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      line-height: 1.7; 
+      padding: 30px; 
+      max-width: 800px; 
+      margin: auto; 
+      color: #333; 
+      background-color: var(--bg);
+    }
+    .topic-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+    }
+    h1 { color: var(--secondary); margin-bottom: 5px; font-size: 2.2rem; }
+    .subtitle { color: #666; font-size: 1.2rem; margin-top: 0; font-style: italic; }
+    .header-img { margin-top: 20px; }
+    h2 { color: var(--primary); margin-top: 40px; border-left: 4px solid var(--primary); padding-left: 10px; }
+    h3 { color: var(--secondary); }
+    p { margin-bottom: 15px; font-size: 1.05rem; }
+    ul, ol { margin-bottom: 20px; font-size: 1.05rem; }
+    li { margin-bottom: 10px; }
+    code { background: #e9ecef; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-family: monospace; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .info-box { background: #fff; border: 1px solid #dee2e6; border-left: 5px solid var(--accent); padding: 20px; border-radius: 4px; margin: 25px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .info-box h3 { margin-top: 0; color: var(--accent); }
+    .task-link { margin-top: 40px; text-align: center; padding: 20px; background: #e8f4f8; border-radius: 8px; font-size: 1.1rem; color: #0056b3; border: 1px dashed #4a90e2; }
+  </style><style>
+    :root {
+      --primary: #27ae60; /* verde Google/SEO */
+      --secondary: #2c3e50;
+      --accent: #2980b9; /* azul analítica */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .seo-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .analytics-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .search-result { font-family: Arial, sans-serif; background: #fff; padding: 15px; border: 1px solid #dfe1e5; border-radius: 8px; margin: 15px 0; }
+    .search-title { color: #1a0dab; font-size: 20px; margin: 0 0 4px 0; font-weight: normal; }
+    .search-url { color: #202124; font-size: 14px; margin: 0 0 4px 0; }
+    .search-desc { color: #4d5156; font-size: 14px; margin: 0; }
+  </style></head>
+<body>
+
+<div style="position: sticky; top: -30px; background: inherit; padding: 10px 0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1);">
+  <button onclick="window.history.length > 1 ? window.history.back() : window.close()" style="background: #2c3e50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">⬅ Volver</button>
+  <button onclick="window.togglePresentation()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📺 Presentar</button>
+</div>
+
+
+<header class="topic-header">
+<h1>5. WordPress: Tu Propio Medio de Comunicación</h1>
+<p class="subtitle">Aprende a gestionar un Sistema Gestor de Contenidos (CMS) profesional.</p>
+<div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">📰🖥️</div>
+</header>
+<section>
+<h2>1. ¿Qué es WordPress?</h2>
+<p>Un <strong>Content Management System (CMS)</strong> es un software que permite a usuarios sin conocimientos profundos de programación web crear, organizar y publicar contenido. Actualmente, WordPress impulsa más del 40% de todas las páginas web de Internet (incluyendo revistas, periódicos, y webs corporativas).</p>
+<p>La magia de un CMS es que <strong>separa el diseño de la base de datos</strong>. Puedes cambiar el diseño entero de la web pulsando un botón, y todos tus artículos, imágenes y textos seguirán intactos porque están guardados de forma segura en la base de datos.</p>
+</section>
+<section>
+<h2>2. El Panel de Control (Backend)</h2>
+<p>Al crear tu web, tendrás una parte pública (Frontend) que lee todo el mundo en internet, y una parte privada (Backend) a la que accedes añadiendo <code>/wp-admin</code> al final de tu URL. Este es tu centro de mandos:</p>
+<!-- WP Dashboard Mock -->
+<div class="wp-dashboard">
+<div class="wp-sidebar">
+<div class="wp-sidebar-item" style="margin-bottom: 20px; font-weight: bold; font-size: 1.1rem;">W Escritorio</div>
+<div class="wp-sidebar-item active">📌 Entradas</div>
+<div class="wp-sidebar-item">📸 Medios</div>
+<div class="wp-sidebar-item">📄 Páginas</div>
+<div class="wp-sidebar-item">💬 Comentarios</div>
+<div class="wp-sidebar-item">🎨 Apariencia</div>
+<div class="wp-sidebar-item">🔌 Plugins</div>
+<div class="wp-sidebar-item">👥 Usuarios</div>
+</div>
+<div class="wp-content">
+<h2 style="margin-top:0; border:none; padding:0; background:none; color: var(--secondary);">Bienvenido a WordPress</h2>
+<p style="color: #646970;">Desde aquí gobernarás tu emisora de radio digital. Usa el menú izquierdo para navegar.</p>
+<div style="background: #fff; padding: 15px; border-left: 4px solid var(--primary); box-shadow: 0 1px 1px rgba(0,0,0,0.04);">
+<strong>Un vistazo:</strong> Tienes 2 Entradas, 3 Páginas y 1 Administrador.
+        </div>
+</div>
+</div>
+</section>
+<section>
+<h2>3. La Gran Diferencia: Entradas vs Páginas</h2>
+<p>El error más común en WordPress es confundir Páginas y Entradas. Son herramientas totalmente distintas:</p>
+<div class="card-grid">
+<div class="card" style="border-top: 4px solid #f56e28;">
+<div style="font-size: 3rem;">📌</div>
+<h3 style="margin: 10px 0;">Entradas (Posts)</h3>
+<p style="font-size: 0.95rem; text-align: left;">Son artículos de noticias o episodios de podcast. <strong>Son dinámicas</strong>. Tienen fecha de publicación, autor, y lo más importante: <strong>se organizan en Categorías y Etiquetas</strong>. Cada vez que publicas una nueva, aparece automáticamente arriba del todo en el Blog.</p>
+<div style="background: #f0f0f1; padding: 5px; font-size: 0.8rem; font-family: monospace;">Ej: "Episodio 1: IA Generativa"</div>
+</div>
+<div class="card" style="border-top: 4px solid #00a0d2;">
+<div style="font-size: 3rem;">📄</div>
+<h3 style="margin: 10px 0;">Páginas (Pages)</h3>
+<p style="font-size: 0.95rem; text-align: left;">Son lienzos estáticos y <strong>atemporales</strong>. No tienen fecha visible, ni autor, y <strong>NO tienen categorías</strong>. Se utilizan para la estructura fija de la web.</p>
+<br/>
+<div style="background: #f0f0f1; padding: 5px; font-size: 0.8rem; font-family: monospace;">Ej: "Sobre Nosotros", "Contacto"</div>
+</div>
+</div>
+<div class="info-box">
+<h3>📁 Las Categorías son obligatorias</h3>
+<p>Cuando un periodista del equipo escriba un artículo (Entrada), debe asignarle una Categoría (por ejemplo: "Entrevistas", "Noticias Ciberseguridad", "Podcasts"). Si no lo hacéis, WordPress lo meterá en la temida categoría <em>"Sin Categorizar" (Uncategorized)</em>, dando una imagen muy poco profesional al lector.</p>
+</div>
+</section>
+<section>
+<h2>4. Apariencia: Menús y Diseño de Identidad</h2>
+<p>En el apartado <strong>Apariencia &gt; Personalizar</strong>, es donde definimos la "marca" de nuestro programa de radio:</p>
+<ul>
+<li><strong>El Logotipo:</strong> Necesitaréis subir dos imágenes. Un <strong>Logotipo Horizontal</strong> para que encaje bien en la cabecera del ordenador (arriba a la izquierda), y un <strong>Logotipo Cuadrado (Icono del Sitio)</strong> para que aparezca en la pestaña del navegador y en las fotos de perfil de vuestras Redes Sociales.</li>
+<li><strong>El Menú de Navegación:</strong> Es la barra superior de la web. En WordPress, el menú no se crea solo. Debéis ir a <em>Apariencia &gt; Menús</em>, crear uno nuevo, e ir arrastrando las <strong>Páginas</strong> (ej. "Sobre nosotros") y las <strong>Categorías</strong> (ej. "Todos los Podcasts") que queráis que sean visibles.</li>
+</ul>
+<!-- Mini Wireframe -->
+<div style="background: #fff; border: 2px solid #ccc; border-radius: 6px; padding: 10px; margin: 20px 0;">
+<!-- Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+<div style="background: #e74c3c; color: white; padding: 5px 15px; font-weight: bold; border-radius: 4px; font-style: italic;">MI RADIO HORIZONTAL</div>
+<div style="display: flex; gap: 15px; font-size: 0.9rem; color: #0073aa; font-weight: bold;">
+<span>Inicio</span>
+<span>Sobre el Equipo</span>
+<span style="border-bottom: 2px solid #0073aa;">Episodios (Categoría)</span>
+</div>
+</div>
+<!-- Content -->
+<div style="height: 100px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #aaa; border: 2px dashed #ccc;">
+        Aquí irá el reproductor embebido de vuestro Podcast (iVoox/Spotify)
+      </div>
+</div>
+</section>
+<section>
+<h2>5. Usuarios y Roles: Trabajando en Equipo</h2>
+<p>Una redacción no la lleva una sola persona. Desde el menú <strong>Usuarios</strong> podéis invitar a vuestros compañeros. WordPress es muy estricto con la seguridad, por lo que existen diferentes niveles (Roles):</p>
+<ul style="background: #f0f6fc; padding: 20px 20px 20px 40px; border-radius: 8px; border: 1px solid #c5d9ed;">
+<li>👑 <strong>Administrador:</strong> Tiene poder absoluto. Puede cambiar el diseño, instalar cosas y borrar la web entera. Cuidado a quién se lo dais.</li>
+<li>✍️ <strong>Editor:</strong> Puede escribir artículos, y también puede editar o borrar los artículos que hayan escrito sus compañeros.</li>
+<li>📝 <strong>Autor:</strong> Solo puede escribir, publicar y editar <strong>sus propios artículos</strong>. Ideal para los redactores de la radio.</li>
+<li>👀 <strong>Suscriptor:</strong> Solo puede leer contenido privado y dejar comentarios.</li>
+</ul>
+<p><strong>¿Por qué es vital que cada uno tenga su usuario?</strong> Porque cuando publiquéis una Entrada, WordPress firmará automáticamente el artículo con vuestro nombre (Ej: <em>"Publicado por Ana"</em>). Así el profesor sabrá exactamente quién ha trabajado en qué artículo.</p>
+</section>
+<section>
+<h2>6. Privacidad al Publicar: Protege tu identidad digital</h2>
+<p>Publicar en internet es un acto permanente. Algo que subes hoy puede ser indexado por Google y recordado durante años. Antes de pulsar "Publicar", hay que pensar como un profesional de los medios: ¿qué información personal estás exponiendo?</p>
+<div style="background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; border-radius: 4px; margin: 20px 0;">
+<h3 style="margin-top:0; color: #856404;">⚠️ Advertencia Técnica Crítica: El Nombre de Autor</h3>
+<p>Por defecto, WordPress publica cada artículo con el <strong>nombre completo</strong> del usuario que lo ha escrito, visible en la URL y en la página de autor. Si tu nombre de usuario es "Ana García López", cualquiera podrá llegar a una página con todos tus artículos buscando tu nombre en Google.</p>
+<p><strong>Solución:</strong> En tu perfil de WordPress (<em>Usuarios → Tu perfil</em>), hay un campo llamado "Apodo" y un selector "Mostrar nombre públicamente como". Escoge un apodo o seudónimo profesional que no revele tu identidad real.</p>
+</div>
+<h3>Qué NO debe aparecer en una web pública</h3>
+<ul>
+<li>Tu <strong>nombre completo y apellidos</strong> (un apodo o nombre de pila basta).</li>
+<li>Tu <strong>correo personal o del instituto</strong> en páginas de contacto (usa un formulario o correo creado para el proyecto).</li>
+<li>Tu <strong>fotografía real</strong> sin tu consentimiento explícito.</li>
+<li>La <strong>localización exacta</strong> de tu centro, domicilio o lugares que frecuentas.</li>
+<li>Datos de <strong>tus compañeros o compañeras</strong> sin su permiso.</li>
+</ul>
+<h3>El RGPD y tus derechos digitales</h3>
+<p>El <strong>Reglamento General de Protección de Datos (RGPD)</strong> es la ley europea que regula cómo se pueden usar tus datos personales. Como creador de contenido, también tú tienes obligaciones:</p>
+<ul>
+<li>Si tu web tiene un formulario de contacto, estás recogiendo datos. Debes informar de cómo los usarás (<strong>Política de Privacidad</strong>).</li>
+<li>Si publicas fotos de otras personas, necesitas su <strong>consentimiento explícito</strong>.</li>
+<li>Si publicas sobre menores de edad, necesitas la autorización de sus tutores legales.</li>
+</ul>
+<p>Como ciudadano digital, tienes derecho a pedir a cualquier empresa que <strong>elimine tus datos</strong> ("Derecho al Olvido"), a saber qué datos tienen sobre ti, y a que los corrijan si son erróneos.</p>
+</section>
+
+
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+
+<header class="topic-header">
+<h1>6. Entornos Wikis</h1>
+<p class="subtitle">Comunidades de conocimiento y documentación colaborativa.</p>
+<div style="font-size: 5rem; text-align: center; margin-top: 20px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));">🌍</div>
+</header>
+<div class="info-box" style="background-color: #e8f4f8; border-left-color: #3498db;">
+<h3>📚 La Historia de Wikipedia</h3>
+<p>Lanzada el 15 de enero de 2001 por Jimmy Wales y Larry Sanger, <strong>Wikipedia</strong> nació con el objetivo de recopilar todo el conocimiento humano de forma libre, gratuita y accesible para todos. En lugar de contratar a expertos, decidieron que <em>cualquier persona con internet</em> podría escribir y editar artículos.</p>
+<p>Hoy en día es la mayor enciclopedia de la historia de la humanidad, con decenas de millones de artículos en más de 300 idiomas. Todo su inmenso ecosistema funciona sobre <strong>MediaWiki</strong>, un software libre y de código abierto (Open Source) creado específicamente para ella, y que ahora utilizan miles de empresas e instituciones para sus propias wikis internas.</p>
+</div>
+<section>
+<h2>El Concepto Wiki</h2>
+<p>La palabra "Wiki" viene del hawaiano "wiki wiki", que significa "rápido". Fue ideado por el programador Ward Cunningham en 1995. Su filosofía radica en la agilidad: la documentación no la escribe un solo webmaster estático, sino una comunidad activa. Al igual que en Google Drive, las wikis guardan un <strong>historial de versiones</strong>, por lo que si alguien "vandaliza" una página, es muy fácil revertirla a su estado anterior.</p>
+</section>
+<section>
+<h2>Guía de Edición (Sintaxis Estándar)</h2>
+<p>Para escribir rápidamente en una wiki no solemos usar botones (como en Word), sino un <strong>lenguaje de marcado</strong> (Wikitexto o Markdown) que el sistema traduce automáticamente a diseño visual. Aquí tienes las etiquetas imprescindibles para tu trabajo:</p>
+<table style="width:100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem;">
+<tr style="background-color: #2c3e50; color: white;">
+<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Elemento</th>
+<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Código a escribir</th>
+<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Resultado visual</th>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Negrita</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><code>'''Texto en negrita'''</code> o <code>**Texto**</code></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Texto en negrita</strong></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Títulos (h1, h2)</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><code>== Título ==</code><br/><code>=== Subtítulo ===</code></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><span style="font-size:1.2rem; font-weight:bold; border-bottom:1px solid #ccc;">Título</span></td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Enlace Interno</strong> (A otra pág. de la wiki)</td>
+<td style="padding: 10px; border: 1px solid #ddd;"><code>[[Nombre de la página]]</code></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><a href="#" style="color:#0056b3;">Nombre de la página</a></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Enlace Externo</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><code>[https://www.incibe.es Web del INCIBE]</code></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><a href="#" style="color:#0056b3;">Web del INCIBE</a></td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Imagen</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><code>[[Archivo:foto.jpg|thumb|Texto alternativo]]</code></td>
+<td style="padding: 10px; border: 1px solid #ddd;"><em>(Muestra la imagen con un pie de foto)</em></td>
+</tr>
+<tr style="background-color: #f9f9f9;">
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Tabla simple</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;">
+<pre style="padding:5px; margin:0; font-size:0.8rem;">{| class="wikitable"
+|-
+! Columna 1 !! Columna 2
+|-
+| Dato A || Dato B
+|}</pre>
+</td>
+<td style="padding: 10px; border: 1px solid #ddd;"><em>(Genera una tabla cuadriculada)</em></td>
+</tr>
+</table>
+</section>
+
+
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+
+<h1>16. SEO y Analítica Web</h1>
+<p style="font-size: 1.2rem; color: #666; font-style: italic;">No basta con publicar: aprende a que Google te encuentre y mide quién escucha tu podcast.</p>
+<section>
+<h2>1. ¿Qué es el SEO y por qué importa?</h2>
+<div class="seo-card">
+<p><strong>SEO = Search Engine Optimization</strong> (Optimización para Motores de Búsqueda). Es el arte de hacer que tu web aparezca en los primeros resultados de Google sin pagar publicidad.</p>
+<p>📈 <em>Dato impactante:</em> El 75% de los usuarios nunca pasa de la primera página de resultados de Google. Si estás en la página 2, es como si no existieras.</p>
+<h3>Tipos de SEO:</h3>
+<ul>
+<li><strong>On-page:</strong> lo que haces DENTRO de tu web (títulos, contenido, etiquetas, URLs).</li>
+<li><strong>Off-page:</strong> lo que hacen OTROS hacia tu web (enlaces externos, menciones en redes sociales).</li>
+<li><strong>SEO técnico:</strong> la arquitectura de la web (velocidad de carga, diseño responsive, HTTPS).</li>
+</ul>
+<p><strong>Para nuestro podcast:</strong> Queremos que cuando alguien busque "podcast tecnología estudiantes", nuestro proyecto aparezca de los primeros.</p>
+</div>
+</section>
+<section>
+<h2>2. SEO On-Page en WordPress</h2>
+<p>Estos son los factores que puedes controlar directamente al publicar un episodio:</p>
+<ul>
+<li><strong>Título de la página (Title tag):</strong> Es el enlace azul en Google. Debe incluir tu palabra clave. (50-60 caracteres).</li>
+<li><strong>Meta descripción:</strong> El texto gris debajo del título. Debe invitar al clic. (150-160 caracteres).</li>
+<li><strong>URLs amigables:</strong> En lugar de <code>miweb.com/?p=123</code>, usa <code>miweb.com/episodio-1-inteligencia-artificial</code>.</li>
+<li><strong>Estructura de encabezados (H1, H2, H3):</strong> Ayuda a Google a entender la jerarquía. Solo un H1 por página.</li>
+<li><strong>Texto alternativo (alt) en imágenes:</strong> Google lee imágenes a través de este atributo. Ej: <code>alt="Carátula episodio IA podcast escolar"</code></li>
+</ul>
+<div class="search-result">
+<div class="search-url">https://mipodcast.wordpress.com › episodio-1-ia</div>
+<h3 class="search-title">Episodio 1: Inteligencia Artificial en el Aula | Podcast TIC</h3>
+<p class="search-desc">Descubre cómo la Inteligencia Artificial está cambiando la educación. Entrevistamos a expertos y debatimos sobre ChatGPT. ¡Escucha el podcast completo!</p>
+</div>
+</section>
+<section>
+<h2>3. Google Search Console</h2>
+<p>Es una herramienta gratuita de Google que te dice exactamente cómo ve el buscador tu web. Se conecta verificando la propiedad en WordPress.</p>
+<div class="analytics-card">
+<h3>Métricas principales:</h3>
+<ul>
+<li><strong>Clics:</strong> Cuántas veces han entrado a tu web desde Google.</li>
+<li><strong>Impresiones:</strong> Cuántas veces ha aparecido tu web en resultados de búsquedas.</li>
+<li><strong>CTR (Click-Through Rate):</strong> Porcentaje de impresiones que se convierten en clics.</li>
+<li><strong>Posición media:</strong> En qué posición del ranking apareces.</li>
+</ul>
+</div>
+</section>
+<section>
+<h2>4. Analítica Web — Conoce a tu Audiencia</h2>
+<p>Mediante las estadísticas de WordPress y plataformas como Spotify/iVoox, puedes medir tu éxito:</p>
+<ul>
+<li><strong>Sesiones / Visitas:</strong> Número total de visitas.</li>
+<li><strong>Fuentes de tráfico:</strong> Orgánico (Google), Directo (teclean URL), Referral (enlaces de terceros) o Social (redes).</li>
+<li><strong>Tasa de rebote:</strong> Porcentaje de gente que entra y se va sin hacer nada. (Una tasa alta es mala).</li>
+</ul>
+<p>El objetivo es cruzar los datos de tu web con los de las plataformas de audio para entender qué episodios triunfan más y de dónde viene tu audiencia.</p>
+</section>
+<section>
+<h2>5. Difusión Estratégica en Redes</h2>
+<p>Publicar en redes dirige tráfico inicial hacia el podcast. Sigue esta regla básica:</p>
+<ul>
+<li><strong>Pre-lanzamiento (Teaser):</strong> "Mañana publicamos..."</li>
+<li><strong>Lanzamiento:</strong> "¡Ya disponible! Enlace en la bio."</li>
+<li><strong>Post-lanzamiento (Recorte/Clip):</strong> Sube una frase impactante del episodio 2 días después para reactivar interés.</li>
+</ul>
+</section>
+
+
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: #2c3e50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div><script type="module" src="gamify_temario.js"></script></body>
+</html>

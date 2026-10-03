@@ -1,5 +1,7 @@
 import { setupAuthListener } from "../../js/common/auth.js";
+import { showToast } from '../../js/common/ui.js';
 import { saveGameResult } from "../../js/common/db.js";
+import { addPointsAndCheckLogros, awardMedal } from "../../js/common/gamification.js";
 import { QUESTIONS } from "./questions.js";
 
 // Game State
@@ -148,6 +150,16 @@ async function endGame() {
   if (currentUser) {
     try {
       await saveGameResult(GAME_ID, currentUser.uid, classId, score);
+      
+      const gamificationPts = score * 10;
+      const result = await addPointsAndCheckLogros(currentUser.uid, gamificationPts, null, 'tic2_users');
+      await awardMedal(currentUser.uid, 'first_blood', 'tic2_users');
+      if (score === TOTAL_QUESTIONS) await awardMedal(currentUser.uid, 'perfeccionista', 'tic2_users');
+      
+      if (result.leagueUp) {
+        showToast('¡Nueva Liga Desbloqueada!', `¡Has ascendido a la ${result.newLeague.name} ${result.newLeague.icon}!`, 'success', 5000);
+      }
+      
       console.log('Puntuación guardada exitosamente.');
     } catch (e) {
       console.error('Error guardando puntuación:', e);

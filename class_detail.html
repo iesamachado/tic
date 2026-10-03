@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="TIC2Hub — Gestión de clase. Administra alumnos, habilita juegos y sincroniza con Google Classroom.">
   <title>TIC2Hub — Gestión de Clase</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 
   <link rel="stylesheet" href="css/common/design-system.css">
   <link rel="stylesheet" href="css/common/reset.css">
@@ -45,6 +45,8 @@
         <button class="tab-btn" data-tab="students">👨‍🎓 Alumnos</button>
         <button class="tab-btn" data-tab="assignments">📋 Tareas</button>
         <button class="tab-btn" data-tab="results">📊 Resultados</button>
+        <button class="tab-btn" data-tab="exams">📝 Exámenes Test</button>
+        <button class="tab-btn" data-tab="theory">📖 Tests de Teoría</button>
       </div>
 
       <!-- TAB: CONTENIDOS (habilitación) -->
@@ -78,6 +80,27 @@
 
       <!-- TAB: ALUMNOS -->
       <section id="tab-students" class="tab-content" style="display:none">
+        
+        <!-- Gamification Podio y Gremios -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title" style="color: #f39c12;">🏆 Top Alumnos (Podio)</h2>
+            </div>
+            <div id="podio-container" style="padding: 1rem;">
+              <div class="skeleton" style="height: 60px; margin-bottom: 10px;"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title" style="color: #2980b9;">🛡️ Ranking de Gremios</h2>
+            </div>
+            <div id="gremios-container" style="padding: 1rem;">
+              <div class="skeleton" style="height: 60px; margin-bottom: 10px;"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">Alumnos de la clase</h2>
@@ -91,7 +114,11 @@
             </div>
           </div>
 
-          <div id="students-list">
+          <details style="padding: 0 1.5rem 1.5rem;">
+            <summary style="cursor: pointer; font-weight: bold; color: var(--primary); padding-bottom: 10px; list-style: none;">
+              👁️ Mostrar/Ocultar lista completa de alumnos
+            </summary>
+            <div id="students-list">
             <div class="skeleton" style="height:60px;margin-bottom:8px"></div>
             <div class="skeleton" style="height:60px;margin-bottom:8px"></div>
             <div class="skeleton" style="height:60px"></div>
@@ -100,6 +127,7 @@
           <p class="empty-state" id="no-students" style="display:none">
             No hay alumnos en esta clase todavía. Usa el botón "+ Añadir alumnos", comparte el PIN o sincroniza desde Classroom.
           </p>
+          </details>
         </div>
       </section>
 
@@ -138,13 +166,127 @@
           </div>
           <div class="card">
             <h3 class="card-title">📋 Ranking completo</h3>
-            <div id="results-ranking"></div>
+            <details style="margin-top: 10px;">
+              <summary style="cursor: pointer; font-weight: bold; color: var(--primary); margin-bottom: 1rem; list-style: none;">
+                👁️ Mostrar/Ocultar ranking completo
+              </summary>
+              <div id="results-ranking"></div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: EXÁMENES -->
+      <section id="tab-exams" class="tab-content" style="display:none">
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <h2 class="card-title">Exámenes Test de la Clase</h2>
+            <button class="btn btn-primary" id="btn-new-exam">➕ Generar Examen</button>
+          </div>
+          <p class="form-hint" style="margin-bottom:var(--space-5)">
+            Los exámenes activos aparecerán en el panel de los alumnos. El tiempo empezará a contar desde el momento en que lo actives.
+          </p>
+          
+          <div style="overflow-x: auto;">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Título</th>
+                  <th>Preguntas</th>
+                  <th>Tiempo</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th style="text-align: right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="examenes-test-list">
+                <tr><td colspan="6" style="text-align: center; padding: var(--space-6); color: var(--text-muted);">Cargando exámenes...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+        <!-- TAB: TESTS DE TEORÍA -->
+      <section id="tab-theory" class="tab-content animate-fade-up delay-2" style="display:none;">
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 class="card-title">📖 Resultados de Tests de Teoría</h2>
+            <button id="btn-refresh-theory" class="btn btn-outline btn--sm"><i class="fas fa-sync"></i> Actualizar</button>
+          </div>
+          <p class="form-hint" style="margin-bottom:var(--space-5)">
+            Notas de los tests (sobre 10) realizados por los alumnos al final de los temas de teoría. 
+          </p>
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; min-width: 600px;">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Alumno</th>
+                  <th style="width: 25%;">Tema</th>
+                  <th style="width: 20%;">Fecha</th>
+                  <th style="width: 30%;">Nota</th>
+                </tr>
+              </thead>
+              <tbody id="theory-results-list">
+                <tr><td colspan="4" class="text-center text-muted">Cargando resultados...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
     </div>
   </main>
+
+  <!-- Modal: Generar Examen Test -->
+  <div id="modal-new-exam" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box modal-box--wide">
+      <div class="modal-header">
+        <h3>🎲 Generar Examen Test Aleatorio</h3>
+        <button class="modal-close" id="btn-close-new-exam">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Título del Examen</label>
+            <input type="text" id="gen-titulo" class="form-input" placeholder="Ej: Control Tema 1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tiempo (Minutos)</label>
+            <input type="number" id="gen-tiempo" class="form-input" value="30" min="5" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+          <div class="form-group">
+            <label class="form-label">Bloque de Teoría (Opcional)</label>
+            <select id="gen-topic" class="form-input">
+              <option value="">Todos los bloques</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nº de Preguntas a generar</label>
+            <input type="number" id="gen-num" class="form-input" value="10" min="1" max="100" required>
+          </div>
+        </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: var(--space-4);">
+          <button type="button" class="btn btn-secondary" id="btn-preview-examen">🎲 Generar Borrador</button>
+        </div>
+
+        <div id="gen-preview-container" style="display: none; background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: var(--space-4); max-height: 250px; overflow-y: auto;">
+          <h4 style="margin-bottom: var(--space-2); color: var(--primary);">Borrador generado (<span id="gen-preview-count">0</span> preguntas)</h4>
+          <div id="gen-preview-list" style="font-size: var(--text-sm);"></div>
+        </div>
+
+        <div class="modal-footer" style="padding:0; margin-top:var(--space-5); border:none">
+          <button type="button" class="btn btn-ghost" id="btn-cancel-new-exam">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btn-save-examen" disabled>Guardar y Crear Examen (Oculto)</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal: Nueva tarea -->
   <div id="modal-new-assignment" class="modal-backdrop" aria-hidden="true" role="dialog"
@@ -193,6 +335,7 @@
   </div>
 
   <!-- Modal: Añadir alumnos manualmente -->
+
   <div id="modal-add-students" class="modal-backdrop" aria-hidden="true" role="dialog"
        aria-modal="true" aria-labelledby="add-students-title">
     <div class="modal-box">
@@ -237,8 +380,24 @@
     </div>
   </div>
 
+  <!-- Modal: Medallero del Alumno -->
+  <div id="modal-medallas" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🏅 Medallero: <span id="medallas-alumno-nombre"></span></h3>
+        <button class="modal-close" onclick="document.getElementById('modal-medallas').classList.remove('modal-backdrop--visible')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="medallas-alumno-list" style="display: flex; flex-direction: column; gap: 1rem;">
+        </div>
+      </div>
+    </div>
+  </div>
+
 <div id="toast-container" aria-live="polite"></div>
 
   <script type="module" src="js/class_detail.js"></script>
 </body>
 </html>
+
+

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TIC2Hub — Mis Logros">
+  <title>TIC2Hub — Mis Logros</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+
+  <link rel="stylesheet" href="css/common/design-system.css">
+  <link rel="stylesheet" href="css/common/reset.css">
+  <link rel="stylesheet" href="css/common/layout.css">
+  <link rel="stylesheet" href="css/common/components.css">
+  <style>
+    .layout-logros { display: flex; flex-direction: column; gap: var(--space-4); }
+    @media (min-width: 900px) {
+      .layout-logros { flex-direction: row; }
+      .layout-logros-left { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: var(--space-4); }
+      .layout-logros-right { flex: 1.5; min-width: 450px; }
+    }
+    
+    /* When no guild, make it stack vertically */
+    .layout-logros.no-guild-layout { flex-direction: column !important; }
+    .layout-logros.no-guild-layout .layout-logros-left, 
+    .layout-logros.no-guild-layout .layout-logros-right { width: 100%; max-width: 100%; flex: none; }
+  </style>
+</head>
+<body class="page">
+
+  <div id="app-header"></div>
+
+  <main class="page-content">
+    <div class="container animate-fade-up">
+
+      <!-- CABECERA DE PERFIL COMPACTA -->
+      <div class="card" style="margin-bottom: var(--space-4); display: flex; align-items: center; justify-content: space-between; padding: 20px; flex-wrap: wrap; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <img id="logros-avatar" src="" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #f1c40f; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: #fff;">
+          <div>
+            <h1 id="logros-name" style="font-size: 1.8rem; color: var(--text-base); margin: 0; margin-bottom: 5px;">...</h1>
+            <div style="font-size: 1rem; color: var(--text-muted);">Tus logros y progreso</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <div style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); border: 1px solid #f48fb1; padding: 10px 20px; border-radius: 8px; text-align: center; min-width: 100px;">
+            <div style="font-size: 1.3rem; font-weight: bold; color: #c2185b;" id="stat-xp">0</div>
+            <div style="font-size: 0.8rem; color: #c2185b; font-weight: bold;">PUNTOS XP</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); border: 1px solid #90caf9; padding: 10px 20px; border-radius: 8px; text-align: center; min-width: 120px;">
+            <div style="font-size: 1.3rem; font-weight: bold; color: #1976d2;">
+               <span id="stat-league-icon"></span> <span id="stat-league-name"></span>
+            </div>
+            <div style="font-size: 0.8rem; color: #1976d2; font-weight: bold;">LIGA ACTUAL</div>
+          </div>
+          <div style="background: linear-gradient(135deg, #fff8e1, #ffecb3); border: 1px solid #ffe082; padding: 10px 20px; border-radius: 8px; text-align: center; min-width: 100px;">
+            <div style="font-size: 1.3rem; font-weight: bold; color: #f57f17;" id="stat-medals">0</div>
+            <div style="font-size: 0.8rem; color: #f57f17; font-weight: bold;">MEDALLAS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EL CAMINO DE LAS LIGAS (HORIZONTAL ARRIBA) -->
+      <div class="card" style="margin-bottom: var(--space-4);">
+        <div class="card-header"><h3 class="card-title">📈 El Camino de las Ligas</h3></div>
+        <div id="student-leagues-list" style="padding: 15px; display: flex; flex-direction: row; gap: 15px; overflow-x: auto; padding-bottom: 25px;">
+          <div class="text-muted" style="text-align: center; width: 100%;">Cargando ligas...</div>
+        </div>
+      </div>
+
+      <div class="layout-logros" id="main-layout-container">
+        <!-- COLUMNA IZQUIERDA (Gremio) -->
+        <div class="layout-logros-left">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">🛡️ Mi Gremio</h3>
+            </div>
+            <div id="gremio-container" style="padding: 1rem;">
+              <div class="text-muted" style="text-align: center;">Cargando gremio...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA (Medallero) -->
+        <div class="layout-logros-right">
+          <div class="card" style="height: 100%;">
+            <div class="card-header"><h3 class="card-title">🏅 Medallero</h3></div>
+            <div id="student-medals-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding: 15px;">
+              <div class="text-muted" style="grid-column: 1/-1; text-align: center;">Cargando medallas...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="js/logros.js"></script>
+</body>
+</html>

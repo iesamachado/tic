@@ -22,6 +22,7 @@ import {
   serverTimestamp, Timestamp,
   onSnapshot
 } from './firebase-config.js';
+export { db };
 import { generatePin, generateRoomCode } from './utils.js';
 
 // ══════════════════════════════════════════════════════════════════

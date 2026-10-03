@@ -1,11 +1,13 @@
 // ═══════════════════════════════════════════════════════════════════════
 //  CLASSHUB — dashboard_student.js
 // ═══════════════════════════════════════════════════════════════════════
+import { requireAuth, currentUser, currentProfile } from "./common/auth.js";
+import { getStudentClasses, joinClassByPin, getStudentResults, getClassAssignments, db } from "./common/db.js";
 
-import { requireAuth, currentUser, currentProfile } from './common/auth.js';
-import { getStudentClasses, joinClassByPin, getStudentResults, getClassAssignments } from './common/db.js';
 import { renderHeader, showToast, showLoading, hideLoading } from './common/ui.js';
 import { GAMES, TOPICS, $, escapeHtml, formatDate, getUrlParams } from './common/utils.js';
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getLeague, MEDALS_CATALOG } from './common/gamification.js';
 
 let myClasses = [];
 
@@ -20,8 +22,11 @@ requireAuth({
     checkNoAccessAlert();
     await loadClasses(user);
     await loadAssignments(user);
+    await loadExams(user);
     await loadHistory(user);
+    await loadTheoryHistory(user);
     setupModals(user);
+    
   }
 });
 
@@ -313,4 +318,179 @@ function setupModals(user) {
       hideLoading();
     }
   });
+}
+
+// ── Exámenes Test del alumno ────────────────────────────────────
+async function loadExams(user) {
+  try {
+    const secActive = $('section-active-exams');
+    const secHistory = $('section-history-exams');
+    const listActive = $('active-exams-list');
+    const listHistory = $('history-exams-list');
+    
+    if (!secActive || !secHistory || myClasses.length === 0) return;
+
+    let htmlActive = '';
+    let htmlHistory = '';
+    let countActive = 0;
+    let countHistory = 0;
+
+    for (const cls of myClasses) {
+      // Buscar exámenes para esta clase
+      const qEx = query(collection(db, "examenes_test"), where("claseId", "==", cls.id), where("estado", "in", ["activo", "cerrado"]));
+      const snapEx = await getDocs(qEx);
+      
+      for (const d of snapEx.docs) {
+        const ex = d.data();
+        
+        const qRes = query(collection(db, "respuestas_test"), where("examenId", "==", d.id), where("uid", "==", user.uid));
+        const snapRes = await getDocs(qRes);
+        const entregado = !snapRes.empty;
+        
+        const numQ = ex.preguntas ? ex.preguntas.length : 0;
+        const isPending = !entregado && ex.estado === 'activo';
+        
+        if (isPending) {
+          countActive++;
+          htmlActive += `
+            <div class="card" style="border-left: 4px solid var(--primary);">
+              <div style="display:flex; align-items:center; gap:var(--space-2); margin-bottom:var(--space-2);">
+                <span style="font-size: 1.5rem;">📝</span>
+                <h3 style="margin: 0; font-size: 1.1rem;">${escapeHtml(ex.titulo)}</h3>
+              </div>
+              <div style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-2);">
+                <strong>Clase:</strong> ${escapeHtml(cls.name)}
+              </div>
+              <div style="display:flex; justify-content: space-between; font-size: var(--text-sm); background: var(--bg-surface); padding: var(--space-2); border-radius: var(--radius-sm); margin-bottom: var(--space-3);">
+                <span><i class="fas fa-list-ol"></i> ${numQ} preg.</span>
+                <span><i class="fas fa-clock"></i> ${ex.tiempoMinutos} min.</span>
+              </div>
+              <a href="examen.html?id=${d.id}" class="btn btn-primary" style="display: block; width: 100%; text-align: center;">▶ Entrar al Examen</a>
+            </div>
+          `;
+        } else {
+          countHistory++;
+          let actionHtml = '';
+          if (entregado) {
+            if (ex.resultadosPublicados) {
+              actionHtml = `<a href="examen.html?id=${d.id}" class="btn btn-ghost btn--sm" style="border: 2px solid var(--success); color: var(--success); padding: 5px 10px;">📊 Ver nota</a>`;
+            } else {
+              actionHtml = `<span style="color: var(--success); font-weight: bold;">✅ Entregado</span>`;
+            }
+          } else {
+            actionHtml = `<span style="color: var(--error); font-weight: bold;">❌ Cerrado</span>`;
+          }
+          
+          htmlHistory += `
+            <tr>
+              <td style="font-weight:bold; text-align:left;">
+                 ${escapeHtml(ex.titulo)}
+                 <div style="font-size: 0.85em; color: var(--text-muted); font-weight:normal; margin-top:4px;">⏱️ ${ex.tiempoMinutos} min.</div>
+              </td>
+              <td style="text-align:left;">${escapeHtml(cls.name)}</td>
+              <td style="text-align:center;">${numQ}</td>
+              <td style="text-align:right;">${actionHtml}</td>
+            </tr>
+          `;
+        }
+      }
+    }
+
+    if (countActive > 0) {
+      secActive.style.display = 'block';
+      listActive.innerHTML = htmlActive;
+    }
+    
+    if (countHistory > 0) {
+      secHistory.style.display = 'block';
+      listHistory.innerHTML = htmlHistory;
+    }
+    
+  } catch (error) {
+    console.error("Error loading exams:", error);
+  }
+}
+
+
+
+async function loadTheoryHistory(user) {
+  try {
+    const q = query(collection(db, "tic2_tests_teoria"), where("uid", "==", user.uid));
+    const snap = await getDocs(q);
+    
+    if (snap.empty) {
+      $('section-theory').style.display = 'none';
+      return;
+    }
+    
+    let results = [];
+    snap.forEach(d => results.push({ id: d.id, ...d.data() }));
+    
+    // Sort chronological to assign attempt numbers
+    results.sort((a, b) => {
+      const ta = a.fecha && a.fecha.toMillis ? a.fecha.toMillis() : 0;
+      const tb = b.fecha && b.fecha.toMillis ? b.fecha.toMillis() : 0;
+      return ta - tb;
+    });
+    
+    // Group by topic and assign attempt numbers
+    let attemptsCount = {};
+    results.forEach(r => {
+       const key = r.topicKey;
+       attemptsCount[key] = (attemptsCount[key] || 0) + 1;
+       r.attemptNumber = attemptsCount[key];
+       r.isLastAttempt = false; // We will mark the last one
+    });
+    
+    // Mark the last attempts
+    for (const key in attemptsCount) {
+       const lastAttempt = results.slice().reverse().find(r => r.topicKey === key);
+       if (lastAttempt) lastAttempt.isLastAttempt = true;
+    }
+    
+    // Sort descending by date for display
+    results.sort((a, b) => {
+      const ta = a.fecha && a.fecha.toMillis ? a.fecha.toMillis() : 0;
+      const tb = b.fecha && b.fecha.toMillis ? b.fecha.toMillis() : 0;
+      return tb - ta;
+    });
+    
+    const tbody = $('theory-tbody');
+    let html = '';
+    
+    results.forEach(r => {
+      const isPassed = r.score >= 5;
+      const isGold = r.score >= 9;
+      let scoreBadge = '';
+      if (isGold) scoreBadge = `<span class="badge badge--success">⭐ ${r.score}</span>`;
+      else if (isPassed) scoreBadge = `<span class="badge" style="background:#2ecc71; color:white;">${r.score}</span>`;
+      else scoreBadge = `<span class="badge badge--error">${r.score}</span>`;
+      
+      let fDate = "Desconocida";
+      if (r.fecha && r.fecha.toDate) {
+         fDate = r.fecha.toDate().toLocaleString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      }
+      
+      let intentBadge = r.isLastAttempt 
+         ? `<span class="badge" style="background:var(--accent); color:var(--text-primary); font-size:0.7em;">INTENTO ${r.attemptNumber} (VÁLIDO)</span>`
+         : `<span class="badge badge--outline" style="font-size:0.7em;">Intento ${r.attemptNumber}</span>`;
+      
+      html += `
+        <tr ${r.isLastAttempt ? 'style="background: rgba(255, 178, 239, 0.1);"' : 'style="opacity: 0.7;"'}>
+          <td style="font-weight:bold;">
+             ${escapeHtml(r.topicTitle || r.topicKey)}<br>
+             ${intentBadge}
+          </td>
+          <td>${r.rawScore} / ${r.maxPossible}</td>
+          <td>${scoreBadge}</td>
+          <td style="font-size:0.85em; color:var(--text-muted);">${fDate}</td>
+        </tr>
+      `;
+    });
+    
+    tbody.innerHTML = html;
+    $('section-theory').style.display = 'block';
+  } catch (e) {
+    console.error("Error loading theory history:", e);
+  }
 }

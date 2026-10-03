@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Temario TIC2 - Programación JavaScript</title>
-  <style>
+<meta charset="utf-8"/>
+<title>Temario TIC2 - Programación JavaScript</title>
+<style>
     :root {
       --primary: #f1c40f; /* Amarillo JS */
       --secondary: #2c3e50;
@@ -21,20 +22,61 @@
     pre code { background: none; color: inherit; padding: 0; }
     .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
   </style>
-</head>
+<style>
+    :root {
+      --primary: #16a085; /* verde azulado */
+      --secondary: #2c3e50;
+      --accent: #d35400; /* naranja */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .concept-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .bug-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  </style><style>
+    :root {
+      --primary: #16a085; /* verde azulado */
+      --secondary: #2c3e50;
+      --accent: #d35400; /* naranja */
+      --bg: #f8f9fa;
+      --text: #333;
+    }
+    body { font-family: system-ui, sans-serif; line-height: 1.7; padding: 30px; max-width: 900px; margin: auto; color: var(--text); background-color: var(--bg); }
+    h1 { color: var(--secondary); font-size: 2.5rem; border-bottom: 4px solid var(--primary); padding-bottom: 10px; }
+    h2 { color: var(--secondary); margin-top: 50px; font-size: 1.8rem; border-left: 5px solid var(--primary); padding-left: 15px; }
+    h3 { color: var(--accent); }
+    p, ul, ol { font-size: 1.1rem; }
+    pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.95rem; font-family: monospace; }
+    code { background: #f0f0f1; padding: 3px 6px; border-radius: 4px; color: #c0392b; font-weight: bold; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .task-link { margin-top: 50px; text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 1.2rem; color: var(--secondary); border: 2px dashed var(--accent); font-weight: bold; }
+    
+    .concept-card { background: white; border-top: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .bug-card { background: white; border-top: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  </style></head>
 <body>
-  <div style="text-align: right; margin-bottom: 20px;">
-    <a href="../index.html" style="background: var(--secondary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">🏠 Volver al Dashboard</a>
-  </div>
 
-  <h1>11. Programación JavaScript Clásico</h1>
-  <p style="font-size: 1.2rem; color: #666; font-style: italic;">Dándole cerebro e interactividad a tu página web.</p>
+<div style="position: sticky; top: -30px; background: inherit; padding: 10px 0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.1);">
+  <button onclick="window.history.length > 1 ? window.history.back() : window.close()" style="background: #2c3e50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">⬅ Volver</button>
+  <button onclick="window.togglePresentation()" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📺 Presentar</button>
+</div>
 
-  <section>
-    <h2>1. El DOM: Controlando el HTML</h2>
-    <p>JavaScript (JS) es el lenguaje de programación que se ejecuta dentro del navegador. Su trabajo principal es manipular el <strong>DOM (Document Object Model)</strong>, que es la estructura de tu web.</p>
-    <p>Para cambiar algo en tu página, primero tienes que "atrapar" el elemento usando su ID:</p>
-    <pre><code>// 1. Capturamos el elemento con id="titulo"
+<h1>11. Programación JavaScript Clásico</h1>
+<p style="font-size: 1.2rem; color: #666; font-style: italic;">Dándole cerebro e interactividad a tu página web.</p>
+<section>
+<h2>1. El DOM: Controlando el HTML</h2>
+<p>JavaScript (JS) es el lenguaje de programación que se ejecuta dentro del navegador. Su trabajo principal es manipular el <strong>DOM (Document Object Model)</strong>, que es la estructura de tu web.</p>
+<p>Para cambiar algo en tu página, primero tienes que "atrapar" el elemento usando su ID:</p>
+<pre><code>// 1. Capturamos el elemento con id="titulo"
 const miTitulo = document.getElementById('titulo');
 
 // 2. Le cambiamos el texto
@@ -42,32 +84,27 @@ miTitulo.innerText = "¡Hola Mundo desde JS!";
 
 // 3. Le cambiamos el estilo CSS (ej. el color)
 miTitulo.style.color = "red";</code></pre>
-  </section>
-
-  <section>
-    <h2>2. Eventos: Escuchando al Usuario</h2>
-    <p>Las webs son interactivas gracias a los eventos (clicks de ratón, movimientos, pulsaciones de teclado). Para reaccionar a ellos usamos <code>addEventListener</code>.</p>
-    
-    <h3>Capturar el Teclado</h3>
-    <p>Si estás haciendo un juego, necesitas saber cuándo el jugador pulsa las flechas del teclado. El evento <code>keydown</code> se dispara cuando hundes la tecla, y <code>keyup</code> cuando la sueltas.</p>
-    <pre><code>document.addEventListener('keydown', (evento) => {
+</section>
+<section>
+<h2>2. Eventos: Escuchando al Usuario</h2>
+<p>Las webs son interactivas gracias a los eventos (clicks de ratón, movimientos, pulsaciones de teclado). Para reaccionar a ellos usamos <code>addEventListener</code>.</p>
+<h3>Capturar el Teclado</h3>
+<p>Si estás haciendo un juego, necesitas saber cuándo el jugador pulsa las flechas del teclado. El evento <code>keydown</code> se dispara cuando hundes la tecla, y <code>keyup</code> cuando la sueltas.</p>
+<pre><code>document.addEventListener('keydown', (evento) =&gt; {
   if (evento.key === "ArrowRight") {
     console.log("El jugador ha pulsado la flecha derecha");
   } else if (evento.key === "Space") {
     console.log("¡Saltar!");
   }
 });</code></pre>
-  </section>
-
-  <section>
-    <h2>3. Práctica: Cómo mover una imagen con el teclado</h2>
-    <p>Vamos a combinar los dos conceptos anteriores. Imagina que tienes en tu HTML una imagen de un personaje con posicionamiento absoluto:</p>
-    <pre><code>&lt;!-- En tu index.html --&gt;
+</section>
+<section>
+<h2>3. Práctica: Cómo mover una imagen con el teclado</h2>
+<p>Vamos a combinar los dos conceptos anteriores. Imagina que tienes en tu HTML una imagen de un personaje con posicionamiento absoluto:</p>
+<pre><code>&lt;!-- En tu index.html --&gt;
 &lt;img id="personaje" src="mario.png" style="position: absolute; left: 50px; top: 100px;"&gt;</code></pre>
-    
-    <p>Ahora, en JavaScript, capturamos esa imagen, creamos una variable para guardar sus coordenadas, y la modificamos cada vez que pulsemos las flechas:</p>
-    
-    <pre><code>// 1. Capturamos la imagen
+<p>Ahora, en JavaScript, capturamos esa imagen, creamos una variable para guardar sus coordenadas, y la modificamos cada vez que pulsemos las flechas:</p>
+<pre><code>// 1. Capturamos la imagen
 const jugador = document.getElementById('personaje');
 
 // 2. Guardamos su posición X (horizontal) y Y (vertical)
@@ -76,7 +113,7 @@ let posicionY = 100;
 const VELOCIDAD = 10;
 
 // 3. Escuchamos las teclas
-document.addEventListener('keydown', (evento) => {
+document.addEventListener('keydown', (evento) =&gt; {
   
   if (evento.key === "ArrowRight") {
     posicionX = posicionX + VELOCIDAD; // Sumar mueve a la derecha
@@ -95,15 +132,13 @@ document.addEventListener('keydown', (evento) => {
   jugador.style.left = posicionX + "px";
   jugador.style.top = posicionY + "px";
 });</code></pre>
-  </section>
-
-  <section>
-    <h2>4. Programación Orientada a Objetos (OOP)</h2>
-    <p>Hasta ahora hemos usado JavaScript de forma <strong>procedimental</strong>: instrucciones que se ejecutan una tras otra. Pero hay una forma más potente de organizar el código: la <strong>Orientación a Objetos (OOP)</strong>. En lugar de funciones sueltas, creamos <strong>Clases</strong> que son como plantillas para crear objetos con sus propias propiedades y comportamientos.</p>
-
-    <h3>La Clase: una Plantilla</h3>
-    <p>Imagina que tienes que crear varios aliens para el Hex Invaders. En lugar de repetir código para cada uno, defines una plantilla:</p>
-    <pre><code>// Definimos la plantilla (Clase)
+</section>
+<section>
+<h2>4. Programación Orientada a Objetos (OOP)</h2>
+<p>Hasta ahora hemos usado JavaScript de forma <strong>procedimental</strong>: instrucciones que se ejecutan una tras otra. Pero hay una forma más potente de organizar el código: la <strong>Orientación a Objetos (OOP)</strong>. En lugar de funciones sueltas, creamos <strong>Clases</strong> que son como plantillas para crear objetos con sus propias propiedades y comportamientos.</p>
+<h3>La Clase: una Plantilla</h3>
+<p>Imagina que tienes que crear varios aliens para el Hex Invaders. En lugar de repetir código para cada uno, defines una plantilla:</p>
+<pre><code>// Definimos la plantilla (Clase)
 class Alien {
   constructor(color, posicionX) {
     // 'this' hace referencia al objeto que se va a crear
@@ -123,10 +158,9 @@ class Alien {
     console.log("¡El alien " + this.color + " ha sido destruido!");
   }
 }</code></pre>
-
-    <h3>El Objeto: una instancia de la Clase</h3>
-    <p>Una vez tienes la plantilla, puedes crear tantos aliens como quieras con <code>new</code>:</p>
-    <pre><code>// Creamos objetos usando la clase como plantilla
+<h3>El Objeto: una instancia de la Clase</h3>
+<p>Una vez tienes la plantilla, puedes crear tantos aliens como quieras con <code>new</code>:</p>
+<pre><code>// Creamos objetos usando la clase como plantilla
 const alien1 = new Alien("#FF0000", 10);
 const alien2 = new Alien("#00FF00", 42);
 const alien3 = new Alien("#0000FF", 75);
@@ -140,10 +174,9 @@ console.log(alien1.posicionY); // 5
 console.log(alien2.posicionY); // 5
 
 alien1.explotar(); // "¡El alien #FF0000 ha sido destruido!"</code></pre>
-
-    <h3>Herencia: Clases que extienden a otras</h3>
-    <p>Si quisieras un "Alien Jefe" que tenga todo lo del Alien normal pero además tenga el doble de vida, usarías <code>extends</code>:</p>
-    <pre><code>class AlienJefe extends Alien {
+<h3>Herencia: Clases que extienden a otras</h3>
+<p>Si quisieras un "Alien Jefe" que tenga todo lo del Alien normal pero además tenga el doble de vida, usarías <code>extends</code>:</p>
+<pre><code>class AlienJefe extends Alien {
   constructor(color, posicionX) {
     super(color, posicionX); // Llama al constructor del padre
     this.vida = 3; // El jefe necesita 3 impactos para morir
@@ -151,7 +184,7 @@ alien1.explotar(); // "¡El alien #FF0000 ha sido destruido!"</code></pre>
 
   recibirImpacto() {
     this.vida--;
-    if (this.vida <= 0) {
+    if (this.vida &lt;= 0) {
       this.explotar();
     } else {
       console.log("¡El jefe resiste! Vida restante: " + this.vida);
@@ -163,12 +196,85 @@ const jefe = new AlienJefe("#FF00FF", 40);
 jefe.recibirImpacto(); // "¡El jefe resiste! Vida restante: 2"
 jefe.recibirImpacto(); // "¡El jefe resiste! Vida restante: 1"
 jefe.recibirImpacto(); // "¡El alien #FF00FF ha sido destruido!"</code></pre>
-  </section>
+</section>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
+<hr style="border: 2px dashed #ccc; margin: 40px 0;"/>
 
-  <div class="task-link">
-    🎯 <strong>Tarea Profesional:</strong> Tarea 14 - SuperMario Move Move
-  </div>
+<h1>13. Algoritmos, Pseudocódigo y Depuración</h1>
+<p style="font-size: 1.2rem; color: #666; font-style: italic;">Pensar antes de programar: el arte de diseñar soluciones antes de escribir código.</p>
+<section>
+<h2>1. ¿Por qué no pedirle todo directamente a la IA?</h2>
+<div class="concept-card">
+<p>Imagina a un cocinero que solo sabe seguir recetas al pie de la letra sin entender por qué se echa sal o por qué se calienta el horno. Si algo sale mal, no sabrá arreglarlo. Lo mismo pasa si le pides a la IA que te genere un código y lo pegas sin entenderlo: la IA genera código correcto, pero tú no sabrás qué hace ni cómo depurarlo cuando falle.</p>
+<p>El verdadero valor de un programador hoy no es memorizar sintaxis, sino saber <strong>DISEÑAR</strong> la solución.</p>
+<h3>El Algoritmo 🧠</h3>
+<p>Un algoritmo es una secuencia finita y ordenada de pasos para resolver un problema. Piensa en ello como una receta de cocina o las instrucciones detalladas de un juego de mesa.</p>
+</div>
+</section>
+<section>
+<h2>2. Top-Down: divide y vencerás</h2>
+<p>El enfoque <strong>Top-Down</strong> consiste en partir de un problema grande y complejo y descomponerlo en subproblemas pequeños y manejables.</p>
+<div class="concept-card">
+<h3>Ejemplo: SuperMarioBros 🍄</h3>
+<p>¿Cómo se programa un juego tan grande? Descomponiéndolo en módulos (funciones):</p>
+<ul>
+<li>Renderizado de pantalla</li>
+<li>Físicas y gravedad</li>
+<li>Entrada del jugador (teclado/mando)</li>
+<li>Sistema de puntuación</li>
+<li>Gestión de niveles</li>
+</ul>
+<p><strong>Analogía con el podcast:</strong> Antes de grabar, se divide el proyecto en fases: preproducción → grabación → postproducción → distribución. Cada fase tiene sus propias subtareas. ¡Eso es pensar Top-Down!</p>
+</div>
+</section>
+<section>
+<h2>3. Pseudocódigo — el borrador del código</h2>
+<p>El <strong>pseudocódigo</strong> es una representación del algoritmo en lenguaje natural estructurado. Es independiente del lenguaje de programación (no importa si luego usas JS, Python o C++).</p>
+<p>Reglas básicas de vocabulario: <code>INICIO/FIN</code>, <code>LEER/ESCRIBIR</code>, <code>SI...ENTONCES...SINO</code>, <code>MIENTRAS</code>, <code>PARA</code>.</p>
+<div class="concept-card">
+<h3>Ejemplo: Movimiento de Mario a la derecha</h3>
+<pre><code>INICIO
+  posicionX ← 50
+  velocidad ← 10
+  MIENTRAS (jugando = VERDADERO)
+    LEER tecla_pulsada
+    SI tecla_pulsada = "ArrowRight" ENTONCES
+      SI posicionX + velocidad &lt; limite_derecho ENTONCES
+        posicionX ← posicionX + velocidad
+      FIN SI
+    FIN SI
+    ESCRIBIR posicionX en pantalla
+  FIN MIENTRAS
+FIN</code></pre>
+</div>
+</section>
+<section>
+<h2>4. Diagramas de Flujo</h2>
+<p>Otra forma visual de representar algoritmos. Utilizan formas geométricas estándar conectadas por flechas:</p>
+<ul>
+<li><strong>Óvalo:</strong> Inicio / Fin</li>
+<li><strong>Rectángulo:</strong> Proceso o acción</li>
+<li><strong>Rombo:</strong> Decisión (Sí / No)</li>
+<li><strong>Paralelogramo:</strong> Entrada / Salida de datos</li>
+</ul>
+<p>Herramientas recomendadas para dibujarlos: diagrams.net (draw.io) o Google Dibujos.</p>
+</section>
+<section>
+<h2>5. Depuración (Debugging) 🐛</h2>
+<p>El origen del término <em>'bug'</em> (bicho) en informática se remonta a 1947, cuando la pionera Grace Hopper encontró una polilla real atrapada en el relé de un ordenador que causaba fallos.</p>
+<div class="bug-card">
+<h3>Tipos de Errores</h3>
+<ul>
+<li><strong>De Sintaxis:</strong> El código está mal escrito (falta una coma o un paréntesis). El ordenador ni siquiera puede ejecutarlo.</li>
+<li><strong>De Lógica:</strong> El código se ejecuta, pero hace algo incorrecto (ej. Mario suma puntos en vez de perderlos al chocar con un enemigo).</li>
+<li><strong>Intermitentes:</strong> Solo ocurren bajo ciertas condiciones extrañas.</li>
+</ul>
+<h3>Técnicas de Debugging</h3>
+<p>1. <strong>La Consola (F12):</strong> Abre las DevTools de tu navegador, ve a la pestaña <em>Console</em> y lee el mensaje de error en rojo. Te dirá en qué línea está el fallo.</p>
+<p>2. <strong>El <code>console.log()</code>:</strong> Inserta mensajes en tu código para ver qué valor tienen las variables en un momento dado.</p>
+</div>
+</section>
 
-  <div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: var(--secondary, #2c3e50); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div>
-</body>
+
+<div style="margin-top: 40px; margin-bottom: 20px; display: flex; justify-content: center;"><a href="../index.html" style="background-color: #2c3e50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><span style="font-size: 1.3rem;">🏠</span> Volver al Dashboard</a></div><script type="module" src="gamify_temario.js"></script></body>
 </html>

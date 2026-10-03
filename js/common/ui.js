@@ -79,10 +79,13 @@ export function renderHeader(user, profile) {
               <small>${escapeHtml(profile.email || '')}</small>
             </div>
           </div>
+
           <hr class="dropdown-divider">
           <a class="dropdown-item" href="${dashUrl}">🏠 Mi Dashboard</a>
           ${userIsAdmin ? `<a class="dropdown-item" href="${adminUrl}">⚙️ Panel de Administración</a>` : ''}
           <a class="dropdown-item" href="${profileUrl}">👤 Mi Perfil</a>
+          ${isTeacher ? `<a class="dropdown-item" href="${getAppUrl('banco_preguntas.html')}">📝 Banco de Preguntas</a>` : ''}
+          ${profile.role === 'student' ? `<a class="dropdown-item" href="${getAppUrl('logros.html')}">🏆 Mis Logros</a>` : ''}
           <button class="dropdown-item dropdown-item--danger" id="btn-logout">🚪 Cerrar sesión</button>
         </div>
       </div>
@@ -102,7 +105,7 @@ export function renderHeader(user, profile) {
 
   // Logout
   $('btn-logout')?.addEventListener('click', async () => {
-    if (confirm('¿Cerrar sesión?')) await logout();
+    showModal('Cerrar sesión', '¿Estás seguro de que deseas salir?', async () => { await logout(); });
   });
 }
 
@@ -158,7 +161,7 @@ export function showToast(title, message = '', type = 'info', duration = 3500) {
 //  MODAL GENÉRICO
 // ══════════════════════════════════════════════════════════════════
 
-export function showModal({ title, body, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, dangerous = false }) {
+export function showModal({ title, body, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, dangerous = false, hideCancel = false }) {
   // Eliminar modal previo si existe
   document.getElementById('tic2hub-modal')?.remove();
 
@@ -169,11 +172,11 @@ export function showModal({ title, body, confirmText = 'Confirmar', cancelText =
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-header">
         <h3 id="modal-title">${escapeHtml(title)}</h3>
-        <button class="modal-close" id="modal-btn-cancel" aria-label="Cerrar">✕</button>
+        ${hideCancel ? '' : '<button class="modal-close" id="modal-btn-cancel" aria-label="Cerrar">✕</button>'}
       </div>
       <div class="modal-body">${body}</div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="modal-btn-cancel2">${escapeHtml(cancelText)}</button>
+      <div class="modal-footer" style="${hideCancel ? 'justify-content: center;' : ''}">
+        ${hideCancel ? '' : `<button class="btn btn-ghost" id="modal-btn-cancel2">${escapeHtml(cancelText)}</button>`}
         ${confirmText ? `<button class="btn ${dangerous ? 'btn-danger' : 'btn-primary'}" id="modal-btn-confirm">${escapeHtml(confirmText)}</button>` : ''}
       </div>
     </div>`;

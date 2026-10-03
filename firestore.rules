@@ -110,5 +110,33 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
+
+    // ── Módulo de Exámenes (AprenderSQL portado) ──
+    match /preguntas/{preguntaId} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
+
+    match /examenes_test/{examenId} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
+
+    match /respuestas_test/{respuestaId} {
+      allow read: if isAuthenticated();
+      // Un alumno puede crear y actualizar su propio examen
+      allow write: if isAuthenticated() && (
+        isTeacher() ||
+        (request.resource.data.uid == request.auth.uid) ||
+        (resource != null && resource.data.uid == request.auth.uid)
+      );
+    }
+
+    // ── Resultados de los tests de teoría (TIC2) ──
+    match /tic2_tests_teoria/{testId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isTeacher();
+    }
   }
 }

@@ -1,0 +1,267 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   DATABREACH — Estilos principales (Terminal Hacker / Cyberpunk)
+═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --term-bg: #09090b;
+  --term-green: #10b981;
+  --term-green-dim: rgba(16, 185, 129, 0.2);
+  --term-border: #27272a;
+  --term-font: 'Courier New', Courier, monospace;
+}
+
+body.db-body {
+  background-color: var(--term-bg);
+  color: var(--term-green);
+  font-family: var(--term-font);
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Efecto escaneo CRT (opcional, muy sutil) */
+body.db-body::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 999;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header */
+.db-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--term-border);
+  background: #000;
+  font-size: 0.9rem;
+}
+
+.db-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Layout Principal */
+.db-main {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.db-sidebar {
+  width: 300px;
+  border-right: 1px solid var(--term-border);
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.db-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Paneles */
+.db-panel {
+  padding: 20px;
+  border-bottom: 1px solid var(--term-border);
+}
+
+.db-panel-title {
+  font-size: 1rem;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  border-bottom: 1px dashed var(--term-green);
+  padding-bottom: 5px;
+}
+
+.db-mission-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #d4d4d8;
+}
+
+.db-mission-text strong {
+  color: var(--term-green);
+}
+
+/* Visor del Esquema (Tablas) */
+.db-schema {
+  overflow-y: auto;
+  font-size: 0.85rem;
+}
+
+.db-table-schema {
+  margin-bottom: 15px;
+}
+
+.db-table-name {
+  font-weight: bold;
+  color: #a78bfa; /* Morado claro para nombres de tabla */
+  margin-bottom: 5px;
+}
+
+.db-table-cols {
+  padding-left: 15px;
+  border-left: 1px solid var(--term-border);
+  color: #94a3b8;
+}
+
+.db-col-row {
+  margin-bottom: 2px;
+}
+.db-col-type {
+  color: #f472b6;
+  font-size: 0.75rem;
+  margin-left: 5px;
+}
+
+/* Output Console */
+.db-output {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #000;
+}
+
+.db-welcome {
+  color: #71717a;
+  margin-bottom: 20px;
+}
+
+.query-log {
+  margin-bottom: 20px;
+}
+.query-log-cmd {
+  color: #38bdf8;
+  margin-bottom: 5px;
+}
+.query-log-cmd::before {
+  content: "> ";
+  color: #71717a;
+}
+.query-log-error {
+  color: var(--error);
+}
+
+/* Tablas de resultado */
+.db-result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.db-result-table th, .db-result-table td {
+  border: 1px solid var(--term-border);
+  padding: 8px;
+  text-align: left;
+}
+.db-result-table th {
+  background: var(--term-green-dim);
+  color: var(--term-green);
+}
+
+/* Input Console */
+.db-console {
+  border-top: 1px solid var(--term-green);
+  padding: 15px 20px;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.db-console-prompt {
+  color: var(--term-green);
+  margin-bottom: 10px;
+}
+
+.db-console-input {
+  background: transparent;
+  border: 1px dashed var(--term-border);
+  color: #fff;
+  font-family: var(--term-font);
+  font-size: 1rem;
+  padding: 10px;
+  height: 80px;
+  resize: none;
+  outline: none;
+  margin-bottom: 10px;
+}
+.db-console-input:focus {
+  border-color: var(--term-green);
+}
+
+.db-console-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Botones */
+.db-btn {
+  background: transparent;
+  border: 1px solid var(--term-green);
+  color: var(--term-green);
+  font-family: var(--term-font);
+  padding: 8px 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.db-btn:hover {
+  background: var(--term-green);
+  color: #000;
+}
+.db-btn-danger {
+  border-color: var(--error);
+  color: var(--error);
+}
+.db-btn-danger:hover {
+  background: var(--error);
+  color: #fff;
+}
+.key-hint {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+/* Modal */
+.db-modal {
+  display: none; /* Flex cuando activo */
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-modal-content {
+  background: var(--term-bg);
+  border: 2px solid var(--success);
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
