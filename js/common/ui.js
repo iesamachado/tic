@@ -161,7 +161,21 @@ export function showToast(title, message = '', type = 'info', duration = 3500) {
 //  MODAL GENÉRICO
 // ══════════════════════════════════════════════════════════════════
 
-export function showModal({ title, body, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, dangerous = false, hideCancel = false }) {
+export function showModal(arg1, arg2, arg3, arg4) {
+  let title, body, confirmText, cancelText, onConfirm, dangerous, hideCancel;
+  
+  if (typeof arg1 === 'object' && arg1 !== null) {
+    ({ title, body, confirmText = 'Confirmar', cancelText = 'Cancelar', onConfirm, dangerous = false, hideCancel = false } = arg1);
+  } else {
+    title = arg1;
+    body = arg2;
+    onConfirm = arg3;
+    const opts = arg4 || {};
+    confirmText = opts.confirmText || 'Confirmar';
+    cancelText = opts.cancelText || 'Cancelar';
+    dangerous = opts.dangerous || false;
+    hideCancel = opts.hideCancel || false;
+  }
   // Eliminar modal previo si existe
   document.getElementById('tic2hub-modal')?.remove();
 

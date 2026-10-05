@@ -1,12 +1,13 @@
 import { db } from './common/db.js';
-import { renderHeader, showToast } from './common/ui.js';
+import { renderHeader, showToast, showModal } from './common/ui.js';
 import { requireAuth } from './common/auth.js';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { TOPICS, escapeHtml } from './common/utils.js';
+import { CURRICULUM } from './common/boja-data.js';
 
 let allPreguntas = [];
 let currentPage = 1;
-const pageSize = 50;
+const pageSize = 100;
 const selectedIds = new Set();
 
 function init() {
@@ -87,7 +88,7 @@ async function loadPreguntas() {
     const snap = await getDocs(q);
     allPreguntas = snap.docs.map(d => {
       const data = d.data();
-      if (data.topic === 'topic_audacity' || data.topic === 'topic_gimp') {
+      if (data.topic === 'topic_audacity' || data.topic === 'topic_gimp' || data.topic === 'topic_audio' || data.topic === 'topic_image') {
          data.topic = 'topic_multimedia';
       }
       if (data.topic === 'topic_wordpress' || data.topic === 'topic_wiki') {
@@ -111,6 +112,9 @@ async function loadPreguntas() {
       if (data.topic === 'topic_cc') {
          data.topic = 'topic_multimedia';
       }
+      if (['topic_sheets', 'topic_docs', 'topic_slides'].includes(data.topic)) {
+         data.topic = 'topic_drive';
+      }
       return { id: d.id, ...data };
     });
     allPreguntas.sort((a, b) => { 
@@ -126,12 +130,20 @@ async function loadPreguntas() {
 }
 
 function updateSelectionUI() {
-  document.getElementById('delete-count').innerText = selectedIds.size;
-  document.getElementById('btn-delete-selected').disabled = selectedIds.size === 0;
+  const counter = document.getElementById('delete-count');
+  if (counter) counter.innerText = selectedIds.size;
+  
+  const btn = document.getElementById('btn-delete-selected');
+  // Only update disabled state if we are not currently in the middle of a deletion
+  if (btn && btn.innerText.indexOf('Borrando') === -1) {
+    btn.disabled = selectedIds.size === 0;
+  }
   
   const chkRows = Array.from(document.querySelectorAll('.chk-row'));
   const allChecked = chkRows.length > 0 && chkRows.every(chk => chk.checked);
-  document.getElementById('chk-all').checked = allChecked;
+  
+  const chkAll = document.getElementById('chk-all');
+  if (chkAll) chkAll.checked = allChecked;
 }
 
 const onFilterChange = () => { currentPage = 1; renderPreguntas(); };
@@ -166,9 +178,10 @@ function renderPreguntas() {
   const paginated = window.currentFilteredPreguntas.slice(startIndex, endIndex);
 
   container.innerHTML = paginated.map(p => {
+    const dif = p.dificultad || 'media';
     let diffColor = 'success';
-    if(p.dificultad === 'media') diffColor = 'warning';
-    if(p.dificultad === 'alta') diffColor = 'danger';
+    if(dif === 'media') diffColor = 'warning';
+    if(dif === 'alta') diffColor = 'danger';
     
     const correctaText = p.opciones?.find(o => o.correcta)?.texto || '?';
     const topicName = TOPICS[p.topic]?.name || p.topic || 'Sin bloque';
@@ -176,14 +189,14 @@ function renderPreguntas() {
     return `
       <div class="question-row">
         <div><input class="chk-row" type="checkbox" value="${p.id}" ${selectedIds.has(p.id) ? 'checked' : ''}></div>
-        <div><span class="badge badge--primary" style="font-size:0.7em;">${escapeHtml(topicName)}</span></div>
+        <div style="overflow: hidden; text-overflow: ellipsis;"><span class="badge badge--primary" style="font-size:0.7em; white-space: normal; display: inline-block; line-height: 1.2; padding: 4px; text-align: center;">${escapeHtml(topicName)}</span></div>
         <div>CE ${p.ce || '-'}</div>
-        <div style="color: var(--primary); font-weight: bold;">${p.criterio || '-'}</div>
-        <div>
+        <div style="color: var(--primary); font-weight: bold; font-size: 1.1em;">${p.criterio || '-'}</div>
+        <div style="overflow: hidden;">
           <div class="question-text" title="${p.enunciado.replace(/"/g, '&quot;')}">${p.enunciado}</div>
           <div style="font-size: var(--text-xs); color: var(--success); margin-top: 4px;">✓ ${correctaText}</div>
         </div>
-        <div><span class="badge badge--${diffColor}">${p.dificultad}</span></div>
+        <div><span class="badge badge--${diffColor}">${dif}</span></div>
         <div style="text-align: right; display: flex; gap: 4px; justify-content: flex-end;">
           <button class="btn btn-ghost btn--sm" onclick="window.editPregunta('${p.id}')" title="Editar">✏️</button>
           <button class="btn btn-ghost btn--sm" onclick="window.deletePregunta('${p.id}')" title="Borrar">🗑️</button>
@@ -277,39 +290,49 @@ window.editPregunta = (id) => {
 };
 
 window.deletePregunta = async (id) => {
-  showModal('Borrar Pregunta', '¿Borrar esta pregunta? No se puede deshacer.', async () => {
-    try {
-      await deleteDoc(doc(db, "preguntas", id));
-      showToast('Pregunta borrada', 'success');
-      await loadPreguntas();
-    } catch(e) {
-      console.error(e);
-      showToast('Error al borrar', 'error');
+  showModal({
+    title: 'Borrar Pregunta',
+    body: '¿Borrar esta pregunta? No se puede deshacer.',
+    dangerous: true,
+    onConfirm: async () => {
+      try {
+        await deleteDoc(doc(db, "preguntas", id));
+        showToast('Pregunta borrada', 'success');
+        await loadPreguntas();
+      } catch(e) {
+        console.error(e);
+        showToast('Error al borrar', 'error');
+      }
     }
   });
 };
 
 async function deleteSelected() {
   if (selectedIds.size === 0) return;
-  showModal('Borrar Preguntas', `¿Estás seguro de borrar las ${selectedIds.size} preguntas seleccionadas? No se puede deshacer.`, async () => {
-    const btn = document.getElementById('btn-delete-selected');
-    btn.innerText = 'Borrando...';
-    btn.disabled = true;
-    
-    try {
-      const deletePromises = Array.from(selectedIds).map(id => deleteDoc(doc(db, "preguntas", id)));
-      await Promise.all(deletePromises);
-      showToast(`Se borraron ${selectedIds.size} preguntas`, 'success');
-      selectedIds.clear();
-      await loadPreguntas();
-    } catch (err) {
-      console.error(err);
-      showToast('Error al borrar masivamente', 'error');
-    } finally {
-      btn.innerHTML = `🗑️ Borrar Seleccionados (<span id="delete-count">0</span>)`;
-      updateSelectionUI();
+  showModal({
+    title: 'Borrar Preguntas',
+    body: `¿Estás seguro de borrar las ${selectedIds.size} preguntas seleccionadas? No se puede deshacer.`,
+    dangerous: true,
+    onConfirm: async () => {
+      const btn = document.getElementById('btn-delete-selected');
+      btn.innerText = 'Borrando...';
+      btn.disabled = true;
+      
+      try {
+        const deletePromises = Array.from(selectedIds).map(id => deleteDoc(doc(db, "preguntas", id)));
+        await Promise.all(deletePromises);
+        showToast(`Se borraron ${selectedIds.size} preguntas`, 'success');
+        selectedIds.clear();
+        await loadPreguntas();
+      } catch (err) {
+        console.error(err);
+        showToast('Error al borrar masivamente', 'error');
+      } finally {
+        btn.innerHTML = `🗑️ Borrar Seleccionados (<span id="delete-count">0</span>)`;
+        updateSelectionUI();
+      }
     }
-  }
+  });
 }
 
 async function importJson(e) {
@@ -318,30 +341,30 @@ async function importJson(e) {
   try {
     const text = await file.text();
     const arr = JSON.parse(text);
-    if (!Array.isArray(arr)) throw new Error("Debe ser un array de objetos");
+    if (!Array.isArray(arr)) throw new Error("El archivo JSON debe contener un array de objetos");
     
     const btn = document.getElementById("btn-import-json");
     btn.innerText = 'Importando...';
     btn.disabled = true;
 
     let importadas = 0;
-    for (let p of arr) {
-      p.creadaEn = serverTimestamp();
-      
-      // Adapt from aprenderSQL module format to tic2 format if needed
-      if(!p.topic) {
-        p.topic = 'topic_kanban'; // Default fallback
-      }
-      
-      if(p.ra && !p.ce) {
-        p.ce = p.ra;
-      }
-      
-      delete p.modulo;
-      delete p.curso;
-      delete p.ra;
+    for (const item of arr) {
+      if (!item.enunciado || !item.opciones || !Array.isArray(item.opciones)) continue;
 
-      await addDoc(collection(db, "preguntas"), p);
+      const cleanData = {
+        topic: item.topic || 'topic_kanban',
+        ce: parseInt(item.ce || item.ra, 10) || null,
+        criterio: item.criterio ? String(item.criterio).trim() : '',
+        dificultad: item.dificultad || 'media',
+        enunciado: item.enunciado,
+        opciones: item.opciones.map(o => ({
+          texto: o.texto || '',
+          correcta: !!o.correcta
+        })),
+        creadaEn: serverTimestamp()
+      };
+
+      await addDoc(collection(db, "preguntas"), cleanData);
       importadas++;
     }
     showToast(`Se importaron ${importadas} preguntas`, "success");
@@ -358,56 +381,143 @@ async function importJson(e) {
 }
 
 function showCoverage() {
-  const stats = {};
-  let totalGlobal = 0;
-
-  allPreguntas.forEach(p => {
-    const topic = p.topic || 'Sin bloque';
-    if (!stats[topic]) stats[topic] = { total: 0, byDifficulty: { 1: 0, 2: 0, 3: 0, 'basica': 0, 'media': 0, 'alta': 0 } };
-    
-    stats[topic].total++;
-    if (p.dificultad) {
-       stats[topic].byDifficulty[p.dificultad] = (stats[topic].byDifficulty[p.dificultad] || 0) + 1;
-    }
-    totalGlobal++;
-  });
-
-  let html = `<div class="alert alert--info" style="margin-bottom: var(--space-4);">
-    <strong>Total Batería Test:</strong> ${totalGlobal} preguntas registradas
-  </div>`;
+  const container = document.getElementById('cobertura-body');
+  container.innerHTML = '';
   
-  Object.keys(stats).sort().forEach(topicKey => {
-    const topicData = stats[topicKey];
-    const topicObj = TOPICS[topicKey];
-    const topicName = topicObj ? topicObj.name : topicKey;
+  let totalPreguntas = allPreguntas.length;
+
+  if (totalPreguntas === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding: var(--space-4); text-align: center; color: var(--text-muted);">No hay preguntas para calcular la cobertura.</div>';
+    document.getElementById('modal-cobertura').classList.add('modal-backdrop--visible');
+    return;
+  }
+
+  // 1. STATS POR BLOQUES
+  const stats = {};
+  Object.keys(TOPICS).forEach(key => {
+    stats[key] = { total: 0, baja: 0, media: 0, alta: 0 };
+  });
+  
+  allPreguntas.forEach(p => {
+    const t = p.topic || 'Sin bloque';
+    if (!stats[t]) stats[t] = { total: 0, baja: 0, media: 0, alta: 0 };
+    stats[t].total++;
+    const diff = p.dificultad || 'media';
+    stats[t][diff] = (stats[t][diff] || 0) + 1;
+  });
+  
+  const blocksTitle = document.createElement('h3');
+  blocksTitle.innerHTML = '📊 Resumen por Bloques Temáticos';
+  blocksTitle.style.marginBottom = 'var(--space-3)';
+  blocksTitle.style.marginTop = '0';
+  container.appendChild(blocksTitle);
+
+  const gridStats = document.createElement('div');
+  gridStats.style.display = 'grid';
+  gridStats.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+  gridStats.style.gap = 'var(--space-4)';
+  container.appendChild(gridStats);
+
+  Object.keys(stats).forEach(key => {
+    const s = stats[key];
+    const name = TOPICS[key] ? TOPICS[key].name : key;
+    const percent = totalPreguntas > 0 ? Math.round((s.total / totalPreguntas) * 100) : 0;
     
-    html += `
-      <div class="coverage-card">
-        <div class="coverage-header">
-          <span>📚 ${escapeHtml(topicName)}</span>
-          <span class="badge badge--primary">${topicData.total} preg.</span>
-        </div>
-        <div class="coverage-body">
-          <ul class="coverage-list">
-            <li>
-              <span>Básica / Fácil</span>
-              <span class="badge badge--success">${(topicData.byDifficulty[1] || 0) + (topicData.byDifficulty['basica'] || 0)}</span>
-            </li>
-            <li>
-              <span>Media</span>
-              <span class="badge badge--warning">${(topicData.byDifficulty[2] || 0) + (topicData.byDifficulty['media'] || 0)}</span>
-            </li>
-            <li>
-              <span>Alta / Difícil</span>
-              <span class="badge badge--danger">${(topicData.byDifficulty[3] || 0) + (topicData.byDifficulty['alta'] || 0)}</span>
-            </li>
-          </ul>
-        </div>
+    const card = document.createElement('div');
+    card.className = 'coverage-card';
+    card.style.margin = '0';
+    card.innerHTML = `
+      <div class="coverage-header" style="font-size: 0.9rem;">
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+        <div><span class="badge badge--primary">${s.total} (${percent}%)</span></div>
+      </div>
+      <div class="coverage-body">
+        <ul class="coverage-list" style="display: flex; gap: 10px; border: none; padding-bottom: 0;">
+          <li style="border:none; padding:0; flex:1; text-align:center; display:block;">
+            <div class="text-muted" style="font-size:0.75rem;">Baja</div>
+            <div class="badge badge--success">${s.baja || 0}</div>
+          </li>
+          <li style="border:none; padding:0; flex:1; text-align:center; display:block;">
+            <div class="text-muted" style="font-size:0.75rem;">Media</div>
+            <div class="badge badge--warning">${s.media || 0}</div>
+          </li>
+          <li style="border:none; padding:0; flex:1; text-align:center; display:block;">
+            <div class="text-muted" style="font-size:0.75rem;">Alta</div>
+            <div class="badge badge--danger">${s.alta || 0}</div>
+          </li>
+        </ul>
       </div>
     `;
+    gridStats.appendChild(card);
   });
 
-  document.getElementById('cobertura-body').innerHTML = html;
+  // 2. STATS POR CRITERIOS
+  const critTitle = document.createElement('h3');
+  critTitle.innerHTML = '🎯 Cobertura de Criterios (BOJA)';
+  critTitle.style.marginTop = 'var(--space-6)';
+  critTitle.style.marginBottom = 'var(--space-3)';
+  container.appendChild(critTitle);
+
+  const allCriteriosMap = {};
+  if (CURRICULUM && CURRICULUM.tico2 && CURRICULUM.tico2.ces) {
+    Object.values(CURRICULUM.tico2.ces).forEach(ceObj => {
+      Object.keys(ceObj.criterios).forEach(critKey => {
+         allCriteriosMap[critKey] = ceObj.criterios[critKey];
+      });
+    });
+  }
+
+  const critCounts = {};
+  Object.keys(allCriteriosMap).forEach(c => critCounts[c] = 0);
+  
+  allPreguntas.forEach(p => {
+    if (p.criterio && p.criterio !== '-') {
+      if (critCounts[p.criterio] === undefined) {
+         critCounts[p.criterio] = 0;
+         allCriteriosMap[p.criterio] = 'Criterio personalizado';
+      }
+      critCounts[p.criterio]++;
+    }
+  });
+
+  const critCard = document.createElement('div');
+  critCard.className = 'coverage-card';
+  let critHtml = `<div class="coverage-body" style="max-height: 450px; overflow-y: auto; padding: 0;"><ul class="coverage-list">`;
+  
+  const grouped = {};
+  Object.keys(allCriteriosMap).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(c => {
+    const ce = c.split('.')[0];
+    if (!grouped[ce]) grouped[ce] = [];
+    grouped[ce].push(c);
+  });
+
+  Object.keys(grouped).sort((a,b) => Number(a) - Number(b)).forEach(ce => {
+    critHtml += `<li style="background: var(--bg-surface); font-weight: bold; border-top: 1px solid var(--border); padding: 10px 15px; position: sticky; top: 0; z-index: 10;">Competencia Específica ${ce}</li>`;
+    grouped[ce].forEach(c => {
+      const count = critCounts[c] || 0;
+      const text = allCriteriosMap[c];
+      const badge = count > 0 
+        ? `<span class="badge badge--success">${count} pregs</span>`
+        : `<span class="badge badge--danger" style="opacity: 0.8;">Sin cubrir</span>`;
+      
+      const liStyle = count > 0 ? '' : 'opacity: 0.7;';
+      
+      critHtml += `
+        <li style="display:flex; flex-direction:column; gap:5px; align-items:flex-start; padding: 12px 15px; border-bottom: 1px solid var(--border); ${liStyle}">
+          <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+            <strong style="font-size: 0.95rem; color: var(--text-primary);">Criterio ${c}</strong>
+            ${badge}
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">${escapeHtml(text)}</div>
+        </li>
+      `;
+    });
+  });
+
+  critHtml += `</ul></div>`;
+  critCard.innerHTML = critHtml;
+  container.appendChild(critCard);
+  
   document.getElementById('modal-cobertura').classList.add('modal-backdrop--visible');
 }
 
