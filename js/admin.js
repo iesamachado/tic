@@ -4,7 +4,7 @@
 
 import { requireAuth, currentUser, currentProfile, SUPERADMIN_EMAIL } from './common/auth.js';
 import { getAllowedTeachers, authorizeTeacher, removeAllowedTeacher } from './common/db.js';
-import { renderHeader, showToast, showLoading, hideLoading } from './common/ui.js';
+import { renderHeader, showToast, showLoading, hideLoading, showModal } from './common/ui.js';
 import { $, $$, escapeHtml, formatDate } from './common/utils.js';
 
 let teacherList = [];
@@ -148,16 +148,17 @@ function renderTeacherList() {
       const roleName = newRole === 'admin' ? 'Administrador' : 'Docente';
 
       showModal('Cambiar Rol', `¿Cambiar el rol de ${email} a "${roleName}"?`, async () => {
-      try {
-        showLoading('Actualizando rol...');
-        await authorizeTeacher(email, { role: newRole, addedBy: currentUser.email });
-        showToast('Rol actualizado', `${email} ahora es ${roleName}.`, 'success');
-        await loadTeachers();
-      } catch (err) {
-        showToast('Error', err.message, 'error');
-      } finally {
-        hideLoading();
-      }
+        try {
+          showLoading('Actualizando rol...');
+          await authorizeTeacher(email, { role: newRole, addedBy: currentUser.email });
+          showToast('Rol actualizado', `${email} ahora es ${roleName}.`, 'success');
+          await loadTeachers();
+        } catch (err) {
+          showToast('Error', err.message, 'error');
+        } finally {
+          hideLoading();
+        }
+      });
     });
   });
 
@@ -184,19 +185,26 @@ function renderTeacherList() {
 function setupEvents(user) {
   // Buscador
   const searchInput = $('input-search-teacher');
-  searchInput?.addEventListener('input', e => {
-    searchQuery = e.target.value;
-    renderTeacherList();
-  });
+  if (searchInput) {
+    searchInput.addEventListener('input', e => {
+      searchQuery = e.target.value;
+      renderTeacherList();
+    });
+  }
 
   // Formulario para autorizar nuevo docente o lote de docentes
   const form = $('form-add-teacher');
-  form?.addEventListener('submit', async e => {
-    e.preventDefault();
+  if (form) {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
 
-    const rawEmails = $('input-teacher-emails')?.value || '';
-    const nameNote  = $('input-teacher-name')?.value.trim() || '';
-    const role      = $('select-teacher-role')?.value || 'teacher';
+      const inputEmails = $('input-teacher-emails');
+      const inputName = $('input-teacher-name');
+      const selectRole = $('select-teacher-role');
+
+      const rawEmails = inputEmails ? inputEmails.value : '';
+      const nameNote  = inputName ? inputName.value.trim() : '';
+      const role      = selectRole ? selectRole.value : 'teacher';
 
     const emails = rawEmails
       .split(/[\n,;]+/)
@@ -229,5 +237,84 @@ function setupEvents(user) {
     } finally {
       hideLoading();
     }
+    });
+  }
+}
+
+// ── Herramientas de Mantenimiento ──────────────────────────────────────
+const btnRecalc = document.getElementById('btn-recalc-xp');
+if (btnRecalc) {
+  btnRecalc.addEventListener('click', () => {
+    showModal({
+      title: '⚠️ Recalcular XP Global',
+      body: `Esta acción recalculará la XP de todos los alumnos aplicando la nueva regla anti-farmeo (Récord + 2 XP por repetición).<br><br><b>Afectará a los gremios y ligas de forma irreversible.</b><br>¿Estás completamente seguro?`,
+      dangerous: true,
+      confirmText: 'Sí, desinflar XP',
+      onConfirm: async () => {
+        try {
+          showLoading('Recalculando toda la base de datos... Por favor, espera.');
+          
+          const firestore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          const { db } = await import('./common/db.js');
+          const { collection, getDocs, doc, setDoc, writeBatch, query, where } = firestore;
+
+          const usersSnap = await getDocs(collection(db, 'tic2_users'));
+          const users = usersSnap.docs;
+
+          const batch = writeBatch(db);
+          let count = 0;
+          let guildSums = {};
+
+          for (const userDoc of users) {
+            const uid = userDoc.id;
+            const data = userDoc.data();
+            let correctXP = 0;
+
+            const examsSnap = await getDocs(query(collection(db, 'respuestas_test'), where('uid', '==', uid), where('puntosOtorgados', '==', true)));
+            examsSnap.forEach(d => {
+              const e = d.data();
+              let xp = (e.aciertos || 0) * 10;
+              if (e.nota >= 5) xp += 100;
+              if (e.nota >= 9) xp += 200;
+              correctXP += xp;
+            });
+
+            const gamesSnap = await getDocs(query(collection(db, 'tic2_game_results'), where('studentId', '==', uid)));
+            const gameGroups = {};
+            gamesSnap.forEach(d => {
+              const g = d.data();
+              const key = `${g.gameId}_${g.classId || 'free'}`;
+              if (!gameGroups[key]) gameGroups[key] = { best: 0, plays: 0 };
+              if (g.score > gameGroups[key].best) gameGroups[key].best = g.score;
+              gameGroups[key].plays += 1;
+            });
+
+            for (const key in gameGroups) {
+              const info = gameGroups[key];
+              correctXP += info.best + (info.plays * 2);
+            }
+
+            if (correctXP !== (data.puntosTotal || 0)) {
+              batch.set(userDoc.ref, { puntosTotal: correctXP }, { merge: true });
+              count++;
+            }
+            if (data.gremio) guildSums[data.gremio] = (guildSums[data.gremio] || 0) + correctXP;
+          }
+
+          for (const [guildId, points] of Object.entries(guildSums)) {
+            batch.set(doc(db, 'gremios', guildId), { puntosTotales: points }, { merge: true });
+          }
+
+          if (count > 0) await batch.commit();
+          
+          hideLoading();
+          showToast(`✅ Proceso completado. Se han purgado ${count} usuarios y ajustado sus Gremios.`, 'success');
+        } catch (err) {
+          console.error(err);
+          hideLoading();
+          showToast('❌ Error durante el recálculo: ' + err.message, 'error');
+        }
+      }
+    });
   });
 }

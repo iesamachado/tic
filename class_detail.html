@@ -43,6 +43,7 @@
       <div class="class-tabs animate-fade-up delay-1">
         <button class="tab-btn tab-btn--active" data-tab="games">📚 Temario y Juegos</button>
         <button class="tab-btn" data-tab="students">👨‍🎓 Alumnos</button>
+        <button class="tab-btn" data-tab="gamification">🏆 Gamificación</button>
         <button class="tab-btn" data-tab="assignments">📋 Tareas</button>
         <button class="tab-btn" data-tab="results">📊 Resultados</button>
         <button class="tab-btn" data-tab="exams">📝 Exámenes Test</button>
@@ -78,9 +79,8 @@
         </div>
       </section>
 
-      <!-- TAB: ALUMNOS -->
-      <section id="tab-students" class="tab-content" style="display:none">
-        
+      <!-- TAB: GAMIFICATION -->
+      <section id="tab-gamification" class="tab-content" style="display:none">
         <!-- Gamification Podio y Gremios -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
           <div class="card">
@@ -100,7 +100,11 @@
             </div>
           </div>
         </div>
+      </section>
 
+      <!-- TAB: ALUMNOS -->
+      <section id="tab-students" class="tab-content" style="display:none">
+        
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">Alumnos de la clase</h2>
@@ -388,7 +392,7 @@
         <button class="modal-close" onclick="document.getElementById('modal-medallas').classList.remove('modal-backdrop--visible')">✕</button>
       </div>
       <div class="modal-body">
-        <div id="medallas-alumno-list" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div id="medallas-alumno-list" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
         </div>
       </div>
     </div>

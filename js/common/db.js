@@ -535,16 +535,38 @@ export async function deleteAssignment(classId, assignmentId) {
  * @param {object} metadata     - Datos específicos del juego (wpm, accuracy, etc.)
  */
 export async function saveGameResult(gameId, studentId, classId, score, metadata = {}) {
+  const finalScore = Number(score) || 0;
+  let xpToAdd = 2; // Recompensa base mínima por jugar/repetir
+
+  try {
+    // Consultar el récord previo ANTES de guardar el nuevo resultado
+    const prevBest = await getStudentBestScore(studentId, gameId, classId);
+    if (finalScore > prevBest) {
+      // Solo sumamos la diferencia si ha superado su récord
+      xpToAdd += (finalScore - prevBest);
+    }
+  } catch (err) {
+    console.warn('Error calculando XP progresiva:', err);
+  }
+
   const resultData = {
     gameId,
     studentId,
     classId:   classId || null,
-    score:     Number(score) || 0,
+    score:     finalScore,
     metadata:  metadata || {},
     timestamp: serverTimestamp()
   };
 
   const ref = await addDoc(collection(db, 'tic2_game_results'), resultData);
+
+  try {
+    // Importación dinámica para evitar dependencias circulares al cargar db.js
+    const { addPointsAndCheckLogros } = await import('./gamification.js');
+    await addPointsAndCheckLogros(studentId, xpToAdd, null, 'tic2_users');
+  } catch (err) {
+    console.warn('Error asignando XP por juego:', err);
+  }
 
   // También guardar en users/{uid}/games/ para historial rápido del perfil (con manejo seguro de fallos)
   try {

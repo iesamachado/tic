@@ -7,7 +7,7 @@ import {
   getClassRanking, addStudentsToClass, removeStudentFromClass, getStudentResultsInClass,
   getStudentBestScore
 } from './common/db.js';
-import { MEDALS_CATALOG } from './common/gamification.js';
+import { MEDALS_CATALOG, GUILDS_CATALOG } from './common/gamification.js';
 import { createClassroomAssignment, syncClassroomGrades } from './common/classroom.js';
 import { renderHeader, showToast, showLoading, hideLoading, renderPodium, renderRankingTable } from './common/ui.js';
 import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams, copyToClipboard } from './common/utils.js';
@@ -74,6 +74,7 @@ function initPage(user, profile) {
       activeTab = tab;
 
       if (tab === 'students')    await loadStudentsTab();
+      if (tab === 'gamification') await loadGamificationTab();
       if (tab === 'assignments') await loadAssignmentsTab();
       if (tab === 'results')     await loadResultsTab();
       if (tab === 'exams')       await loadExamsTab();
@@ -203,6 +204,16 @@ async function loadTopicsTab() {
 //  TAB: ALUMNOS
 // ══════════════════════════════════════════════════════════════
 
+
+async function loadGamificationTab() {
+  try {
+    members = await getClassMembers(classData.id);
+    renderGamificationDashboard(members, classData.id);
+  } catch(e) {
+    console.error('Error al cargar gamificación', e);
+  }
+}
+
 async function loadStudentsTab() {
   const list = $('students-list');
   const noMsg = $('no-students');
@@ -211,7 +222,7 @@ async function loadStudentsTab() {
   try {
     members = await getClassMembers(classData.id);
     
-    renderGamificationDashboard(members, classData.id);
+
 
     if (members.length === 0) {
       list.innerHTML = '';
@@ -1113,46 +1124,103 @@ function renderGamificationDashboard(membersList, classId) {
     `).join('');
   }
 
-  let scores = {};
-  let totalPts = 0;
-  
-  membersList.forEach(a => {
-    const pts = a.puntosTotal || a.totalScore || 0;
-    const gremioActual = a.gremios?.[classId] || a.gremio;
-    if (gremioActual) {
-      if (!scores[gremioActual]) scores[gremioActual] = { pts: 0, count: 0 };
-      scores[gremioActual].pts += pts;
-      scores[gremioActual].count += 1;
-      totalPts += pts;
+  const scores = {};
+  const counts = {};
+  GUILDS_CATALOG.forEach(g => { counts[g.name] = 0; scores[g.name] = 0; });
+
+  membersList.forEach(m => {
+    const pts = m.puntosTotal || m.totalScore || 0;
+    const gremioActual = m.gremios?.[classId] || m.gremio;
+    if (gremioActual && counts[gremioActual] !== undefined) {
+      counts[gremioActual]++;
+      scores[gremioActual] += pts;
     }
   });
 
-  const sortedGremios = Object.entries(scores).sort((a,b) => b[1].pts - a[1].pts);
+  const ranking = GUILDS_CATALOG.map(g => ({
+    name: g.name, icon: g.icon, color: g.color, image: g.image,
+    points: scores[g.name], members: counts[g.name]
+  })).sort((a,b) => b.points - a.points);
   
-  if (sortedGremios.length === 0) {
+  if (ranking.every(r => r.members === 0)) {
     gremiosContainer.innerHTML = '<div class="text-muted" style="text-align:center;">Ningún alumno tiene gremio asignado.</div>';
-  } else {
-    gremiosContainer.innerHTML = sortedGremios.map(([name, data], idx) => `
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <strong style="display:flex; align-items:center; gap: 8px;">
-            ${idx === 0 ? '👑' : ''} ${escapeHtml(name)}
-          </strong>
-          <span style="font-weight: bold; color: #2c3e50;">${data.pts} pts</span>
+    return;
+  }
+  
+  gremiosContainer.style.display = 'flex';
+  gremiosContainer.style.flexDirection = 'column';
+  gremiosContainer.style.gap = 'var(--space-4)';
+  gremiosContainer.style.padding = '0';
+  
+  gremiosContainer.innerHTML = ranking.map((g, idx) => {
+    const isFirst = idx === 0;
+    const isSecond = idx === 1;
+    const isThird = idx === 2;
+    let badge = '';
+    let scale = '1';
+    let border = g.color;
+    let bg = 'var(--bg-card)';
+    
+    // Buscar al MVP de este gremio
+    const guildMembers = membersList.filter(m => (m.gremios?.[classId] || m.gremio) === g.name).sort((a,b) => (b.puntosTotal||b.totalScore||0) - (a.puntosTotal||a.totalScore||0));
+    const mvp = guildMembers.length > 0 ? guildMembers[0] : null;
+    let mvpHtml = '';
+    if (mvp && (mvp.puntosTotal||mvp.totalScore||0) > 0) {
+      const mvpPts = mvp.puntosTotal||mvp.totalScore||0;
+      mvpHtml = `<div style="margin-top:12px; background:rgba(0,0,0,0.05); border-radius:8px; padding:8px 12px; display:inline-block; border-left:3px solid ${g.color};">
+        <span style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); font-weight:bold;">👑 MVP:</span> 
+        <span style="font-weight:bold; color:var(--text-primary); margin-left:5px;">${escapeHtml(mvp.displayNameAnonymized || mvp.displayName || mvp.email?.split('@')[0])}</span> 
+        <span style="color:var(--warning); font-weight:bold; font-size:0.9rem;">(⭐ ${mvpPts})</span>
+      </div>`;
+    }
+
+    // Calcular distancia con el anterior
+    let distanceHtml = '';
+    if (idx > 0 && ranking[idx-1].points > 0) {
+      const diff = ranking[idx-1].points - g.points;
+      if (diff > 0) {
+        distanceHtml = `<div style="color:var(--error); font-size:0.85rem; font-weight:bold; margin-top:5px; text-transform:uppercase; background:#ffeaa7; padding:4px 8px; border-radius:4px; border:1px solid #fdcb6e; display:inline-block;">
+          🔥 ¡A solo ${diff} XP de subir!
+        </div>`;
+      }
+    }
+    
+    if (isFirst) { badge = '🥇 LÍDERES ABSOLUTOS'; scale = '1.02'; border = '#f1c40f'; bg = '#fffdf5'; }
+    else if (isSecond) { badge = '🥈 SEGUNDO PUESTO'; scale = '1.0'; border = '#bdc3c7'; bg = '#f8f9fa'; }
+    else if (isThird) { badge = '🥉 TERCER PUESTO'; scale = '0.98'; border = '#cd6133'; bg = '#fdfbf7'; }
+    else { badge = `${idx+1}º Puesto`; scale = '0.95'; border = 'var(--border)'; bg = 'var(--bg-card)'; }
+    
+    return `
+      <div class="card" style="display:flex; align-items:center; gap:var(--space-4); padding:var(--space-4); background:${bg}; border:4px solid ${border}; transform:scale(${scale}); transform-origin:center; position:relative; overflow:hidden; box-shadow:6px 6px 0px rgba(0,0,0,${isFirst ? '0.2' : '0.1'}); margin: 10px 0;">
+        ${isFirst ? `<div style="position:absolute; top:-10px; right:-10px; font-size:7rem; opacity:0.1; transform:rotate(-15deg);">${g.icon}</div>` : ''}
+        
+        <div style="width:70px; height:70px; border-radius:50%; background-color:${g.color}; display:flex; align-items:center; justify-content:center; border:4px solid var(--text-primary); box-shadow:4px 4px 0px rgba(0,0,0,1); flex-shrink:0;">
+          <img src="${g.image}" alt="" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;">
         </div>
-        <div style="width: 100%; height: 10px; background-color: #ecf0f1; border-radius: 5px; overflow: hidden;">
-          <div style="height: 100%; background-color: #3498db; width: ${totalPts > 0 ? (data.pts / totalPts) * 100 : 0}%"></div>
+        
+        <div style="flex:1;">
+          <div style="font-size:0.8rem; font-weight:bold; color:${isFirst ? '#d35400' : 'var(--text-muted)'}; margin-bottom:2px; text-transform:uppercase; letter-spacing:2px;">${badge}</div>
+          <h3 style="margin:0; font-size:1.4rem; color:${g.color}; text-shadow:1px 1px 0px var(--text-primary); -webkit-text-stroke: 1px var(--text-primary); line-height: 1.1;">${escapeHtml(g.name)}</h3>
+          <div style="margin-top:5px; font-size:0.95rem; color:var(--text-primary); font-weight:bold;">
+            👥 ${g.members} valientes
+          </div>
+          ${mvpHtml}
         </div>
-        <div style="font-size: 0.8rem; color: #7f8c8d; text-align: right; margin-top: 2px;">
-          ${data.count} miembro${data.count !== 1 ? 's' : ''}
+        
+        <div style="text-align:right; z-index:2; background:rgba(255,255,255,0.7); padding:8px 15px; border-radius:10px; border:2px solid var(--text-primary); box-shadow:3px 3px 0px rgba(0,0,0,1); display:flex; flex-direction:column; align-items:flex-end;">
+          <div style="font-size:0.75rem; font-weight:bold; color:var(--text-primary); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Puntos Totales</div>
+          <div style="font-size:1.8rem; font-weight:900; color:var(--warning); text-shadow:1px 1px 0px var(--text-primary), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; line-height:1;">
+            ⭐ ${g.points.toLocaleString()}
+          </div>
+          ${distanceHtml}
         </div>
       </div>
-    `).join('');
-  }
+    `;
+  }).join('');
 }
 
 window._showMedallas = function(uidStr) {
-  const membersList = window._lastMembers || [];
+  const membersList = members || window._lastMembers || [];
   const alumno = membersList.find(m => m.uid === uidStr || m.email === uidStr || m.id === uidStr);
   if (!alumno) return;
 

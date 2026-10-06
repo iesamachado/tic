@@ -296,8 +296,10 @@ export async function renderGremioSection(user, profile) {
       return `
         <div style="display:flex; flex-direction:column; background: #fff; padding: 20px; border-radius: 8px; border-top: 5px solid ${g.color}; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; opacity: ${isFull ? '0.6' : '1'}; position: relative;">
           ${isFull ? '<div style="position:absolute; top: 10px; right: 10px; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">LLENO</div>' : ''}
-          <div style="font-size: 3rem; margin-bottom: 10px;">${g.icon}</div>
-          <h4 style="color: ${g.color}; margin-bottom: 10px;">${escapeHtml(g.name)}</h4>
+          <div style="width:90px; height:90px; border-radius:50%; background-color:${g.color}; display:flex; align-items:center; justify-content:center; border:4px solid var(--text-primary); box-shadow:4px 4px 0px rgba(0,0,0,1); margin: 0 auto 15px auto;">
+            <img src="${g.image}" alt="" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;">
+          </div>
+          <h4 style="color: ${g.color}; margin-bottom: 10px; text-shadow:1px 1px 0px var(--text-primary); -webkit-text-stroke: 1px var(--text-primary); font-size:1.4rem;">${escapeHtml(g.name)}</h4>
           <p style="font-size: 0.85rem; color: #7f8c8d; flex-grow: 1; margin-bottom: 15px;">${escapeHtml(g.desc)}</p>
           ${plazasBadge}
           <button class="btn btn-primary" style="background: ${g.color}; border-color: ${g.color}; width: 100%;" 

@@ -11,7 +11,9 @@ const topicMap = {
   'html.html': { topicKey: 'topic_html', title: 'HTML', medalId: 'dev_web', goldMedalId: 'dev_web_oro', relatedGameId: 'hex_invaders' },
   'js.html': { topicKey: 'topic_js', title: 'Javascript', medalId: 'dev_web', goldMedalId: 'dev_web_oro' },
   'cyber.html': { topicKey: 'topic_cyber', title: 'Ciberseguridad', medalId: 'sysadmin', goldMedalId: 'sysadmin_oro', relatedGameId: 'databreach' },
-  'kanban.html': { topicKey: 'topic_kanban', title: 'Industria del Software', medalId: 'kanban_master', goldMedalId: 'kanban_master_oro', relatedGameId: 'kanban_hero' }
+  'kanban.html': { topicKey: 'topic_kanban', title: 'Industria del Software', medalId: 'kanban_master', goldMedalId: 'kanban_master_oro', relatedGameId: 'kanban_hero' },
+  'drive.html': { topicKey: 'topic_drive', title: 'Ofimática Colaborativa', medalId: 'raton_biblioteca', goldMedalId: 'raton_biblioteca' },
+  'js_advanced.html': { topicKey: 'topic_js_adv', title: 'Javascript Avanzado', medalId: 'dev_web', goldMedalId: 'dev_web_oro' }
 };
 
 const tData = topicMap[filename];
@@ -131,9 +133,8 @@ requireAuth({
       banner.innerHTML = `
         <div style="font-size: 4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">${game.icon}</div>
         <div style="flex: 1;">
-          <h3 style="margin-top: 0; margin-bottom: 5px; color: ${game.colorDark};">🎮 ¡Pon en práctica lo aprendido!</h3>
-          <p style="margin-bottom: 15px; color: #333;">Juega a <strong>${game.name}</strong> para asentar estos conocimientos y ganar puntos XP y medallas.</p>
-          <a href="../${game.gamePath}" class="btn" style="background: ${game.color}; color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-block;">Jugar a ${game.name}</a>
+          <h3 style="margin-top: 0; margin-bottom: 5px; color: ${game.colorDark};">🎮 Minijuego Relacionado</h3>
+          <p style="margin-bottom: 0; color: #333;">Asienta estos conocimientos y gana XP en el minijuego <strong>${game.name}</strong> (disponible cuando tu profesor lo habilite en el panel de la clase).</p>
         </div>
       `;
       // Insertarlo antes del contenedor de test (o al final si no hay)

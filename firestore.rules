@@ -111,6 +111,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ── Colección de Gremios ──
+    match /gremios/{gremioId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
     // ── Módulo de Exámenes (AprenderSQL portado) ──
     match /preguntas/{preguntaId} {
       allow read: if isAuthenticated();

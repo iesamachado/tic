@@ -221,6 +221,7 @@ export const GUILDS_CATALOG = [
     id: 'turing',
     name: 'La Hermandad de Turing',
     icon: '🗝️',
+    image: 'img/turing.png',
     color: '#8e44ad',
     desc: 'Herederos del mismísimo Alan Turing. Maestros de la lógica y la criptografía. Su objetivo es descifrar los secretos mejor guardados del ciberespacio.'
   },
@@ -228,6 +229,7 @@ export const GUILDS_CATALOG = [
     id: 'lovelace',
     name: 'Los Hijos de Lovelace',
     icon: '⚙️',
+    image: 'img/lovelace.png',
     color: '#2980b9',
     desc: 'Bajo el manto de Ada Lovelace, la primera programadora de la historia. Son los arquitectos del código, estructurados, analíticos y elegantes.'
   },
@@ -235,6 +237,7 @@ export const GUILDS_CATALOG = [
     id: 'hopper',
     name: 'El Escuadrón de Hopper',
     icon: '🐛',
+    image: 'img/hopper.png',
     color: '#16a085',
     desc: 'Inspirados en Grace Hopper. Compiladores natos, depuradores incansables y siempre listos para encontrar y aplastar cualquier "bug" en el código.'
   },
@@ -242,6 +245,7 @@ export const GUILDS_CATALOG = [
     id: 'stallman',
     name: 'La Resistencia de Stallman',
     icon: '🐃',
+    image: 'img/stallman.png',
     color: '#e67e22',
     desc: 'Devotos del Software Libre y herederos de la filosofía GNU de Richard Stallman. Luchan por la libertad del código y el conocimiento sin cadenas.'
   }
