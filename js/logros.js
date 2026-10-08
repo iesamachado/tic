@@ -1,9 +1,10 @@
 import { requireAuth } from './common/auth.js';
 import { renderHeader, showModal, showToast } from './common/ui.js';
 import { $, escapeHtml } from './common/utils.js';
-import { getLeague, MEDALS_CATALOG, LEAGUES, GUILDS_CATALOG } from './common/gamification.js';
-import { db, getStudentClasses, getClassMembers } from './common/db.js';
-import { collection, getDocs, doc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getLeague, MEDALS_CATALOG, LEAGUES, GUILDS_CATALOG, MEDAL_XP, computeGameXP } from './common/gamification.js';
+import { db, getStudentClasses, getClassMembers, getStudentResultsByGame } from './common/db.js';
+import { collection, getDocs, doc, updateDoc, deleteField, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { GAMES } from './common/utils.js';
 
 requireAuth({
   allowedRoles: ['student', 'teacher'],
@@ -23,6 +24,13 @@ requireAuth({
 
     if ($('stat-xp')) $('stat-xp').textContent = pts;
     if ($('stat-league-name')) $('stat-league-name').textContent = liga.name;
+
+    const btnXp = $('btn-xp-details');
+    if (btnXp) {
+      btnXp.addEventListener('click', () => {
+        showStudentHistoryModal(user.uid, profile.displayNameAnonymized || profile.displayName || profile.name || 'Alumno', profile);
+      });
+    }
     if ($('stat-league-icon')) $('stat-league-icon').textContent = liga.icon;
     if ($('stat-medals')) $('stat-medals').textContent = logros.length;
     
@@ -93,12 +101,17 @@ requireAuth({
         const displayIcon = isHidden ? '❓' : (cat.icon || '🏅');
         const displayName = isHidden ? 'Logro Oculto' : cat.name;
         const displayDesc = isHidden ? 'Descubre cómo desbloquearlo jugando...' : cat.desc;
+        const xpVal = isUnlocked ? (MEDAL_XP[cat.id] || 50) : 0;
+        const xpBadge = isUnlocked ? `<span style="background:#f1c40f; color:#000; font-weight:bold; padding:2px 6px; border-radius:4px; font-size:0.8rem; margin-left:8px;">+${xpVal} XP</span>` : '';
 
         return `
           <div style="display:flex; align-items:center; gap: 15px; background:${isUnlocked ? '#fff' : '#f9f9f9'}; padding: 15px; border-radius: 8px; border-left: 4px solid ${isUnlocked ? '#f1c40f' : '#bdc3c7'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05); opacity: ${isUnlocked ? '1' : '0.6'}; transition: all 0.2s;">
             <div style="font-size: 2.5rem; filter: ${isUnlocked ? 'drop-shadow(0 2px 2px rgba(0,0,0,0.2))' : 'grayscale(100%)'};">${displayIcon}</div>
             <div>
-              <div style="font-weight: bold; font-size: 1.1rem; color: ${isUnlocked ? '#2c3e50' : '#7f8c8d'};">${escapeHtml(displayName)}</div>
+              <div style="font-weight: bold; font-size: 1.1rem; color: ${isUnlocked ? '#2c3e50' : '#7f8c8d'}; display:flex; align-items:center;">
+                ${escapeHtml(displayName)}
+                ${xpBadge}
+              </div>
               <div style="font-size: 0.85rem; color: #7f8c8d; line-height: 1.2; margin-top: 4px;">${escapeHtml(displayDesc || '')}</div>
             </div>
           </div>
@@ -310,4 +323,204 @@ export async function renderGremioSection(user, profile) {
       `;
     }).join('');
   }
+}
+
+// -- Historial de XP --
+async function showStudentHistoryModal(studentId, studentName, profile) {
+  let modal = document.getElementById('modal-student-history');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-student-history';
+    modal.className = 'modal-backdrop';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.innerHTML = `
+      <div class="modal-box" style="max-width:680px; width:95%; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+          <h3 id="history-modal-title"></h3>
+          <button class="modal-close" id="close-history-modal" aria-label="Cerrar">✕</button>
+        </div>
+        <div class="modal-body" style="padding:15px; overflow-y:auto; flex: 1;">
+          <div id="history-modal-body"></div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('close-history-modal').addEventListener('click', () => modal.classList.remove('modal-backdrop--visible'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('modal-backdrop--visible'); });
+  }
+
+  document.getElementById('history-modal-title').textContent = `📊 Línea de Tiempo de ${studentName}`;
+  document.getElementById('history-modal-body').innerHTML = '<div style="padding:32px; text-align:center;">⏳ Cargando línea de tiempo...</div>';
+  modal.classList.add('modal-backdrop--visible');
+
+  let timeline = [];
+  try {
+    const GAME_NAMES = Object.fromEntries(Object.values(GAMES).map(g => [g.id, `${g.icon} ${g.name}`]));
+
+    // 1. Juegos
+    const qGames = query(collection(db, 'tic2_game_results'), where('studentId', '==', studentId));
+    const gamesSnap = await getDocs(qGames);
+    
+    const gameDocs = [];
+    gamesSnap.forEach(d => gameDocs.push(d.data()));
+    gameDocs.sort((a,b) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0));
+    
+    const gameHistory = {};
+    gameDocs.forEach(r => {
+      const gName = GAME_NAMES[r.gameId] || r.gameId || 'Juego';
+      const key = `${r.gameId}_${r.classId || 'free'}`;
+      if (!gameHistory[key]) gameHistory[key] = { best: 0, totalEarned: 0 };
+      
+      let xpEarned = 5;
+      if (r.score > gameHistory[key].best) {
+         xpEarned += (computeGameXP(r.score, r.gameId) - computeGameXP(gameHistory[key].best, r.gameId));
+         gameHistory[key].best = r.score;
+      }
+      if (gameHistory[key].totalEarned + xpEarned > 750) {
+         xpEarned = Math.max(0, 750 - gameHistory[key].totalEarned);
+      }
+      gameHistory[key].totalEarned += xpEarned;
+      
+      timeline.push({
+        type: 'Juego',
+        title: `Jugó a ${gName}`,
+        desc: `Puntuación: ${r.score}`,
+        xp: xpEarned,
+        timestamp: r.timestamp?.seconds ? r.timestamp.seconds * 1000 : Date.now(),
+        icon: '🎮'
+      });
+    });
+
+    // 1b. Tareas Asignadas (Classroom / ClassHub)
+    const studentClasses = await getStudentClasses(studentId);
+    for (const cls of studentClasses) {
+      const qAssigns = collection(db, "tic2_classes", cls.id, "tic2_assignments");
+      const assignsSnap = await getDocs(qAssigns);
+      assignsSnap.forEach(d => {
+        const a = d.data();
+        const gName = GAME_NAMES[a.gameId] || a.gameId || "Tarea";
+        timeline.push({
+          type: "Tarea",
+          title: `Asignación: ${a.title}`,
+          desc: `Objetivo: ${a.targetScore} en ${gName}`,
+          xp: 0,
+          timestamp: a.dueDate ? new Date(a.dueDate).getTime() : Date.now() - 100000,
+          icon: "📋"
+        });
+      });
+    }
+
+    // 2. Tests de Teoría
+    const qTests = query(collection(db, 'tic2_tests_teoria'), where('uid', '==', studentId));
+    const testsSnap = await getDocs(qTests);
+    testsSnap.forEach(d => {
+      const t = d.data();
+      let xp = 0;
+      if (t.score >= 3) {
+        xp = t.score >= 5 ? Math.round(t.score * 10) : 5;
+      }
+      timeline.push({
+        type: 'Test',
+        title: `Test de ${t.topicTitle || 'Teoría'}`,
+        desc: `Nota: ${t.score} / 10`,
+        xp: xp,
+        timestamp: t.fecha?.seconds ? t.fecha.seconds * 1000 : Date.now(),
+        icon: '📖'
+      });
+    });
+
+    // 3. Exámenes Reales
+    const qExams = query(collection(db, 'respuestas_test'), where('uid', '==', studentId));
+    const examsSnap = await getDocs(qExams);
+    examsSnap.forEach(d => {
+      const e = d.data();
+      let xp = 0;
+      if (e.nota >= 3) {
+        xp = 100;
+        if (e.nota >= 5) xp += 100;
+        if (e.nota >= 9) xp += 200;
+      }
+      timeline.push({
+        type: 'Examen',
+        title: `Examen Oficial`,
+        desc: `Nota: ${e.nota} / 10`,
+        xp: xp,
+        timestamp: e.fecha?.seconds ? e.fecha.seconds * 1000 : Date.now(),
+        icon: '📝'
+      });
+    });
+
+    // 3b. Tareas Offline
+    const qOffline = query(collection(db, 'tic2_offline_grades'), where('studentId', '==', studentId));
+    const offlineSnap = await getDocs(qOffline);
+    offlineSnap.forEach(d => {
+      const o = d.data();
+      let xp = 0;
+      if (o.finalGrade > 0) xp += 100;
+      if (o.finalGrade >= 5) xp += 100;
+      if (o.finalGrade >= 9) xp += 200;
+      timeline.push({
+        type: 'TareaOffline',
+        title: `Tarea Corregida`,
+        desc: `Nota: ${o.finalGrade} / 10`,
+        xp: xp,
+        timestamp: o.updatedAt?.seconds ? o.updatedAt.seconds * 1000 : Date.now(),
+        icon: '📝'
+      });
+    });
+
+    // 4. Medallas
+    if (profile && profile.logros) {
+      profile.logros.forEach(m => {
+        const xpEarned = MEDAL_XP[m.id] || 50;
+        const ts = m.fecha ? new Date(m.fecha).getTime() : Date.now();
+        timeline.push({
+          type: 'Medalla',
+          title: `Medalla: ${m.name}`,
+          desc: m.desc || '',
+          xp: xpEarned,
+          timestamp: ts,
+          icon: m.icon || '🏅'
+        });
+      });
+    }
+
+  } catch(e) {
+    console.error('Error cargando historial:', e);
+    document.getElementById('history-modal-body').innerHTML = `<div style="padding:24px; text-align:center; color:var(--error);">⚠️ Error al cargar: ${escapeHtml(e.message)}</div>`;
+    return;
+  }
+
+  // Ordenar timeline descendente por fecha
+  timeline.sort((a, b) => b.timestamp - a.timestamp);
+
+  let html = '<ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column;">';
+  
+  if (timeline.length === 0) {
+    html = '<div style="text-align:center;color:var(--text-muted);padding:16px;">Sin actividad registrada.</div>';
+  } else {
+    html += timeline.map((item, index) => {
+      const dateStr = new Date(item.timestamp).toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const xpBadge = item.xp > 0 ? `<span style="background:#f1c40f; color:#000; font-weight:bold; padding:3px 8px; border-radius:12px; font-size:0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">+${item.xp} XP</span>` : (item.type === 'Test' || item.type === 'Examen' ? `<span style="background:#e74c3c; color:#fff; font-weight:bold; padding:3px 8px; border-radius:12px; font-size:0.8rem;">0 XP</span>` : '');
+      const isLast = index === timeline.length - 1;
+      const borderBottom = isLast ? '' : 'border-bottom:1px solid var(--border);';
+      
+      return `
+        <li style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; ${borderBottom}">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="font-size:1.5rem; width:30px; text-align:center;">${item.icon}</div>
+            <div>
+              <strong style="font-size:1rem; color:var(--text-primary); display:block; margin-bottom:2px;">${escapeHtml(item.title)}</strong>
+              <div style="font-size:0.85rem; color:var(--text-secondary);">${escapeHtml(item.desc)}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${dateStr}</div>
+            </div>
+          </div>
+          <div>${xpBadge}</div>
+        </li>
+      `;
+    }).join('');
+    html += '</ul>';
+  }
+
+  document.getElementById('history-modal-body').innerHTML = html;
 }

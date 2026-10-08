@@ -99,6 +99,17 @@ service cloud.firestore {
     match /tic2_live_participants/{participantId} {
       allow read, write: if isAuthenticated();
     }
+    
+    // ── Configuración de Tareas Manuales (TIC2) ──
+    match /tic2_offline_tasks_config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
+    
+    match /tic2_offline_grades/{gradeId} {
+      allow read: if isAuthenticated();
+      allow write: if isTeacher();
+    }
 
     // ── Textos y configuraciones (TIC2) ──
     match /tic2_texts/{textId} {

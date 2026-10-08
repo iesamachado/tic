@@ -284,14 +284,45 @@ if (btnRecalc) {
             gamesSnap.forEach(d => {
               const g = d.data();
               const key = `${g.gameId}_${g.classId || 'free'}`;
-              if (!gameGroups[key]) gameGroups[key] = { best: 0, plays: 0 };
+              if (!gameGroups[key]) gameGroups[key] = { best: 0, plays: 0, gameId: g.gameId };
               if (g.score > gameGroups[key].best) gameGroups[key].best = g.score;
               gameGroups[key].plays += 1;
             });
 
+            // Dynamically import computeGameXP and MEDAL_XP
+            const { computeGameXP, MEDAL_XP } = await import('./common/gamification.js');
+
             for (const key in gameGroups) {
               const info = gameGroups[key];
-              correctXP += info.best + (info.plays * 2);
+              const bestXP = computeGameXP(info.best, info.gameId);
+              let totalGameXP = bestXP + (info.plays * 5);
+              if (totalGameXP > 750) totalGameXP = 750;
+              correctXP += totalGameXP;
+            }
+
+            // Theory Tests
+            const testsSnap = await getDocs(query(collection(db, 'tic2_tests_teoria'), where('uid', '==', uid)));
+            testsSnap.forEach(d => {
+              const t = d.data();
+              if (t.score >= 3) {
+                correctXP += t.score >= 5 ? Math.round(t.score * 10) : 5;
+              }
+            });
+
+            // Offline Tasks
+            const offlineSnap = await getDocs(query(collection(db, 'tic2_offline_grades'), where('studentId', '==', uid)));
+            offlineSnap.forEach(d => {
+              const grade = d.data().finalGrade || 0;
+              if (grade > 0) correctXP += 100;
+              if (grade >= 5) correctXP += 100;
+              if (grade >= 9) correctXP += 200;
+            });
+
+            // Medals
+            if (data.logros && Array.isArray(data.logros)) {
+              data.logros.forEach(m => {
+                correctXP += MEDAL_XP[m.id] || 50;
+              });
             }
 
             if (correctXP !== (data.puntosTotal || 0)) {

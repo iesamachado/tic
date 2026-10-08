@@ -536,14 +536,33 @@ export async function deleteAssignment(classId, assignmentId) {
  */
 export async function saveGameResult(gameId, studentId, classId, score, metadata = {}) {
   const finalScore = Number(score) || 0;
-  let xpToAdd = 2; // Recompensa base mínima por jugar/repetir
+  let xpToAdd = 5; // Recompensa base mínima por jugar/repetir
 
   try {
-    // Consultar el récord previo ANTES de guardar el nuevo resultado
+    const { computeGameXP } = await import('./gamification.js');
     const prevBest = await getStudentBestScore(studentId, gameId, classId);
+    
     if (finalScore > prevBest) {
-      // Solo sumamos la diferencia si ha superado su récord
-      xpToAdd += (finalScore - prevBest);
+      const newXP = computeGameXP(finalScore, gameId);
+      const oldXP = computeGameXP(prevBest, gameId);
+      xpToAdd += (newXP - oldXP);
+    }
+    
+    // Calcular totalXPEarnedSoFar para este juego y clase
+    const snap = await getDocs(query(collection(db, 'tic2_game_results'), where('studentId', '==', studentId)));
+    let playsBefore = 0;
+    snap.forEach(d => {
+      const data = d.data();
+      if (data.gameId === gameId && data.classId === (classId || null)) {
+        playsBefore++;
+      }
+    });
+    
+    const totalXPEarnedSoFar = (playsBefore * 5) + computeGameXP(prevBest, gameId);
+    
+    // Tope de 750 XP acumulado
+    if (totalXPEarnedSoFar + xpToAdd > 750) {
+      xpToAdd = Math.max(0, 750 - totalXPEarnedSoFar);
     }
   } catch (err) {
     console.warn('Error calculando XP progresiva:', err);

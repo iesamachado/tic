@@ -85,6 +85,45 @@ export const MEDALS_CATALOG = [
   { id: 'kanban_master_oro', name: 'Scrum de Oro', desc: 'Saca más de un 9 en el test de Industria del Software.', icon: '📊', public: true }
 ];
 
+export const MEDAL_XP = {
+  // Generales y Progresión
+  first_blood: 50, novato: 100, aprendiz: 200, veterano: 500, leyenda: 1000, perfeccionista: 150,
+  // Constancia y Tiempo
+  madrugador: 50, nocturno: 50, finde: 50, constancia: 100, hora_bruja: 200, relampago: 100,
+  // Exámenes / Tests
+  maestro_teoria: 200, casi_perfecto: 100, por_los_pelos: 50, remontada: 150, erudito: 300, suerte_ciega: 200,
+  // Databreach (Ciberseguridad)
+  hacker_novato: 50, bypass_maestro: 100, mr_robot: 200, inyector_sql: 150, rastro_borrado: 150, curioso_db: 100,
+  // CC Trivial (Propiedad Intelectual)
+  abogado_novato: 50, juez_supremo: 200, fair_use: 100, dominio_publico: 100, pirata_arrepentido: 100,
+  // Cert Arcade (Certificados)
+  burocrata: 50, firma_digital: 100, ciudadano_ejemplar: 200, dnie_master: 300, revocado: 100,
+  // Kanban Hero
+  agilista: 100, multitarea: 150, productividad_extrema: 200, burnout: 100,
+  // Hex Invaders
+  matematico: 100, francotirador_hex: 150, overflow: 200, hexadecimal_boss: 300, panic_button: 100,
+  // Teoría
+  raton_biblioteca: 100, experto_multimedia: 150, experto_multimedia_oro: 300,
+  maestro_cms: 150, maestro_cms_oro: 300, dev_web: 150, dev_web_oro: 300,
+  sysadmin: 150, sysadmin_oro: 300, kanban_master: 150, kanban_master_oro: 300
+};
+
+export function computeGameXP(score, gameId) {
+  const GAME_CONFIGS = {
+    'mecanoclass': { base: 200, maxRef: 100 }, 
+    'rompecodigos': { base: 200, maxRef: 15 },
+    'cc_trivial': { base: 200, maxRef: 10 },
+    'cert_arcade': { base: 200, maxRef: 500 },
+    'hex_invaders': { base: 200, maxRef: 1000 },
+    'kanban_hero': { base: 200, maxRef: 200 },
+    'databreach': { base: 200, maxRef: 5 },
+    'default': { base: 200, maxRef: 100 }
+  };
+  const cfg = GAME_CONFIGS[gameId] || GAME_CONFIGS['default'];
+  const scoreFactor = Math.pow(score / cfg.maxRef, 0.65);
+  return Math.round(cfg.base * scoreFactor);
+}
+
 // --- FUNCIONES NÚCLEO ---
 
 /**

@@ -1,3 +1,16 @@
+export const OFFLINE_RUBRIC = [
+  { id: "comprension", title: "1. Comprensión del Concepto", desc: "Entiende perfectamente el concepto principal de la tarea.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "resolucion", title: "2. Resolución de Problemas", desc: "Resuelve los problemas técnicos de forma eficaz.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "herramientas", title: "3. Uso de Herramientas", desc: "Maneja adecuadamente las herramientas/apps solicitadas.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "organizacion", title: "4. Organización del Trabajo", desc: "El trabajo está bien estructurado y es fácil de seguir.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "creatividad", title: "5. Creatividad y Originalidad", desc: "Aporta ideas propias, no se limita a copiar lo básico.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "formato", title: "6. Presentación Visual", desc: "El formato, colores y estética son atractivos y limpios.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "ortografia", title: "7. Redacción y Ortografía", desc: "Sin faltas de ortografía y bien redactado.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "autonomia", title: "8. Autonomía", desc: "Ha trabajado de forma autónoma sin depender del profesor.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "instrucciones", title: "9. Sigue las Instrucciones", desc: "Ha cumplido con absolutamente todos los pasos requeridos.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] },
+  { id: "profundidad", title: "10. Nivel de Detalle", desc: "Profundidad en las respuestas y esfuerzo destacable.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] }
+];
+
 export const CLASSROOM_TASKS = [
   {
     "id": "1",

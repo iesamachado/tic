@@ -534,13 +534,16 @@ async function toggleResultados() {
       let xp = 100; // Por hacer el examen
       if (entrega.nota >= 5) xp += 100;
       if (entrega.nota >= 9) xp += 200;
+      
+      if (entrega.nota < 3) xp = 0;
 
       const uSnap = await getDoc(doc(db, 'tic2_users', entrega.uid));
       if (uSnap.exists()) {
-        await addPointsAndCheckLogros(entrega.uid, xp, null, 'tic2_users');
-        await awardMedal(entrega.uid, 'first_blood', 'tic2_users');
-        if (entrega.nota >= 10) await awardMedal(entrega.uid, 'maestro_teoria', 'tic2_users');
-
+        if (xp > 0) {
+          await addPointsAndCheckLogros(entrega.uid, xp, null, 'tic2_users');
+          await awardMedal(entrega.uid, 'first_blood', 'tic2_users');
+          if (entrega.nota >= 10) await awardMedal(entrega.uid, 'maestro_teoria', 'tic2_users');
+        }
         await updateDoc(doc(db, "respuestas_test", entrega.id), { puntosOtorgados: true });
         repartidos++;
       }

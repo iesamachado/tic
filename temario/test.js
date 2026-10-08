@@ -243,19 +243,26 @@ async function processSubmission(forcedFail = false) {
   if (forcedFail) finalScore = 0;
 
   // Save to DB
-  if (finalScore >= 5 && currentProfile.role === 'student') {
+  if (currentProfile.role === 'student') {
     try {
-      const xp = Math.round(finalScore * 10);
-      const res = await addPointsAndCheckLogros(currentUser.uid, xp, null, 'tic2_users');
-      await awardMedal(currentUser.uid, 'raton_biblioteca', 'tic2_users');
-      await awardMedal(currentUser.uid, tData.medalId, 'tic2_users');
-      
-      if (finalScore >= 9) {
-        await awardMedal(currentUser.uid, tData.goldMedalId, 'tic2_users');
+      let xp = 0;
+      if (finalScore >= 3) {
+        xp = finalScore >= 5 ? Math.round(finalScore * 10) : 5;
       }
-      
-      if (res && res.leagueUp) {
-        showToast("¡Nueva Liga Desbloqueada!", `Has ascendido a la ${res.newLeague.name}`, "success", 5000);
+
+      if (xp > 0) {
+        const res = await addPointsAndCheckLogros(currentUser.uid, xp, null, 'tic2_users');
+        if (finalScore >= 5) {
+          await awardMedal(currentUser.uid, 'raton_biblioteca', 'tic2_users');
+          await awardMedal(currentUser.uid, tData.medalId, 'tic2_users');
+        }
+        if (finalScore >= 9) {
+          await awardMedal(currentUser.uid, tData.goldMedalId, 'tic2_users');
+        }
+        
+        if (res && res.leagueUp) {
+          showToast("¡Nueva Liga Desbloqueada!", `Has ascendido a la ${res.newLeague.name}`, "success", 5000);
+        }
       }
     } catch(err) {
       console.error('Error awarding medals:', err);

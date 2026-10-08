@@ -43,7 +43,7 @@
         </div>
 
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-          <div style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); border: 1px solid #f48fb1; padding: 10px 20px; border-radius: 8px; text-align: center; min-width: 100px;">
+          <div id="btn-xp-details" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); border: 1px solid #f48fb1; padding: 10px 20px; border-radius: 8px; text-align: center; min-width: 100px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
             <div style="font-size: 1.3rem; font-weight: bold; color: #c2185b;" id="stat-xp">0</div>
             <div style="font-size: 0.8rem; color: #c2185b; font-weight: bold;">PUNTOS XP</div>
           </div>
@@ -68,6 +68,17 @@
         </div>
       </div>
 
+      <details style="margin: 0 15px 15px 15px; background: #fdfbf7; border: 1px solid #f1c40f; border-radius: 8px; padding: 10px;"> 
+        <summary style="cursor: pointer; font-weight: bold; color: #f39c12; outline: none; list-style: none;"> 
+          📖 Guía Rápida de Puntos (XP) 
+        </summary> 
+        <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9rem; color: #555; line-height: 1.5;"> 
+          <li><strong>🎮 Minijuegos:</strong> Obtienes 5 XP por jugar. Si superas tu <em>Récord Personal</em>, obtienes XP extra según lo bien que lo hagas.</li> 
+          <li><strong>⚠️ Límite Anti-Farmeo:</strong> En los minijuegos, puedes acumular un máximo absoluto de <strong>750 XP por juego</strong>.</li> 
+          <li><strong>📖 Tests de Teoría:</strong> Si sacas menos de un <strong>3 sobre 10</strong>, obtendrás estrictamente <strong>0 XP</strong>.</li> 
+          <li><strong>🏅 Medallas:</strong> Desbloquear logros ocultos y medallas te proporciona <strong>bonus masivos de XP</strong> que ignoran cualquier límite.</li> 
+        </ul> 
+      </details>
       <div class="layout-logros" id="main-layout-container">
         <!-- COLUMNA IZQUIERDA (Gremio) -->
         <div class="layout-logros-left">

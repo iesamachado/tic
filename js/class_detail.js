@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { collection, query, where, getDocs, getDoc, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { db } from './common/db.js';
 import { requireAuth, currentUser, currentProfile, classroomToken, refreshClassroomToken, isAdmin } from './common/auth.js';
 import {
@@ -7,7 +7,8 @@ import {
   getClassRanking, addStudentsToClass, removeStudentFromClass, getStudentResultsInClass,
   getStudentBestScore
 } from './common/db.js';
-import { MEDALS_CATALOG, GUILDS_CATALOG } from './common/gamification.js';
+import { MEDALS_CATALOG, GUILDS_CATALOG, MEDAL_XP } from './common/gamification.js';
+import { CLASSROOM_TASKS, OFFLINE_RUBRIC } from './common/tasks.js';
 import { createClassroomAssignment, syncClassroomGrades } from './common/classroom.js';
 import { renderHeader, showToast, showLoading, hideLoading, renderPodium, renderRankingTable } from './common/ui.js';
 import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams, copyToClipboard } from './common/utils.js';
@@ -221,8 +222,15 @@ async function loadStudentsTab() {
 
   try {
     members = await getClassMembers(classData.id);
-    
 
+    const sortSelect = $('sort-students-select');
+    if (sortSelect) {
+      if (sortSelect.value === 'xp') {
+        members.sort((a, b) => (b.puntosTotal || 0) - (a.puntosTotal || 0));
+      } else {
+        members.sort((a, b) => (a.displayName || a.email || '').localeCompare(b.displayName || b.email || ''));
+      }
+    }
 
     if (members.length === 0) {
       list.innerHTML = '';
@@ -345,13 +353,13 @@ async function showStudentHistory(studentId, studentName) {
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.innerHTML = `
-      <div class="modal-box" style="max-width:680px; width:95%;">
+      <div class="modal-box" style="max-width:680px; width:95%; max-height: 90vh; display: flex; flex-direction: column;">
         <div class="modal-header">
           <h3 id="history-modal-title"></h3>
           <button class="modal-close" id="close-history-modal" aria-label="Cerrar">✕</button>
         </div>
-        <div class="modal-body" style="padding:0;">
-          <div id="history-modal-body" style="overflow-x:auto;"></div>
+        <div class="modal-body" style="padding:15px; overflow-y:auto; flex: 1;">
+          <div id="history-modal-body"></div>
         </div>
       </div>`;
     document.body.appendChild(modal);
@@ -359,46 +367,173 @@ async function showStudentHistory(studentId, studentName) {
     modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('modal-backdrop--visible'); });
   }
 
-  document.getElementById('history-modal-title').textContent = `📊 Historial de ${studentName}`;
-  document.getElementById('history-modal-body').innerHTML = '<div style="padding:32px; text-align:center;">⏳ Cargando partidas...</div>';
+  document.getElementById('history-modal-title').textContent = `📊 Línea de Tiempo de ${studentName}`;
+  document.getElementById('history-modal-body').innerHTML = '<div style="padding:32px; text-align:center;">⏳ Cargando línea de tiempo...</div>';
   modal.classList.add('modal-backdrop--visible');
 
-  let results = [];
+  let timeline = [];
   try {
-    results = await getStudentResultsInClass(studentId, classData.id, 50);
+    const { computeGameXP, MEDAL_XP } = await import('./common/gamification.js');
+    const { getUserProfile } = await import('./common/db.js');
+    
+    // 1. Juegos
+    const gameResults = await getStudentResultsInClass(studentId, classData.id, 100);
+    gameResults.sort((a,b) => (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0));
+    
+    const gameHistory = {};
+    gameResults.forEach(r => {
+      const gName = GAME_NAMES[r.gameId] || r.gameId || 'Juego';
+      const key = `${r.gameId}_${r.classId || 'free'}`;
+      if (!gameHistory[key]) gameHistory[key] = { best: 0, totalEarned: 0 };
+      
+      let xpEarned = 5;
+      if (r.score > gameHistory[key].best) {
+         xpEarned += (computeGameXP(r.score, r.gameId) - computeGameXP(gameHistory[key].best, r.gameId));
+         gameHistory[key].best = r.score;
+      }
+      if (gameHistory[key].totalEarned + xpEarned > 750) {
+         xpEarned = Math.max(0, 750 - gameHistory[key].totalEarned);
+      }
+      gameHistory[key].totalEarned += xpEarned;
+      
+      timeline.push({
+        type: 'Juego',
+        title: `Jugó a ${gName}`,
+        desc: `Puntuación: ${r.score}`,
+        xp: xpEarned,
+        timestamp: r.timestamp?.seconds ? r.timestamp.seconds * 1000 : Date.now(),
+        icon: '🎮'
+      });
+    });
+
+    // 1b. Tareas Asignadas (Classroom / ClassHub)
+    const assignments = await getClassAssignments(classData.id);
+    assignments.forEach(a => {
+      const gName = GAME_NAMES[a.gameId] || a.gameId || "Tarea";
+      timeline.push({
+        type: "Tarea",
+        title: `Asignación: ${a.title}`,
+        desc: `Objetivo: ${a.targetScore} en ${gName}`,
+        xp: 0,
+        timestamp: a.dueDate ? new Date(a.dueDate).getTime() : Date.now() - 100000,
+        icon: "📋"
+      });
+    });
+
+    // 2. Tests de Teoría
+    const qTests = query(collection(db, 'tic2_tests_teoria'), where('uid', '==', studentId));
+    const testsSnap = await getDocs(qTests);
+    testsSnap.forEach(d => {
+      const t = d.data();
+      let xp = 0;
+      if (t.score >= 3) {
+        xp = t.score >= 5 ? Math.round(t.score * 10) : 5;
+      }
+      timeline.push({
+        type: 'Test',
+        title: `Test de ${t.topicTitle || 'Teoría'}`,
+        desc: `Nota: ${t.score} / 10`,
+        xp: xp,
+        timestamp: t.fecha?.seconds ? t.fecha.seconds * 1000 : Date.now(),
+        icon: '📖'
+      });
+    });
+
+    // 3. Exámenes Reales
+    const qExams = query(collection(db, 'respuestas_test'), where('uid', '==', studentId));
+    const examsSnap = await getDocs(qExams);
+    examsSnap.forEach(d => {
+      const e = d.data();
+      let xp = 0;
+      if (e.nota >= 3) {
+        xp = 100;
+        if (e.nota >= 5) xp += 100;
+        if (e.nota >= 9) xp += 200;
+      }
+      timeline.push({
+        type: 'Examen',
+        title: `Examen Oficial`,
+        desc: `Nota: ${e.nota} / 10`,
+        xp: xp,
+        timestamp: e.fecha?.seconds ? e.fecha.seconds * 1000 : Date.now(),
+        icon: '📝'
+      });
+    });
+
+    // 3b. Tareas Offline
+    const qOffline = query(collection(db, 'tic2_offline_grades'), where('studentId', '==', studentId));
+    const offlineSnap = await getDocs(qOffline);
+    offlineSnap.forEach(d => {
+      const o = d.data();
+      let xp = 0;
+      if (o.finalGrade > 0) xp += 100;
+      if (o.finalGrade >= 5) xp += 100;
+      if (o.finalGrade >= 9) xp += 200;
+      timeline.push({
+        type: 'TareaOffline',
+        title: `Tarea Corregida`,
+        desc: `Nota: ${o.finalGrade} / 10`,
+        xp: xp,
+        timestamp: o.updatedAt?.seconds ? o.updatedAt.seconds * 1000 : Date.now(),
+        icon: '📝'
+      });
+    });
+
+    // 4. Medallas
+    const profile = await getUserProfile(studentId);
+    if (profile && profile.logros) {
+      profile.logros.forEach(m => {
+        const xpEarned = MEDAL_XP[m.id] || 50;
+        const ts = m.fecha ? new Date(m.fecha).getTime() : Date.now();
+        timeline.push({
+          type: 'Medalla',
+          title: `Medalla: ${m.name}`,
+          desc: m.desc || '',
+          xp: xpEarned,
+          timestamp: ts,
+          icon: m.icon || '🏅'
+        });
+      });
+    }
+
   } catch(e) {
     console.error('Error cargando historial:', e);
     document.getElementById('history-modal-body').innerHTML = `<div style="padding:24px; text-align:center; color:var(--error);">⚠️ Error al cargar: ${escapeHtml(e.message)}</div>`;
     return;
   }
 
-  const rows = results.length === 0
-    ? '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:16px;">Sin partidas registradas en esta clase.</td></tr>'
-    : results.map(r => {
-        const gameName = GAME_NAMES[r.gameId] || r.gameId || '—';
-        const date = r.timestamp?.toDate ? r.timestamp.toDate().toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
-        const wpm = r.metadata?.wpm ?? '—';
-        const acc = r.metadata?.accuracy != null ? r.metadata.accuracy + '%' : '—';
-        return `<tr>
-          <td style="padding:8px 12px;">${escapeHtml(gameName)}</td>
-          <td style="padding:8px 12px; text-align:center;">${r.score}</td>
-          <td style="padding:8px 12px; text-align:center;">${wpm !== '—' ? wpm + ' PPM' : '—'}${acc !== '—' ? ` / ${acc}` : ''}</td>
-          <td style="padding:8px 12px; color:var(--text-muted); font-size:0.85rem;">${date}</td>
-        </tr>`;
-      }).join('');
+  // Ordenar timeline descendente por fecha
+  timeline.sort((a, b) => b.timestamp - a.timestamp);
 
-  document.getElementById('history-modal-body').innerHTML = `
-    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
-      <thead>
-        <tr style="border-bottom:2px solid var(--border); background:var(--surface-2);">
-          <th style="padding:10px 12px; text-align:left;">Juego</th>
-          <th style="padding:10px 12px; text-align:center;">Puntuación</th>
-          <th style="padding:10px 12px; text-align:center;">Detalle</th>
-          <th style="padding:10px 12px; text-align:left;">Fecha</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  let html = '<ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column;">';
+  
+  if (timeline.length === 0) {
+    html = '<div style="text-align:center;color:var(--text-muted);padding:16px;">Sin actividad registrada.</div>';
+  } else {
+    html += timeline.map((item, index) => {
+      const dateStr = new Date(item.timestamp).toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const xpBadge = item.xp > 0 ? `<span style="background:#f1c40f; color:#000; font-weight:bold; padding:3px 8px; border-radius:12px; font-size:0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">+${item.xp} XP</span>` : (item.type === 'Test' || item.type === 'Examen' ? `<span style="background:#e74c3c; color:#fff; font-weight:bold; padding:3px 8px; border-radius:12px; font-size:0.8rem;">0 XP</span>` : '');
+      const isLast = index === timeline.length - 1;
+      const borderBottom = isLast ? '' : 'border-bottom:1px solid var(--border);';
+      
+      return `
+        <li style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; ${borderBottom}">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="font-size:1.5rem; width:30px; text-align:center;">${item.icon}</div>
+            <div>
+              <strong style="font-size:1rem; color:var(--text-primary); display:block; margin-bottom:2px;">${escapeHtml(item.title)}</strong>
+              <div style="font-size:0.85rem; color:var(--text-secondary);">${escapeHtml(item.desc)}</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${dateStr}</div>
+            </div>
+          </div>
+          <div>${xpBadge}</div>
+        </li>
+      `;
+    }).join('');
+    html += '</ul>';
+  }
+
+  document.getElementById('history-modal-body').innerHTML = html;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -406,6 +541,7 @@ async function showStudentHistory(studentId, studentName) {
 // ══════════════════════════════════════════════════════════════
 
 async function loadAssignmentsTab() {
+  loadOfflineTasksTab();
   const list = $('assignments-list');
   if (!list) return;
 
@@ -935,6 +1071,10 @@ function setupModals(user) {
   });
 
   // Sincronizar alumnos desde Classroom
+  $('sort-students-select')?.addEventListener('change', () => {
+    loadStudentsTab();
+  });
+
   $('btn-sync-students')?.addEventListener('click', async () => {
     if (!classData.classroomCourseId) {
       showToast('Sin Classroom', 'Esta clase no está vinculada a un curso de Classroom.', 'warning');
@@ -1236,12 +1376,17 @@ window._showMedallas = function(uidStr) {
     const displayIcon = isHidden ? '❓' : (cat.icon || '🏅');
     const displayName = isHidden ? 'Logro Oculto' : cat.name;
     const displayDesc = isHidden ? 'Descubre cómo desbloquearlo jugando...' : cat.desc;
+    const xpVal = isUnlocked ? (MEDAL_XP[cat.id] || 50) : 0;
+    const xpBadge = isUnlocked ? `<span style="background:#f1c40f; color:#000; font-weight:bold; padding:2px 6px; border-radius:4px; font-size:0.8rem; margin-left:8px;">+${xpVal} XP</span>` : '';
 
     return `
       <div style="display:flex; align-items:center; gap: 15px; background:${isUnlocked ? '#fff' : '#f9f9f9'}; padding: 10px; border-radius: 8px; border-left: 4px solid ${isUnlocked ? '#f1c40f' : '#bdc3c7'}; box-shadow: 0 2px 4px rgba(0,0,0,0.05); opacity: ${isUnlocked ? '1' : '0.6'}; transition: all 0.2s;">
         <div style="font-size: 2.5rem; filter: ${isUnlocked ? 'drop-shadow(0 2px 2px rgba(0,0,0,0.2))' : 'grayscale(100%)'};">${displayIcon}</div>
         <div>
-          <div style="font-weight: bold; font-size: 1.1rem; color: ${isUnlocked ? '#2c3e50' : '#7f8c8d'};">${escapeHtml(displayName)}</div>
+          <div style="font-weight: bold; font-size: 1.1rem; color: ${isUnlocked ? '#2c3e50' : '#7f8c8d'}; display:flex; align-items:center;">
+            ${escapeHtml(displayName)}
+            ${xpBadge}
+          </div>
           <div style="font-size: 0.9rem; color: #7f8c8d;">${escapeHtml(displayDesc || '')}</div>
         </div>
       </div>
@@ -1349,4 +1494,498 @@ async function loadTheoryTab() {
 
 if ($('btn-refresh-theory')) {
   $('btn-refresh-theory').addEventListener('click', loadTheoryTab);
+}
+
+//  TAB: TAREAS OFFLINE Y RÚBRICAS
+// ══════════════════════════════════════════════════════════════
+
+let offlineTasksConfig = {};
+
+async function loadOfflineTasksTab() {
+  const container = $('offline-tasks-container');
+  if (!container) return;
+  
+  if (members.length === 0) {
+     members = await getClassMembers(classData.id);
+  }
+
+  // Cargar configuración de tareas
+  const configSnap = await getDocs(query(collection(db, 'tic2_offline_tasks_config'), where('classId', '==', classData.id)));
+  offlineTasksConfig = {};
+  configSnap.forEach(d => {
+    offlineTasksConfig[d.data().taskId] = { id: d.id, ...d.data() };
+  });
+
+  // Cargar notas offline
+  const gradesSnap = await getDocs(query(collection(db, 'tic2_offline_grades'), where('classId', '==', classData.id)));
+  const offlineGrades = {};
+  gradesSnap.forEach(d => {
+    const data = d.data();
+    if (!offlineGrades[data.taskId]) offlineGrades[data.taskId] = {};
+    offlineGrades[data.taskId][data.studentId] = { id: d.id, ...data };
+  });
+
+  let html = `<div class="accordion-list">`;
+  CLASSROOM_TASKS.forEach((task, index) => {
+    const config = offlineTasksConfig[task.id] || { isActive: false, rubricPublished: false, gradesPublished: false, dueDate: '' };
+    
+    const displayTitle = config.customTitle || task.title;
+    const displayDesc = config.customDescription || task.description;
+    
+    html += `
+      <div class="task-accordion-item" style="border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; background: var(--bg-surface); overflow:hidden;">
+        <!-- Cabecera Tarea -->
+        <div class="task-accordion-header" style="display:flex; justify-content:space-between; align-items:center; padding: 15px; cursor:pointer; background:#f8fafc;" data-task="${task.id}">
+          <div style="flex:1;">
+            <h3 style="margin:0; color:var(--primary); font-size:1.1rem; display:flex; align-items:center; gap:10px;">
+              <span class="task-expand-icon">▶️</span>
+              ${index + 1}. ${escapeHtml(displayTitle)}
+              <button class="btn-ghost btn-edit-task" data-task="${task.id}" style="font-size:0.9rem; padding:4px; margin-left:5px;" title="Personalizar tarea" onclick="event.stopPropagation()">✏️</button>
+              <span class="badge" style="background:#e2e8f0; color:#475569; font-size:0.75rem;">Bloque ${task.block} | Crit ${task.crit}</span>
+            </h3>
+          </div>
+          <!-- Toggle Activo -->
+          <div style="display:flex; align-items:center; gap:10px;" onclick="event.stopPropagation()">
+            <span style="font-size:0.9rem; color:var(--text-muted);">Visible Alumnos</span>
+            <label class="toggle-switch">
+              <input type="checkbox" class="offline-config-toggle" data-task="${task.id}" data-field="isActive" ${config.isActive ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Contenido Tarea -->
+        <div class="task-accordion-content" id="task-content-${task.id}" style="display:none; padding:15px; border-top:1px solid var(--border);">
+          <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:15px; white-space:pre-wrap; max-height: 80px; overflow-y:auto; border:1px solid #e2e8f0; padding:10px; border-radius:4px; background:#fff;">${escapeHtml(displayDesc)}</p>
+
+          
+          <div style="display:flex; gap:20px; margin-bottom:20px; padding:10px; background:#f1f5f9; border-radius:8px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px; font-size:0.9rem;">
+              <span>📅 Fecha Entrega:</span>
+              <input type="date" class="form-input offline-config-date" data-task="${task.id}" value="${config.dueDate || ''}" style="padding:4px 8px; font-size:0.9rem; width:130px;">
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:0.9rem;">
+              <span>📋 Publicar Rúbrica:</span>
+              <label class="toggle-switch">
+                <input type="checkbox" class="offline-config-toggle" data-task="${task.id}" data-field="rubricPublished" ${config.rubricPublished ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; font-size:0.9rem;">
+              <span>📊 Publicar Nota:</span>
+              <label class="toggle-switch">
+                <input type="checkbox" class="offline-config-toggle" data-task="${task.id}" data-field="gradesPublished" ${config.gradesPublished ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h4 style="font-size:1rem; margin-bottom:10px; color:var(--text-primary);">Alumnos</h4>
+          <div style="display:flex; flex-direction:column; gap:5px;">
+    `;
+    
+    members.forEach(member => {
+      const grade = offlineGrades[task.id] && offlineGrades[task.id][member.uid];
+      const hasGrade = grade && typeof grade.finalGrade === 'number';
+      const gradeColor = !hasGrade ? 'var(--text-muted)' : (grade.finalGrade >= 5 ? 'var(--success)' : 'var(--danger)');
+      
+      html += `
+            <div style="border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
+              <div class="student-accordion-header" style="padding:10px 15px; background:${hasGrade ? '#f0fdf4' : '#fff'}; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" data-task="${task.id}" data-uid="${member.uid}">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span class="student-expand-icon" style="font-size:0.8rem; color:#94a3b8;">▶️</span>
+                  <span style="font-weight:bold;">${escapeHtml(member.displayName || member.email.split('@')[0])}</span>
+                </div>
+                <span style="font-weight:bold; color:${gradeColor};">
+                  ${hasGrade ? grade.finalGrade.toFixed(2) : 'Sin evaluar'}
+                </span>
+              </div>
+              <div class="student-accordion-content" id="student-rubric-${task.id}-${member.uid}" style="display:none; padding:15px; border-top:1px solid #e2e8f0; background:#f8fafc;">
+                <div style="text-align:center;"><div class="spinner"></div></div>
+              </div>
+            </div>
+      `;
+    });
+    
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  
+  container.innerHTML = html;
+
+  // Eventos de Toggles de Configuración
+  $$('.offline-config-toggle').forEach(el => {
+    el.addEventListener('change', async (e) => {
+      const taskId = e.target.dataset.task;
+      const field = e.target.dataset.field;
+      const value = e.target.checked;
+      
+      try {
+        let docId;
+        if (offlineTasksConfig[taskId]) {
+          docId = offlineTasksConfig[taskId].id;
+          await updateDoc(doc(db, 'tic2_offline_tasks_config', docId), { [field]: value });
+          offlineTasksConfig[taskId][field] = value;
+        } else {
+          const newDoc = { classId: classData.id, taskId, isActive: false, rubricPublished: false, gradesPublished: false, dueDate: '', [field]: value };
+          const ref = await addDoc(collection(db, 'tic2_offline_tasks_config'), newDoc);
+          offlineTasksConfig[taskId] = { id: ref.id, ...newDoc };
+        }
+        showToast('Guardado', 'Configuración actualizada', 'success', 1500);
+      } catch(err) {
+        e.target.checked = !value;
+        showToast('Error', err.message, 'error');
+      }
+    });
+  });
+
+  // Evento para Fecha de Entrega
+  $$('.offline-config-date').forEach(el => {
+    el.addEventListener('change', async (e) => {
+      const taskId = e.target.dataset.task;
+      const value = e.target.value;
+      
+      try {
+        let docId;
+        if (offlineTasksConfig[taskId]) {
+          docId = offlineTasksConfig[taskId].id;
+          await updateDoc(doc(db, 'tic2_offline_tasks_config', docId), { dueDate: value });
+          offlineTasksConfig[taskId].dueDate = value;
+        } else {
+          const newDoc = { classId: classData.id, taskId, isActive: false, rubricPublished: false, gradesPublished: false, dueDate: value };
+          const ref = await addDoc(collection(db, 'tic2_offline_tasks_config'), newDoc);
+          offlineTasksConfig[taskId] = { id: ref.id, ...newDoc };
+        }
+        showToast('Guardado', 'Fecha de entrega actualizada', 'success', 1500);
+      } catch(err) {
+        showToast('Error', err.message, 'error');
+      }
+    });
+  });
+
+  // Eventos para expandir tareas
+  $$('.task-accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const taskId = header.dataset.task;
+      const content = $(`task-content-${taskId}`);
+      const icon = header.querySelector('.task-expand-icon');
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.textContent = '🔽';
+      } else {
+        content.style.display = 'none';
+        icon.textContent = '▶️';
+      }
+    });
+  });
+
+  // Evento Editar Tarea
+  $$('.btn-edit-task').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const taskId = btn.dataset.task;
+      const task = CLASSROOM_TASKS.find(t => t.id === taskId);
+      const config = offlineTasksConfig[taskId] || {};
+      
+      $('edit-task-id').value = taskId;
+      $('edit-task-title').value = config.customTitle || task.title;
+      $('edit-task-desc').value = config.customDescription || task.description;
+      $('modal-edit-task').setAttribute('aria-hidden', 'false');
+    });
+  });
+
+  // Eventos para expandir alumnos
+  $$('.student-accordion-header').forEach(header => {
+    header.addEventListener('click', async () => {
+      const taskId = header.dataset.task;
+      const uid = header.dataset.uid;
+      const content = $(`student-rubric-${taskId}-${uid}`);
+      const icon = header.querySelector('.student-expand-icon');
+      
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.textContent = '🔽';
+        if (content.querySelector('.spinner')) {
+          await renderInlineRubric(taskId, uid, content);
+        }
+      } else {
+        content.style.display = 'none';
+        icon.textContent = '▶️';
+      }
+    });
+  });
+
+  // Botón Exportar Séneca
+  const exportBtn = $('btn-export-seneca');
+  if (exportBtn) {
+    exportBtn.onclick = () => exportToSeneca(offlineGrades);
+  }
+}
+
+async function renderInlineRubric(taskId, uid, container) {
+  const task = CLASSROOM_TASKS.find(t => t.id === taskId);
+  
+  let gradeData = null;
+  try {
+    const snap = await getDocs(query(collection(db, 'tic2_offline_grades'), where('classId', '==', classData.id), where('taskId', '==', taskId), where('studentId', '==', uid)));
+    if (!snap.empty) {
+      gradeData = { id: snap.docs[0].id, ...snap.docs[0].data() };
+    }
+  } catch(e) {
+    console.error(e);
+  }
+
+  const scores = gradeData ? (gradeData.rubricScores || {}) : {};
+  const feedback = gradeData ? (gradeData.teacherFeedback || '') : '';
+  
+  let html = `<div class="inline-rubric-form" data-task="${taskId}" data-uid="${uid}" data-gradeid="${gradeData ? gradeData.id : ''}">`;
+  
+  const activeRubric = task.customRubric || OFFLINE_RUBRIC;
+  
+  activeRubric.forEach(crit => {
+    html += `
+      <div style="margin-bottom:10px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; background:#fff;">
+        <div style="background:#f1f5f9; padding:5px 10px; font-size:0.9rem; font-weight:bold; border-bottom:1px solid #e2e8f0;">
+          ${crit.title} <span style="font-weight:normal; font-size:0.8rem; color:var(--text-muted); margin-left:5px;">${crit.desc}</span>
+        </div>
+        <div style="display:flex;">
+    `;
+    crit.levels.forEach(lvl => {
+      const selected = scores[crit.id] === lvl.points;
+      html += `
+          <label style="flex:1; display:flex; flex-direction:column; align-items:center; padding:5px; border-right:1px solid #f1f5f9; cursor:pointer; background:${selected ? '#e0e7ff' : 'transparent'};">
+            <input type="radio" name="rubric_${taskId}_${uid}_${crit.id}" value="${lvl.points}" ${selected ? 'checked' : ''} style="margin-bottom:5px;">
+            <span style="font-size:0.8rem; text-align:center;">${lvl.desc}</span>
+            <span style="font-size:0.75rem; font-weight:bold; color:var(--primary);">${lvl.points} pts</span>
+          </label>
+      `;
+    });
+    html += `</div></div>`;
+  });
+  
+  html += `
+    <div style="margin-top:15px;">
+      <label class="form-label" style="font-size:0.9rem;">Comentarios / Feedback:</label>
+      <textarea class="form-input rubric-feedback-input" rows="2" style="width:100%; resize:vertical;">${escapeHtml(feedback)}</textarea>
+    </div>
+    <div style="margin-top:15px; display:flex; justify-content:flex-end; align-items:center; gap:15px;">
+      <span style="font-weight:bold; font-size:1.1rem;">Nota: <span class="rubric-live-grade">0.00</span></span>
+      <button class="btn btn-primary btn--sm btn-save-inline-rubric">Guardar Calificación</button>
+    </div>
+  </div>`;
+  
+  container.innerHTML = html;
+  
+  // Logic
+  const form = container.querySelector('.inline-rubric-form');
+  const gradeSpan = form.querySelector('.rubric-live-grade');
+  
+  const updateInlineGrade = () => {
+    let sum = 0;
+    activeRubric.forEach(crit => {
+      const checked = form.querySelector(`input[name="rubric_${taskId}_${uid}_${crit.id}"]:checked`);
+      if (checked) {
+        sum += parseFloat(checked.value);
+      }
+    });
+    gradeSpan.textContent = sum.toFixed(2);
+    
+    // Highlight
+    form.querySelectorAll('label').forEach(lbl => {
+      const radio = lbl.querySelector('input');
+      if (radio && radio.checked) lbl.style.background = '#e0e7ff';
+      else lbl.style.background = 'transparent';
+    });
+  };
+  
+  form.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', updateInlineGrade));
+  updateInlineGrade();
+  
+  form.querySelector('.btn-save-inline-rubric').onclick = async (e) => {
+    const btn = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+    
+    let sum = 0, count = 0;
+    const newScores = {};
+    activeRubric.forEach(crit => {
+      const checked = form.querySelector(`input[name="rubric_${taskId}_${uid}_${crit.id}"]:checked`);
+      if (checked) {
+        const val = parseFloat(checked.value);
+        newScores[crit.id] = val;
+        sum += val;
+        count++;
+      }
+    });
+    
+    if (count !== activeRubric.length) {
+      showToast('Aviso', 'Faltan criterios por evaluar', 'warning');
+      btn.disabled = false;
+      btn.textContent = 'Guardar Calificación';
+      return;
+    }
+    
+    const finalGrade = sum;
+    const fb = form.querySelector('.rubric-feedback-input').value.trim();
+    
+    const docData = {
+      classId: classData.id,
+      taskId: taskId,
+      studentId: uid,
+      rubricScores: newScores,
+      finalGrade: finalGrade,
+      teacherFeedback: fb,
+      updatedAt: serverTimestamp()
+    };
+    
+    try {
+      const gradeId = form.dataset.gradeid;
+      
+      let xpDiff = 0;
+      let newXp = 0;
+      if (finalGrade > 0) newXp += 100;
+      if (finalGrade >= 5) newXp += 100;
+      if (finalGrade >= 9) newXp += 200;
+      
+      if (gradeId) {
+        const oldDoc = await getDoc(doc(db, 'tic2_offline_grades', gradeId));
+        if (oldDoc.exists()) {
+           const oldGrade = oldDoc.data().finalGrade || 0;
+           let oldXp = 0;
+           if (oldGrade > 0) oldXp += 100;
+           if (oldGrade >= 5) oldXp += 100;
+           if (oldGrade >= 9) oldXp += 200;
+           xpDiff = newXp - oldXp;
+        }
+        await updateDoc(doc(db, 'tic2_offline_grades', gradeId), docData);
+      } else {
+        xpDiff = newXp;
+        const ref = await addDoc(collection(db, 'tic2_offline_grades'), docData);
+        form.dataset.gradeid = ref.id;
+      }
+      showToast('Guardado', 'Calificación guardada', 'success');
+      
+      // Update header UI
+      const header = document.querySelector(`.student-accordion-header[data-task="${taskId}"][data-uid="${uid}"]`);
+      if (header) {
+        header.style.background = '#f0fdf4';
+        header.children[1].textContent = finalGrade.toFixed(2);
+        header.children[1].style.color = finalGrade >= 5 ? 'var(--success)' : 'var(--danger)';
+      }
+      
+      if (xpDiff !== 0) {
+        const { addPointsAndCheckLogros } = await import('./common/gamification.js');
+        const memberInfo = classData.members.find(m => m.uid === uid);
+        await addPointsAndCheckLogros(uid, xpDiff, memberInfo ? memberInfo.gremio : null, 'tic2_users');
+      }
+      
+    } catch(err) {
+      showToast('Error', err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar Calificación';
+    }
+  };
+}
+
+function exportToSeneca(offlineGrades) {
+  let csv = "Apellidos y Nombre;";
+  CLASSROOM_TASKS.forEach(t => {
+    csv += `"${t.title.replace(/"/g, '""')}";`;
+  });
+  csv += "\n";
+  
+  members.forEach(m => {
+    let nameToPrint = m.displayName || m.email;
+    csv += `"${nameToPrint}";`;
+    
+    CLASSROOM_TASKS.forEach(t => {
+      const grade = offlineGrades[t.id] && offlineGrades[t.id][m.uid];
+      if (grade && typeof grade.finalGrade === 'number') {
+        csv += `"${grade.finalGrade.toFixed(2).replace('.', ',')}";`;
+      } else {
+        csv += `;"`;
+      }
+    });
+    csv += "\n";
+  });
+  
+  const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  a.setAttribute("download", `Clase_${classData.name}_Seneca.csv`);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Edit Task Modal Events
+if ($('btn-close-edit-task')) {
+  $('btn-close-edit-task').addEventListener('click', () => $('modal-edit-task').setAttribute('aria-hidden', 'true'));
+  $('btn-cancel-edit-task').addEventListener('click', () => $('modal-edit-task').setAttribute('aria-hidden', 'true'));
+  $('modal-edit-task').addEventListener('click', e => {
+    if (e.target === $('modal-edit-task')) $('modal-edit-task').setAttribute('aria-hidden', 'true');
+  });
+
+  $('form-edit-task').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const taskId = $('edit-task-id').value;
+    const customTitle = $('edit-task-title').value.trim();
+    const customDescription = $('edit-task-desc').value.trim();
+    
+    if (!taskId) return;
+    
+    try {
+      if (offlineTasksConfig[taskId]) {
+        await updateDoc(doc(db, 'tic2_offline_tasks_config', offlineTasksConfig[taskId].id), { customTitle, customDescription });
+        offlineTasksConfig[taskId].customTitle = customTitle;
+        offlineTasksConfig[taskId].customDescription = customDescription;
+      } else {
+        const newDoc = { classId: classData.id, taskId, isActive: false, rubricPublished: false, gradesPublished: false, dueDate: '', customTitle, customDescription };
+        const ref = await addDoc(collection(db, 'tic2_offline_tasks_config'), newDoc);
+        offlineTasksConfig[taskId] = { id: ref.id, ...newDoc };
+      }
+      $('modal-edit-task').setAttribute('aria-hidden', 'true');
+      showToast('Guardado', 'Tarea actualizada', 'success', 1500);
+      
+      // Actualizar el DOM sin recargar la página (al menos el título)
+      const headerTitle = document.querySelector(`.task-accordion-header[data-task="${taskId}"] h3`);
+      if (headerTitle) {
+        // Encontrar el task original para mantener el bloque/criterio
+        const task = CLASSROOM_TASKS.find(t => t.id === taskId);
+        const index = CLASSROOM_TASKS.findIndex(t => t.id === taskId);
+        headerTitle.innerHTML = `
+          <span class="task-expand-icon">▶️</span>
+          ${index + 1}. ${escapeHtml(customTitle)}
+          <button class="btn-ghost btn-edit-task" data-task="${taskId}" style="font-size:0.9rem; padding:4px; margin-left:5px;" title="Personalizar tarea" onclick="event.stopPropagation()">✏️</button>
+          <span class="badge" style="background:#e2e8f0; color:#475569; font-size:0.75rem;">Bloque ${task.block} | Crit ${task.crit}</span>
+        `;
+        
+        // Update edit button listener again since we replaced HTML
+        const newEditBtn = headerTitle.querySelector('.btn-edit-task');
+        if (newEditBtn) {
+          newEditBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            $('edit-task-id').value = taskId;
+            $('edit-task-title').value = offlineTasksConfig[taskId].customTitle || task.title;
+            $('edit-task-desc').value = offlineTasksConfig[taskId].customDescription || task.description;
+            $('modal-edit-task').setAttribute('aria-hidden', 'false');
+          });
+        }
+      }
+      
+      const contentDesc = document.querySelector(`#task-content-${taskId} p`);
+      if (contentDesc) {
+        contentDesc.innerHTML = escapeHtml(customDescription);
+      }
+      
+    } catch(err) {
+      showToast('Error', err.message, 'error');
+    }
+  });
 }

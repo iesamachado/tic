@@ -5,9 +5,10 @@ import { requireAuth, currentUser, currentProfile } from "./common/auth.js";
 import { getStudentClasses, joinClassByPin, getStudentResults, getClassAssignments, db } from "./common/db.js";
 
 import { renderHeader, showToast, showLoading, hideLoading } from './common/ui.js';
-import { GAMES, TOPICS, $, escapeHtml, formatDate, getUrlParams } from './common/utils.js';
+import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams } from './common/utils.js';
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getLeague, MEDALS_CATALOG } from './common/gamification.js';
+import { CLASSROOM_TASKS, OFFLINE_RUBRIC } from './common/tasks.js';
 
 let myClasses = [];
 
@@ -22,6 +23,7 @@ requireAuth({
     checkNoAccessAlert();
     await loadClasses(user);
     await loadAssignments(user);
+    await loadOfflineTasks(user);
     await loadExams(user);
     await loadHistory(user);
     await loadTheoryHistory(user);
@@ -492,5 +494,156 @@ async function loadTheoryHistory(user) {
     $('section-theory').style.display = 'block';
   } catch (e) {
     console.error("Error loading theory history:", e);
+  }
+}
+
+//  TAREAS OFFLINE ALUMNO
+// ══════════════════════════════════════════════════════════════
+
+
+async function loadOfflineTasks(user) {
+  if (myClasses.length === 0) return;
+  
+  const container = $('student-offline-tasks-list');
+  if (!container) return;
+  
+  let html = '';
+  
+  for (const c of myClasses) {
+    try {
+      const configSnap = await getDocs(query(collection(db, 'tic2_offline_tasks_config'), where('classId', '==', c.id), where('isActive', '==', true)));
+      if (configSnap.empty) continue;
+      
+      const gradesSnap = await getDocs(query(collection(db, 'tic2_offline_grades'), where('classId', '==', c.id), where('studentId', '==', user.uid)));
+      const gradesMap = {};
+      gradesSnap.forEach(g => {
+        gradesMap[g.data().taskId] = g.data();
+      });
+      
+      let classHtml = `<div class="card" style="margin-bottom:var(--space-4);">
+        <h3 style="margin-bottom:15px; color:var(--text-secondary); font-size:1.1rem; border-bottom:1px solid var(--border); padding-bottom:5px;">🏫 ${escapeHtml(c.name)}</h3>
+        <div class="accordion-list">`;
+        
+      // Ordenamos las configs por ID de tarea para mantener el mismo orden
+      const configs = [];
+      configSnap.forEach(d => configs.push(d.data()));
+      configs.sort((a,b) => parseInt(a.taskId) - parseInt(b.taskId));
+        
+      configs.forEach(config => {
+        const taskIndex = CLASSROOM_TASKS.findIndex(t => t.id === config.taskId);
+        if (taskIndex === -1) return;
+        const task = CLASSROOM_TASKS[taskIndex];
+        
+        const displayTitle = config.customTitle || task.title;
+        const displayDesc = config.customDescription || task.description;
+        
+        const gradeInfo = gradesMap[task.id];
+        
+        let gradeBadge = '';
+        let gradeDetails = '';
+        if (config.gradesPublished && gradeInfo && typeof gradeInfo.finalGrade === 'number') {
+           const color = gradeInfo.finalGrade >= 5 ? 'var(--success)' : 'var(--danger)';
+           gradeBadge = `<span style="font-weight:bold; color:${color}; padding:4px 8px; border-radius:4px; border:1px solid ${color}; font-size:0.9rem;">Nota: ${gradeInfo.finalGrade.toFixed(2)}</span>`;
+           
+           if (gradeInfo.teacherFeedback) {
+             gradeDetails = `<div style="margin-bottom:15px; padding:10px; background:#f8fafc; border-left:4px solid var(--primary); border-radius:0 4px 4px 0; font-size:0.9rem; font-style:italic;">
+                " ${escapeHtml(gradeInfo.teacherFeedback)} "
+             </div>`;
+           }
+        }
+        
+        let dateBadge = '';
+        if (config.dueDate) {
+           const parts = config.dueDate.split('-');
+           const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+           dateBadge = `<span style="font-size:0.8rem; color:var(--text-muted); display:flex; align-items:center; gap:5px;">📅 ${formattedDate}</span>`;
+        }
+        
+        let rubricHtml = '';
+        if (config.rubricPublished) {
+           rubricHtml = `<h5 style="margin:20px 0 10px 0; font-size:1rem; border-bottom:1px solid var(--border); padding-bottom:5px;">📊 Rúbrica de Evaluación</h5>`;
+           const activeRubric = task.customRubric || OFFLINE_RUBRIC;
+           const scores = gradeInfo ? (gradeInfo.rubricScores || {}) : {};
+           
+           activeRubric.forEach(crit => {
+             const studentScore = scores[crit.id];
+             
+             rubricHtml += `
+               <div style="margin-bottom:10px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden;">
+                 <div style="background:#f8fafc; padding:8px 12px; border-bottom:1px solid #e2e8f0;">
+                   <h6 style="margin:0; font-size:0.95rem;">${crit.title}</h6>
+                   <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">${crit.desc}</p>
+                 </div>
+                 <div style="display:flex; flex-direction:column;">
+             `;
+             crit.levels.forEach((lvl) => {
+               const isSelected = studentScore === lvl.points;
+               rubricHtml += `
+                   <div style="display:flex; align-items:center; padding:8px 12px; border-bottom:1px solid #f1f5f9; background:${isSelected ? '#e0e7ff' : '#fff'};">
+                     ${isSelected ? '✅ ' : '<span style="color:#cbd5e1; margin-right:5px;">⚪</span> '}
+                     <div style="flex:1; margin-left:5px;">
+                       <span style="font-weight:${isSelected?'bold':'normal'}; color:${isSelected?'var(--primary)':'#64748b'}; display:inline-block; width:45px; font-size:0.85rem;">${lvl.points} pts</span>
+                       <span style="font-size:0.85rem; font-weight:${isSelected?'bold':'normal'};">${lvl.desc}</span>
+                     </div>
+                   </div>
+               `;
+             });
+             rubricHtml += `</div></div>`;
+           });
+        }
+        
+        classHtml += `
+          <div class="student-task-accordion" style="border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; background: var(--bg-surface); overflow:hidden;">
+            <div class="st-accordion-header" style="display:flex; justify-content:space-between; align-items:center; padding: 15px; cursor:pointer; background:#f8fafc;" data-target="st-content-${task.id}">
+              <div style="flex:1;">
+                <h4 style="margin:0; color:var(--primary); font-size:1.05rem; display:flex; align-items:center; gap:10px;">
+                  <span class="st-expand-icon">▶️</span>
+                  ${taskIndex + 1}. ${escapeHtml(displayTitle)} 
+                </h4>
+                <div style="margin-top:5px; margin-left:30px; display:flex; align-items:center; gap:15px;">
+                  <span class="badge" style="background:#e2e8f0; color:#475569; font-size:0.7rem;">Bloque ${task.block}</span>
+                  ${dateBadge}
+                </div>
+              </div>
+              <div>
+                ${gradeBadge}
+              </div>
+            </div>
+            
+            <div class="st-accordion-content" id="st-content-${task.id}" style="display:none; padding:15px; border-top:1px solid var(--border);">
+              <p style="white-space:pre-wrap; font-size:0.95rem; line-height:1.5; color:var(--text-secondary); margin-bottom:15px; background:#fff; padding:10px; border:1px solid #e2e8f0; border-radius:4px;">${escapeHtml(displayDesc)}</p>
+              ${gradeDetails}
+              ${rubricHtml}
+            </div>
+          </div>
+        `;
+      });
+      
+      classHtml += `</div></div>`;
+      html += classHtml;
+      
+    } catch(e) {
+      console.error(e);
+    }
+  }
+  
+  if (html) {
+    $('section-offline-tasks').style.display = 'block';
+    container.innerHTML = html;
+    
+    $$('.st-accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const contentId = header.dataset.target;
+        const content = $(contentId);
+        const icon = header.querySelector('.st-expand-icon');
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          icon.textContent = '🔽';
+        } else {
+          content.style.display = 'none';
+          icon.textContent = '▶️';
+        }
+      });
+    });
   }
 }
