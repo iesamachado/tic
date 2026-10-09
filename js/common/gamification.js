@@ -3,21 +3,24 @@ import { doc, getDoc, updateDoc, increment, arrayUnion, setDoc } from "https://w
 
 // --- CONFIGURACIÓN ---
 export const LEAGUES = [
-  { id: 'maestro', name: 'Liga Maestro', pts: 25000, icon: '🏆', color: '#f1c40f' },
-  { id: 'diamante', name: 'Liga Diamante', pts: 10000, icon: '💎', color: '#00d2d3' },
-  { id: 'platino', name: 'Liga Platino', pts: 5000, icon: '⭐', color: '#9b59b6' },
-  { id: 'oro', name: 'Liga Oro', pts: 2000, icon: '🥇', color: '#f39c12' },
-  { id: 'plata', name: 'Liga Plata', pts: 500, icon: '🥈', color: '#bdc3c7' },
+  { id: 'leyenda', name: 'Liga Leyenda', pts: 100000, icon: '🌌', color: '#8e44ad' },
+  { id: 'gran_maestro', name: 'Gran Maestro', pts: 60000, icon: '👑', color: '#e74c3c' },
+  { id: 'maestro', name: 'Liga Maestro', pts: 35000, icon: '🏆', color: '#f1c40f' },
+  { id: 'diamante', name: 'Liga Diamante', pts: 20000, icon: '💎', color: '#00d2d3' },
+  { id: 'esmeralda', name: 'Liga Esmeralda', pts: 12000, icon: '❇️', color: '#2ecc71' },
+  { id: 'platino', name: 'Liga Platino', pts: 7000, icon: '⭐', color: '#9b59b6' },
+  { id: 'oro', name: 'Liga Oro', pts: 3500, icon: '🥇', color: '#f39c12' },
+  { id: 'plata', name: 'Liga Plata', pts: 1500, icon: '🥈', color: '#bdc3c7' },
   { id: 'bronce', name: 'Liga Bronce', pts: 0, icon: '🥉', color: '#cd6133' }
 ];
 
 export const MEDALS_CATALOG = [
   // Generales y Progresión
   { id: 'first_blood', name: 'Primera Sangre', desc: 'Resuelve tu primer reto o minijuego.', icon: '🩸', public: true },
-  { id: 'novato', name: 'Novato', desc: 'Alcanza los 1000 Puntos de Experiencia.', icon: '🌱', public: true },
-  { id: 'aprendiz', name: 'Aprendiz', desc: 'Alcanza los 5000 Puntos de Experiencia.', icon: '🎓', public: true },
-  { id: 'veterano', name: 'Veterano', desc: 'Alcanza los 10000 Puntos de Experiencia.', icon: '⚔️', public: true },
-  { id: 'leyenda', name: 'Leyenda Viva', desc: 'Alcanza los 50000 Puntos de Experiencia.', icon: '👑', public: true },
+  { id: 'novato', name: 'Novato', desc: 'Alcanza los 3500 Puntos de Experiencia.', icon: '🌱', public: true },
+  { id: 'aprendiz', name: 'Aprendiz', desc: 'Alcanza los 12000 Puntos de Experiencia.', icon: '🎓', public: true },
+  { id: 'veterano', name: 'Veterano', desc: 'Alcanza los 35000 Puntos de Experiencia.', icon: '⚔️', public: true },
+  { id: 'leyenda', name: 'Leyenda Viva', desc: 'Alcanza los 100000 Puntos de Experiencia.', icon: '👑', public: true },
   { id: 'perfeccionista', name: 'Perfeccionista', desc: 'Termina un minijuego sin fallos o saca un 10 en un test.', icon: '✨', public: true },
 
   // Constancia y Tiempo

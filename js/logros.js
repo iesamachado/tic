@@ -216,6 +216,7 @@ export async function renderGremioSection(user, profile) {
     const guildInfo = GUILDS_CATALOG.find(g => g.name === profile.gremio);
     const color = guildInfo ? guildInfo.color : '#3498db';
     const icon = guildInfo ? guildInfo.icon : '🛡️';
+    const image = guildInfo ? guildInfo.image : '';
     
     const count = guildCounts[profile.gremio] || 1;
     const myGuildData = guildRanking.find(g => g.name === profile.gremio);
@@ -230,15 +231,21 @@ export async function renderGremioSection(user, profile) {
       </div>
     `).join('');
 
-    const rankingHtml = guildRanking.map((g, idx) => `
-      <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; ${g.name === profile.gremio ? 'font-weight: bold; background: #f9f9f9;' : ''}">
-        <div style="display: flex; gap: 8px;">
-          <span>${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1) + '.'}</span>
-          <span style="color: ${g.color};">${g.icon} ${escapeHtml(g.name)}</span>
+    const rankingHtml = guildRanking.map((gObj, idx) => {
+      const gInfo = GUILDS_CATALOG.find(x => x.name === gObj.name) || { color: '#ccc', image: '' };
+      return `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid #eee; ${gObj.name === profile.gremio ? 'font-weight: bold; background: #f9f9f9; border-left: 4px solid ' + gInfo.color + ';' : ''}">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 20px; font-weight: bold; color: var(--text-muted);">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1) + '.'}</span>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background-color: ${gInfo.color}; display: flex; align-items: center; justify-content: center; border: 2px solid var(--text-primary); box-shadow: 2px 2px 0px rgba(0,0,0,1); flex-shrink: 0;">
+            <img src="${gInfo.image}" alt="" style="width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply;">
+          </div>
+          <span style="color: ${gInfo.color}; font-family: 'Press Start 2P', system-ui; font-size: 0.65rem; line-height: 1.4;">${escapeHtml(gObj.name)}</span>
         </div>
-        <span style="color: #f39c12; font-weight: bold;">⭐ ${g.points}</span>
+        <span style="color: var(--text-primary); font-weight: 900; font-family: 'Press Start 2P', system-ui; font-size: 0.8rem;">⭐ ${gObj.points}</span>
       </div>
-    `).join('');
+      `;
+    }).join('');
 
     container.innerHTML = `
       <div style="display:flex; justify-content: flex-end; margin-bottom: -30px; position: relative; z-index: 10;">
@@ -247,8 +254,10 @@ export async function renderGremioSection(user, profile) {
         </button>
       </div>
       <div style="text-align: center; position: relative;">
-        <div style="font-size: 4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); margin-bottom: 10px;">${icon}</div>
-        <div style="font-size: 1.5rem; font-weight: bold; color: ${color};">${escapeHtml(profile.gremio)}</div>
+        <div style="width:100px; height:100px; border-radius:50%; background-color:${color}; display:inline-flex; align-items:center; justify-content:center; border:5px solid var(--text-primary); box-shadow:6px 6px 0px rgba(0,0,0,1); margin: 0 auto 15px auto;">
+          <img src="${image}" alt="" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;">
+        </div>
+        <div style="font-size: 1.2rem; font-weight: 900; color: ${color}; font-family: 'Press Start 2P', system-ui; line-height: 1.5; margin-bottom: 15px;">${escapeHtml(profile.gremio)}</div>
         
         <div style="margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
           <div style="background: #fdfbf7; border: 1px solid #f1c40f; border-radius: 8px; padding: 8px 15px; text-align: center;">
@@ -312,7 +321,7 @@ export async function renderGremioSection(user, profile) {
           <div style="width:90px; height:90px; border-radius:50%; background-color:${g.color}; display:flex; align-items:center; justify-content:center; border:4px solid var(--text-primary); box-shadow:4px 4px 0px rgba(0,0,0,1); margin: 0 auto 15px auto;">
             <img src="${g.image}" alt="" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;">
           </div>
-          <h4 style="color: ${g.color}; margin-bottom: 10px; text-shadow:1px 1px 0px var(--text-primary); -webkit-text-stroke: 1px var(--text-primary); font-size:1.4rem;">${escapeHtml(g.name)}</h4>
+          <h4 style="color: ${g.color}; margin-bottom: 10px; text-shadow:1px 1px 0px var(--text-primary); font-family: 'Press Start 2P', system-ui; font-size:1.1rem; line-height: 1.4;">${escapeHtml(g.name)}</h4>
           <p style="font-size: 0.85rem; color: #7f8c8d; flex-grow: 1; margin-bottom: 15px;">${escapeHtml(g.desc)}</p>
           ${plazasBadge}
           <button class="btn btn-primary" style="background: ${g.color}; border-color: ${g.color}; width: 100%;" 
