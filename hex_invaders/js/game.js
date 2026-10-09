@@ -1,4 +1,4 @@
-import { setupAuthListener } from "../../js/common/auth.js";
+import { requireAuth } from "../../js/common/auth.js";
 import { showToast } from '../../js/common/ui.js';
 import { saveGameResult } from "../../js/common/db.js";
 import { addPointsAndCheckLogros, awardMedal } from "../../js/common/gamification.js";
@@ -26,12 +26,13 @@ const ui = {
 };
 
 // Auth
-setupAuthListener((user, profile) => {
-  currentUser = user;
-  if (!user) {
-    document.getElementById('auth-warning').style.display = 'block';
-  } else {
-    document.getElementById('auth-warning').style.display = 'none';
+requireAuth({
+  allowedRoles: ['student', 'teacher', 'admin'],
+  onAuthorized: (user, profile) => {
+    currentUser = user;
+    if (document.getElementById('auth-warning')) {
+      document.getElementById('auth-warning').style.display = 'none';
+    }
   }
 });
 
@@ -238,4 +239,4 @@ async function endGame() {
 
 // Botones
 document.getElementById('btn-start').onclick = startGame;
-document.getElementById('btn-restart').onclick = startGame;
+document.getElementById('btn-restart').onclick = () => window.location.reload();

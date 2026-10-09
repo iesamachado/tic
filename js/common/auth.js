@@ -13,7 +13,8 @@
 import { auth, db, googleProvider, GoogleAuthProvider,
   signInWithPopup, signInWithEmailAndPassword,
   createUserWithEmailAndPassword, signOut, onAuthStateChanged,
-  sendPasswordResetEmail, updateProfile, doc, getDoc, setDoc, updateDoc, serverTimestamp
+  sendPasswordResetEmail, updateProfile, doc, getDoc, setDoc, updateDoc, serverTimestamp,
+  collection, query, where, getDocs, Timestamp, orderBy, limit
 } from './firebase-config.js';
 import { generateAvatar, generateTeacherAvatar, anonymizeName, getUrlParams, getAppUrl } from './utils.js';
 import { isStudentInAnyClass, isTeacherAuthorized, SUPERADMIN_EMAIL, resolvePendingStudent } from './db.js';
@@ -284,7 +285,7 @@ export function setupAuthListener(callback) {
 export function requireAuth({ allowedRoles = ['teacher', 'student'], onAuthorized, redirectTo } = {}) {
   const loginPage = redirectTo || getAppUrl('index.html');
 
-  return setupAuthListener((user, profile) => {
+  return setupAuthListener(async (user, profile) => {
     if (!user || !profile) {
       // Guardar la URL actual para volver después del login
       sessionStorage.setItem('tic2hub_redirect', window.location.href);
@@ -305,6 +306,99 @@ export function requireAuth({ allowedRoles = ['teacher', 'student'], onAuthorize
         window.location.href = getAppUrl('dashboard_student.html');
       }
       return;
+    }
+
+    if (profile.role === 'student' && onAuthorized) {
+      const path = window.location.pathname.toLowerCase();
+      const isGameOrTest = path.includes('/cc_trivial/') || 
+                           path.includes('/cert_arcade/') || 
+                           path.includes('/databreach/') || 
+                           path.includes('/hex_invaders/') || 
+                           path.includes('/kanban_hero/') || 
+                           path.endsWith('examen.html') || 
+                           path.endsWith('test.html');
+                           
+      if (isGameOrTest) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        // Identify what we are accessing
+        let targetId = null;
+        let type = null; // 'game', 'theory', 'examen'
+        
+        if (path.includes('/cc_trivial/')) { targetId = 'cc_trivial'; type = 'game'; }
+        else if (path.includes('/cert_arcade/')) { targetId = 'cert_arcade'; type = 'game'; }
+        else if (path.includes('/databreach/')) { targetId = 'databreach'; type = 'game'; }
+        else if (path.includes('/hex_invaders/')) { targetId = 'hex_invaders'; type = 'game'; }
+        else if (path.includes('/kanban_hero/')) { targetId = 'kanban_hero'; type = 'game'; }
+        else if (path.endsWith('test.html')) {
+            const file = getUrlParams().file;
+            const topicMap = {
+              'multimedia.html': 'topic_multimedia', 'cms.html': 'topic_cms',
+              'html.html': 'topic_html', 'js.html': 'topic_js',
+              'cyber.html': 'topic_cyber', 'kanban.html': 'topic_kanban',
+              'drive.html': 'topic_drive', 'js_advanced.html': 'topic_js_adv'
+            };
+            targetId = topicMap[file];
+            type = 'theory';
+        }
+        else if (path.endsWith('examen.html')) {
+            targetId = getUrlParams().id;
+            type = 'examen';
+        }
+
+        if (targetId && type) {
+          try {
+            let playCount = 0;
+            
+            if (type === 'game') {
+              const qGames = query(collection(db, 'tic2_game_results'), where('studentId', '==', user.uid), orderBy('timestamp', 'desc'), limit(50));
+              const snapGames = await getDocs(qGames);
+              snapGames.forEach(doc => {
+                const d = doc.data();
+                if (d.timestamp?.toDate() >= today && d.gameId === targetId) playCount++;
+              });
+            }
+            
+            if (type === 'theory') {
+              const qTheory = query(collection(db, 'tic2_tests_teoria'), where('uid', '==', user.uid));
+              const snapTheory = await getDocs(qTheory);
+              snapTheory.forEach(doc => {
+                const d = doc.data();
+                if (d.fecha?.toDate() >= today && d.topicKey === targetId) playCount++;
+              });
+            }
+            
+            if (type === 'examen') {
+              const qExams = query(collection(db, 'respuestas_test'), where('uid', '==', user.uid));
+              const snapExams = await getDocs(qExams);
+              snapExams.forEach(doc => {
+                const d = doc.data();
+                if (d.timestamp?.toDate() >= today && d.examenId === targetId) playCount++;
+              });
+            }
+
+            if (playCount >= 5) {
+              document.body.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background:#f4f6f7; font-family:system-ui,sans-serif; text-align:center; padding:20px;">
+                  <div style="font-size:5rem; margin-bottom:20px;">🌱</div>
+                  <h1 style="color:#2c3e50; font-size:2.5rem; margin-bottom:15px;">Límite Diario Alcanzado</h1>
+                  <div style="background:#fff; border-top:4px solid #3498db; padding:30px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.1); max-width:600px; line-height:1.6; font-size:1.1rem; color:#34495e;">
+                    <p>Has alcanzado el límite de <strong>5 intentos</strong> por hoy para esta actividad.</p>
+                    <p>En nuestra clase valoramos tu <strong>Bienestar Digital</strong>. El uso excesivo de pantallas puede causar fatiga visual, sedentarismo y afectar a tu calidad de sueño. No hace falta que estés toda la tarde enganchado/a a un mismo juego o test para conseguir experiencia.</p>
+                    <p>Te recomendamos que apagues la pantalla, salgas a dar un paseo, leas un libro o interactúes fuera del mundo digital.</p>
+                    <p style="margin-top:25px; font-weight:bold;">¡Mañana podrás volver a intentarlo!</p>
+                    <a href="${getAppUrl('dashboard_student.html')}" style="display:inline-block; margin-top:20px; background:#3498db; color:white; padding:12px 25px; text-decoration:none; border-radius:50px; font-weight:bold;">Volver al Panel Principal</a>
+                  </div>
+                </div>
+              `;
+              return; // Do not authorize
+            }
+          } catch(e) {
+            console.error("Error verificando límite de bienestar digital:", e);
+          }
+        }
+      }
     }
 
     if (onAuthorized) onAuthorized(user, profile);

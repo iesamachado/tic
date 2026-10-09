@@ -1,4 +1,4 @@
-import { setupAuthListener } from "../../js/common/auth.js";
+import { requireAuth } from "../../js/common/auth.js";
 import { showToast } from '../../js/common/ui.js';
 import { saveGameResult } from "../../js/common/db.js";
 import { addPointsAndCheckLogros, awardMedal } from "../../js/common/gamification.js";
@@ -40,12 +40,13 @@ const UI = {
 };
 
 // Auth Listener
-setupAuthListener((user, profile) => {
-  currentUser = user;
-  if (!user) {
-    UI.authWarning.style.display = 'block';
-  } else {
-    UI.authWarning.style.display = 'none';
+requireAuth({
+  allowedRoles: ['student', 'teacher', 'admin'],
+  onAuthorized: (user, profile) => {
+    currentUser = user;
+    if (UI.authWarning) {
+      UI.authWarning.style.display = 'none';
+    }
   }
 });
 
@@ -174,4 +175,4 @@ function showScreen(screenName) {
 
 // Event Listeners
 UI.btnStart.onclick = initGame;
-UI.btnRestart.onclick = initGame;
+UI.btnRestart.onclick = () => window.location.reload();

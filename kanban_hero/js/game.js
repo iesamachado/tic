@@ -121,8 +121,7 @@ async function saveScore() {
 }
 
 $('btn-restart').addEventListener('click', () => {
-  $('end-screen').style.display = 'none';
-  startGame();
+  window.location.reload();
 });
 
 function spawnTask() {
