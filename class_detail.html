@@ -411,7 +411,6 @@
 
 <div id="toast-container" aria-live="polite"></div>
 
-  <script type="module" src="js/class_detail.js"></script>
   <!-- Modal Edit Task -->
   <div id="modal-edit-task" class="modal-backdrop" aria-hidden="true" role="dialog">
     <div class="modal-box" style="max-width: 600px; width: 95%;">
@@ -439,6 +438,90 @@
     </div>
   </div>
 
+  <!-- Modal Configurar / Importar Rúbrica -->
+  <div id="modal-task-rubric" class="modal-backdrop" aria-hidden="true" role="dialog">
+    <div class="modal-box" style="max-width: 850px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="rubric-modal-title">🎯 Rúbrica de Evaluación</h3>
+        <button class="modal-close" id="btn-close-rubric-modal">✕</button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; flex: 1; padding: 20px;">
+        <input type="hidden" id="rubric-task-id">
+        
+        <!-- Estado de la Rúbrica -->
+        <div id="rubric-status-card" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-weight:bold; font-size:1rem; display:flex; align-items:center; gap:8px;">
+              <span>Rúbrica activa:</span>
+              <span id="rubric-type-badge" class="badge" style="background:#dcfce7; color:#15803d; font-size:0.8rem;">Personalizada</span>
+            </div>
+            <div id="rubric-summary-info" style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+              9 criterios • Puntuación máxima: 9.00 pts (Nota sobre 10)
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-outline btn--sm" id="btn-download-rubric-csv" title="Descargar rúbrica actual como CSV">
+              📥 Descargar Plantilla CSV
+            </button>
+            <button type="button" class="btn btn-ghost btn--sm" id="btn-reset-rubric" style="color:var(--danger); display:none;" title="Volver a la rúbrica predeterminada">
+              🔄 Restablecer por Defecto
+            </button>
+          </div>
+        </div>
+
+        <!-- Zona de Importación CSV -->
+        <div style="border:2px dashed #cbd5e1; border-radius:8px; padding:20px; text-align:center; background:#fcfcfc; margin-bottom:20px;" id="rubric-drop-zone">
+          <div style="font-size:1.8rem; margin-bottom:8px;">📄</div>
+          <h4 style="margin:0 0 5px 0; font-size:1rem;">Importar Rúbrica desde archivo CSV</h4>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin:0 0 15px 0;">
+            Compatible con la exportación de rúbricas de Google Classroom (v1.0-s). Soporta separador por coma o punto y coma.
+          </p>
+          <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+            <label class="btn btn-primary btn--sm" style="cursor:pointer; margin:0;">
+              <span>Seleccionar archivo CSV</span>
+              <input type="file" id="rubric-csv-file" accept=".csv,text/csv" style="display:none;">
+            </label>
+            <button type="button" class="btn btn-outline btn--sm" id="btn-toggle-paste-csv">
+              📋 Pegar texto CSV
+            </button>
+          </div>
+          
+          <!-- Textarea para pegar CSV -->
+          <div id="rubric-paste-container" style="display:none; margin-top:15px; text-align:left;">
+            <textarea id="rubric-csv-paste" class="form-input" rows="6" placeholder="Pega aquí el contenido del archivo CSV..." style="width:100%; font-family:monospace; font-size:0.8rem;"></textarea>
+            <div style="margin-top:8px; text-align:right;">
+              <button type="button" class="btn btn-secondary btn--sm" id="btn-process-pasted-csv">Procesar texto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerta de advertencia de alumnos calificados -->
+        <div id="rubric-warning-graded" style="display:none; background:#fffbeb; border:1px solid #fef3c7; border-left:4px solid #f59e0b; padding:10px 15px; border-radius:4px; font-size:0.85rem; color:#92400e; margin-bottom:15px;">
+          ⚠️ <strong>Atención:</strong> Ya existen alumnos calificados con la rúbrica anterior. Si guardas una nueva rúbrica, deberás revisar las calificaciones de los alumnos para que se ajusten a los nuevos criterios.
+        </div>
+
+        <!-- Vista Previa de Criterios -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0; font-size:0.95rem; color:var(--text-primary);">
+              📋 Criterios de la Rúbrica <span id="rubric-preview-count" style="font-weight:normal; color:var(--text-muted);">(9 criterios)</span>
+            </h4>
+            <span id="rubric-preview-max" style="font-size:0.85rem; font-weight:bold; color:var(--primary);">Punt. Máx: 9.00 pts</span>
+          </div>
+          <div id="rubric-criteria-preview" style="max-height: 280px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; background:#fff;">
+            <!-- Contenido dinámico -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="padding:15px 20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn btn-ghost" id="btn-cancel-rubric-modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btn-save-rubric-modal" disabled>💾 Guardar Rúbrica en esta Clase</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/class_detail.js"></script>
 </body>
 </html>
 

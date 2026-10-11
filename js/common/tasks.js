@@ -11,13 +11,16 @@ export const OFFLINE_RUBRIC = [
   { id: "profundidad", title: "10. Nivel de Detalle", desc: "Profundidad en las respuestas y esfuerzo destacable.", levels: [ { points: 0, desc: "Nada" }, { points: 0.5, desc: "A medias" }, { points: 1, desc: "Perfecto" } ] }
 ];
 
+import { TASK_1_DEFAULT_RUBRIC } from './rubric.js';
+
 export const CLASSROOM_TASKS = [
   {
     "id": "1",
     "title": "Producción: Tablero Kanban de la Redacción",
     "block": "A",
     "crit": "5.2",
-    "description": "¡Bienvenidos a la redacción! En grupos de 2 o 3, vais a coordinar vuestro programa de radio creando un tablero Kanban profesional.\n\n⚠️ REQUISITOS MÍNIMOS DE PRODUCCIÓN:\n1. Cada miembro del equipo deberá crear al menos 4 tareas reales del programa.\n2. Debéis asignar responsables a cada tarea y moverlas por los distintos estados (To Do, Doing, Done).\n3. Añadid al Director de Producción al tablero usando el correo: [correo de tu profesor/a]. IMPORTANTE: Limitad los permisos del profesor (modo lectura/observador) para que no pueda romperos las tareas por accidente.\n\nENTREGABLE INDIVIDUAL: Cada miembro del equipo entregará un PDF explicando detalladamente el uso de la herramienta Kanban escogida, justificando por qué habéis elegido esa y no otra (ej. Trello, Jira, Notion), y aportando capturas de pantalla de vuestro tablero en acción. \n\n⚠️ IMPORTANTE: El archivo debe llamarse EXACTAMENTE ApellidosNombre_Tarea1.pdf\n\n📌 Criterio a evaluar: CE 5.2."
+    "description": "¡Bienvenidos a la redacción! En grupos de 2 o 3, vais a coordinar vuestro programa de radio creando un tablero Kanban profesional.\n\n⚠️ REQUISITOS MÍNIMOS DE PRODUCCIÓN:\n1. Cada miembro del equipo deberá crear al menos 4 tareas reales del programa.\n2. Debéis asignar responsables a cada tarea y moverlas por los distintos estados (To Do, Doing, Done).\n3. Añadid al Director de Producción al tablero usando el correo: [correo de tu profesor/a]. IMPORTANTE: Limitad los permisos del profesor (modo lectura/observador) para que no pueda romperos las tareas por accidente.\n\nENTREGABLE INDIVIDUAL: Cada miembro del equipo entregará un PDF explicando detalladamente el uso de la herramienta Kanban escogida, justificando por qué habéis elegido esa y no otra (ej. Trello, Jira, Notion), y aportando capturas de pantalla de vuestro tablero en acción. \n\n⚠️ IMPORTANTE: El archivo debe llamarse EXACTAMENTE ApellidosNombre_Tarea1.pdf\n\n📌 Criterio a evaluar: CE 5.2.",
+    "customRubric": TASK_1_DEFAULT_RUBRIC
   },
   {
     "id": "2",

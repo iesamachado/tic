@@ -363,7 +363,9 @@
   visibility: hidden;
   transition: all var(--transition-base);
 }
-.modal-backdrop--visible { 
+
+.modal-backdrop--visible,
+.modal-backdrop[aria-hidden="false"] { 
   opacity: 1; 
   pointer-events: auto;
   visibility: visible;

@@ -480,6 +480,13 @@ export async function getClassMembers(classId) {
     });
   }
 
+  // Ordenar alumnos alfabéticamente por defecto
+  members.sort((a, b) => {
+    const nameA = a.displayName || a.name || a.email || '';
+    const nameB = b.displayName || b.name || b.email || '';
+    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+  });
+
   return members;
 }
 

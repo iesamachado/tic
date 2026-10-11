@@ -9,6 +9,7 @@ import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams } from './co
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getLeague, MEDALS_CATALOG } from './common/gamification.js';
 import { CLASSROOM_TASKS, OFFLINE_RUBRIC } from './common/tasks.js';
+import { getActiveRubric } from './common/rubric.js';
 
 let myClasses = [];
 
@@ -561,9 +562,27 @@ async function loadOfflineTasks(user) {
         
         let rubricHtml = '';
         if (config.rubricPublished) {
-           rubricHtml = `<h5 style="margin:20px 0 10px 0; font-size:1rem; border-bottom:1px solid var(--border); padding-bottom:5px;">📊 Rúbrica de Evaluación</h5>`;
-           const activeRubric = task.customRubric || OFFLINE_RUBRIC;
+           const activeRubric = getActiveRubric(task, config, OFFLINE_RUBRIC);
            const scores = gradeInfo ? (gradeInfo.rubricScores || {}) : {};
+           const maxPts = activeRubric.reduce((acc, c) => acc + Math.max(...c.levels.map(l => l.points || 0), 0), 0);
+           
+           let rawSum = 0;
+           let countEvaluated = 0;
+           activeRubric.forEach(crit => {
+             if (scores[crit.id] !== undefined && scores[crit.id] !== null) {
+               rawSum += scores[crit.id];
+               countEvaluated++;
+             }
+           });
+           
+           const scoreSummary = countEvaluated > 0 
+             ? `<span style="font-size:0.85rem; font-weight:normal; color:var(--text-muted);">(Puntuación: ${rawSum.toFixed(2)} / ${maxPts.toFixed(2)} pts)</span>`
+             : `<span style="font-size:0.85rem; font-weight:normal; color:var(--text-muted);">(${activeRubric.length} criterios • Máx. ${maxPts.toFixed(2)} pts)</span>`;
+
+           rubricHtml = `<h5 style="margin:20px 0 10px 0; font-size:1rem; border-bottom:1px solid var(--border); padding-bottom:5px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+             <span>📊 Rúbrica de Evaluación</span>
+             ${scoreSummary}
+           </h5>`;
            
            activeRubric.forEach(crit => {
              const studentScore = scores[crit.id];

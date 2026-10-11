@@ -9,6 +9,7 @@ import {
 } from './common/db.js';
 import { MEDALS_CATALOG, GUILDS_CATALOG, MEDAL_XP } from './common/gamification.js';
 import { CLASSROOM_TASKS, OFFLINE_RUBRIC } from './common/tasks.js';
+import { getActiveRubric, parseClassroomRubricCSV, exportRubricToClassroomCSV, calculateRubricGrade } from './common/rubric.js';
 import { createClassroomAssignment, syncClassroomGrades } from './common/classroom.js';
 import { renderHeader, showToast, showLoading, hideLoading, renderPodium, renderRankingTable } from './common/ui.js';
 import { GAMES, TOPICS, $, $$, escapeHtml, formatDate, getUrlParams, copyToClipboard } from './common/utils.js';
@@ -1500,6 +1501,7 @@ if ($('btn-refresh-theory')) {
 // ══════════════════════════════════════════════════════════════
 
 let offlineTasksConfig = {};
+let offlineGrades = {};
 
 async function loadOfflineTasksTab() {
   const container = $('offline-tasks-container');
@@ -1508,6 +1510,13 @@ async function loadOfflineTasksTab() {
   if (members.length === 0) {
      members = await getClassMembers(classData.id);
   }
+
+  // Ordenar alumnos alfabéticamente
+  members.sort((a, b) => {
+    const nameA = a.displayName || a.name || a.email || '';
+    const nameB = b.displayName || b.name || b.email || '';
+    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+  });
 
   // Cargar configuración de tareas
   const configSnap = await getDocs(query(collection(db, 'tic2_offline_tasks_config'), where('classId', '==', classData.id)));
@@ -1518,7 +1527,7 @@ async function loadOfflineTasksTab() {
 
   // Cargar notas offline
   const gradesSnap = await getDocs(query(collection(db, 'tic2_offline_grades'), where('classId', '==', classData.id)));
-  const offlineGrades = {};
+  offlineGrades = {};
   gradesSnap.forEach(d => {
     const data = d.data();
     if (!offlineGrades[data.taskId]) offlineGrades[data.taskId] = {};
@@ -1531,6 +1540,7 @@ async function loadOfflineTasksTab() {
     
     const displayTitle = config.customTitle || task.title;
     const displayDesc = config.customDescription || task.description;
+    const hasCustomRubric = !!(config.customRubric && Array.isArray(config.customRubric) && config.customRubric.length > 0);
     
     html += `
       <div class="task-accordion-item" style="border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; background: var(--bg-surface); overflow:hidden;">
@@ -1578,6 +1588,13 @@ async function loadOfflineTasksTab() {
                 <span class="toggle-slider"></span>
               </label>
             </div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:0.9rem; margin-left:auto;">
+              <button type="button" class="btn btn-outline btn--sm btn-open-rubric-modal" data-task="${task.id}" style="display:inline-flex; align-items:center; gap:6px; background:#fff;" title="Personalizar o importar rúbrica CSV">
+                <span>🎯 ${hasCustomRubric ? 'Rúbrica Personalizada' : (task.customRubric ? 'Rúbrica Tarea' : 'Rúbrica')}</span>
+                ${hasCustomRubric ? '<span class="badge" style="background:#dcfce7; color:#15803d; font-size:0.7rem; padding:1px 5px;">CSV</span>' : ''}
+                <span style="font-size:0.8rem;">⚙️</span>
+              </button>
+            </div>
           </div>
 
           <h4 style="font-size:1rem; margin-bottom:10px; color:var(--text-primary);">Alumnos</h4>
@@ -1594,7 +1611,7 @@ async function loadOfflineTasksTab() {
               <div class="student-accordion-header" style="padding:10px 15px; background:${hasGrade ? '#f0fdf4' : '#fff'}; display:flex; justify-content:space-between; align-items:center; cursor:pointer;" data-task="${task.id}" data-uid="${member.uid}">
                 <div style="display:flex; align-items:center; gap:10px;">
                   <span class="student-expand-icon" style="font-size:0.8rem; color:#94a3b8;">▶️</span>
-                  <span style="font-weight:bold;">${escapeHtml(member.displayName || member.email.split('@')[0])}</span>
+                  <span style="font-weight:bold;">${escapeHtml(member.displayName || member.name || member.email?.split('@')[0] || 'Alumno')}</span>
                 </div>
                 <span style="font-weight:bold; color:${gradeColor};">
                   ${hasGrade ? grade.finalGrade.toFixed(2) : 'Sin evaluar'}
@@ -1695,6 +1712,15 @@ async function loadOfflineTasksTab() {
       $('edit-task-title').value = config.customTitle || task.title;
       $('edit-task-desc').value = config.customDescription || task.description;
       $('modal-edit-task').setAttribute('aria-hidden', 'false');
+      $('modal-edit-task').classList.add('modal-backdrop--visible');
+    });
+  });
+
+  // Evento Configurar / Importar Rúbrica
+  $$('.btn-open-rubric-modal').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openRubricModal(btn.dataset.task);
     });
   });
 
@@ -1728,6 +1754,7 @@ async function loadOfflineTasksTab() {
 
 async function renderInlineRubric(taskId, uid, container) {
   const task = CLASSROOM_TASKS.find(t => t.id === taskId);
+  const config = offlineTasksConfig[taskId] || {};
   
   let gradeData = null;
   try {
@@ -1744,22 +1771,22 @@ async function renderInlineRubric(taskId, uid, container) {
   
   let html = `<div class="inline-rubric-form" data-task="${taskId}" data-uid="${uid}" data-gradeid="${gradeData ? gradeData.id : ''}">`;
   
-  const activeRubric = task.customRubric || OFFLINE_RUBRIC;
+  const activeRubric = getActiveRubric(task, config, OFFLINE_RUBRIC);
   
   activeRubric.forEach(crit => {
     html += `
       <div style="margin-bottom:10px; border:1px solid #e2e8f0; border-radius:6px; overflow:hidden; background:#fff;">
         <div style="background:#f1f5f9; padding:5px 10px; font-size:0.9rem; font-weight:bold; border-bottom:1px solid #e2e8f0;">
-          ${crit.title} <span style="font-weight:normal; font-size:0.8rem; color:var(--text-muted); margin-left:5px;">${crit.desc}</span>
+          ${escapeHtml(crit.title)} ${crit.desc ? `<span style="font-weight:normal; font-size:0.8rem; color:var(--text-muted); margin-left:5px;">${escapeHtml(crit.desc)}</span>` : ''}
         </div>
-        <div style="display:flex;">
+        <div style="display:flex; flex-wrap:wrap;">
     `;
     crit.levels.forEach(lvl => {
       const selected = scores[crit.id] === lvl.points;
       html += `
-          <label style="flex:1; display:flex; flex-direction:column; align-items:center; padding:5px; border-right:1px solid #f1f5f9; cursor:pointer; background:${selected ? '#e0e7ff' : 'transparent'};">
+          <label style="flex:1; min-width:80px; display:flex; flex-direction:column; align-items:center; padding:5px; border-right:1px solid #f1f5f9; cursor:pointer; background:${selected ? '#e0e7ff' : 'transparent'};">
             <input type="radio" name="rubric_${taskId}_${uid}_${crit.id}" value="${lvl.points}" ${selected ? 'checked' : ''} style="margin-bottom:5px;">
-            <span style="font-size:0.8rem; text-align:center;">${lvl.desc}</span>
+            <span style="font-size:0.8rem; text-align:center;">${escapeHtml(lvl.desc)}</span>
             <span style="font-size:0.75rem; font-weight:bold; color:var(--primary);">${lvl.points} pts</span>
           </label>
       `;
@@ -1785,14 +1812,15 @@ async function renderInlineRubric(taskId, uid, container) {
   const gradeSpan = form.querySelector('.rubric-live-grade');
   
   const updateInlineGrade = () => {
-    let sum = 0;
+    const currentScores = {};
     activeRubric.forEach(crit => {
       const checked = form.querySelector(`input[name="rubric_${taskId}_${uid}_${crit.id}"]:checked`);
       if (checked) {
-        sum += parseFloat(checked.value);
+        currentScores[crit.id] = parseFloat(checked.value);
       }
     });
-    gradeSpan.textContent = sum.toFixed(2);
+    const calc = calculateRubricGrade(currentScores, activeRubric);
+    gradeSpan.innerHTML = `${calc.finalGrade.toFixed(2)} <span style="font-size:0.85rem; font-weight:normal; color:var(--text-muted);">(${calc.rawScore.toFixed(2)} / ${calc.maxScore.toFixed(2)} pts)</span>`;
     
     // Highlight
     form.querySelectorAll('label').forEach(lbl => {
@@ -1810,26 +1838,23 @@ async function renderInlineRubric(taskId, uid, container) {
     btn.disabled = true;
     btn.textContent = 'Guardando...';
     
-    let sum = 0, count = 0;
     const newScores = {};
     activeRubric.forEach(crit => {
       const checked = form.querySelector(`input[name="rubric_${taskId}_${uid}_${crit.id}"]:checked`);
       if (checked) {
-        const val = parseFloat(checked.value);
-        newScores[crit.id] = val;
-        sum += val;
-        count++;
+        newScores[crit.id] = parseFloat(checked.value);
       }
     });
     
-    if (count !== activeRubric.length) {
+    const calc = calculateRubricGrade(newScores, activeRubric);
+    if (!calc.isComplete) {
       showToast('Aviso', 'Faltan criterios por evaluar', 'warning');
       btn.disabled = false;
       btn.textContent = 'Guardar Calificación';
       return;
     }
     
-    const finalGrade = sum;
+    const finalGrade = calc.finalGrade;
     const fb = form.querySelector('.rubric-feedback-input').value.trim();
     
     const docData = {
@@ -1837,6 +1862,8 @@ async function renderInlineRubric(taskId, uid, container) {
       taskId: taskId,
       studentId: uid,
       rubricScores: newScores,
+      rawScore: calc.rawScore,
+      maxScore: calc.maxScore,
       finalGrade: finalGrade,
       teacherFeedback: fb,
       updatedAt: serverTimestamp()
@@ -1899,8 +1926,14 @@ function exportToSeneca(offlineGrades) {
   });
   csv += "\n";
   
-  members.forEach(m => {
-    let nameToPrint = m.displayName || m.email;
+  const sortedMembers = [...members].sort((a, b) => {
+    const nameA = a.displayName || a.name || a.email || '';
+    const nameB = b.displayName || b.name || b.email || '';
+    return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
+  });
+
+  sortedMembers.forEach(m => {
+    let nameToPrint = m.displayName || m.name || m.email || 'Alumno';
     csv += `"${nameToPrint}";`;
     
     CLASSROOM_TASKS.forEach(t => {
@@ -1925,11 +1958,15 @@ function exportToSeneca(offlineGrades) {
 }
 
 // Edit Task Modal Events
-if ($('btn-close-edit-task')) {
-  $('btn-close-edit-task').addEventListener('click', () => $('modal-edit-task').setAttribute('aria-hidden', 'true'));
-  $('btn-cancel-edit-task').addEventListener('click', () => $('modal-edit-task').setAttribute('aria-hidden', 'true'));
+if ($('modal-edit-task')) {
+  const closeEditTaskModal = () => {
+    $('modal-edit-task').setAttribute('aria-hidden', 'true');
+    $('modal-edit-task').classList.remove('modal-backdrop--visible');
+  };
+  $('btn-close-edit-task').addEventListener('click', closeEditTaskModal);
+  $('btn-cancel-edit-task').addEventListener('click', closeEditTaskModal);
   $('modal-edit-task').addEventListener('click', e => {
-    if (e.target === $('modal-edit-task')) $('modal-edit-task').setAttribute('aria-hidden', 'true');
+    if (e.target === $('modal-edit-task')) closeEditTaskModal();
   });
 
   $('form-edit-task').addEventListener('submit', async (e) => {
@@ -1950,7 +1987,7 @@ if ($('btn-close-edit-task')) {
         const ref = await addDoc(collection(db, 'tic2_offline_tasks_config'), newDoc);
         offlineTasksConfig[taskId] = { id: ref.id, ...newDoc };
       }
-      $('modal-edit-task').setAttribute('aria-hidden', 'true');
+      closeEditTaskModal();
       showToast('Guardado', 'Tarea actualizada', 'success', 1500);
       
       // Actualizar el DOM sin recargar la página (al menos el título)
@@ -1975,6 +2012,7 @@ if ($('btn-close-edit-task')) {
             $('edit-task-title').value = offlineTasksConfig[taskId].customTitle || task.title;
             $('edit-task-desc').value = offlineTasksConfig[taskId].customDescription || task.description;
             $('modal-edit-task').setAttribute('aria-hidden', 'false');
+            $('modal-edit-task').classList.add('modal-backdrop--visible');
           });
         }
       }
@@ -1984,6 +2022,303 @@ if ($('btn-close-edit-task')) {
         contentDesc.innerHTML = escapeHtml(customDescription);
       }
       
+    } catch(err) {
+      showToast('Error', err.message, 'error');
+    }
+  });
+}
+
+// ── Modal de Personalización de Rúbrica ──
+let currentRubricTaskId = null;
+let currentLoadedRubric = null;
+
+function renderCriteriaPreview(rubric, container) {
+  if (!rubric || rubric.length === 0) {
+    container.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted);">No hay criterios definidos.</div>`;
+    return;
+  }
+  
+  let html = `<table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+    <thead>
+      <tr style="background:#f1f5f9; border-bottom:1px solid #e2e8f0; text-align:left;">
+        <th style="padding:8px 10px; width:40px;">#</th>
+        <th style="padding:8px 10px; width:45%;">Criterio</th>
+        <th style="padding:8px 10px;">Niveles y Puntuaciones</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  rubric.forEach((crit, idx) => {
+    html += `
+      <tr style="border-bottom:1px solid #f1f5f9; vertical-align:top;">
+        <td style="padding:8px 10px; font-weight:bold; color:var(--text-muted);">${idx + 1}</td>
+        <td style="padding:8px 10px;">
+          <div style="font-weight:bold; color:var(--text-primary);">${escapeHtml(crit.title)}</div>
+          ${crit.desc ? `<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">${escapeHtml(crit.desc)}</div>` : ''}
+        </td>
+        <td style="padding:8px 10px;">
+          <div style="display:flex; flex-wrap:wrap; gap:4px;">
+    `;
+    crit.levels.forEach(lvl => {
+      html += `
+            <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 6px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; font-size:0.75rem;">
+              <strong style="color:var(--primary);">${lvl.points}p</strong> ${escapeHtml(lvl.desc)}
+            </span>
+      `;
+    });
+    html += `
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+function openRubricModal(taskId) {
+  console.log('[Rúbrica] Abriendo modal para la tarea:', taskId);
+  currentRubricTaskId = taskId;
+  const task = CLASSROOM_TASKS.find(t => t.id === taskId);
+  if (!task) {
+    console.error('[Rúbrica] Tarea no encontrada para ID:', taskId);
+    return;
+  }
+
+  const config = offlineTasksConfig[taskId] || {};
+  const activeRubric = getActiveRubric(task, config, OFFLINE_RUBRIC);
+  currentLoadedRubric = null;
+
+  const modal = $('modal-task-rubric');
+  if (!modal) {
+    console.error('[Rúbrica] Modal #modal-task-rubric no encontrado en el DOM');
+    return;
+  }
+
+  $('rubric-task-id').value = taskId;
+  $('rubric-modal-title').textContent = `🎯 Rúbrica: ${config.customTitle || task.title}`;
+
+  const isCustomInClass = !!(config.customRubric && Array.isArray(config.customRubric) && config.customRubric.length > 0);
+  const typeBadge = $('rubric-type-badge');
+  if (isCustomInClass) {
+    typeBadge.textContent = 'Personalizada en esta clase';
+    typeBadge.style.background = '#dcfce7';
+    typeBadge.style.color = '#15803d';
+    $('btn-reset-rubric').style.display = 'inline-block';
+  } else if (task.customRubric) {
+    typeBadge.textContent = 'Predeterminada de la tarea';
+    typeBadge.style.background = '#e0e7ff';
+    typeBadge.style.color = '#4338ca';
+    $('btn-reset-rubric').style.display = 'none';
+  } else {
+    typeBadge.textContent = 'General offline';
+    typeBadge.style.background = '#f1f5f9';
+    typeBadge.style.color = '#475569';
+    $('btn-reset-rubric').style.display = 'none';
+  }
+
+  const maxPts = activeRubric.reduce((acc, c) => acc + Math.max(...c.levels.map(l => l.points || 0), 0), 0);
+  $('rubric-summary-info').textContent = `${activeRubric.length} criterios • Puntuación máxima: ${maxPts.toFixed(2)} pts (Escalada a 10)`;
+  $('rubric-preview-count').textContent = `(${activeRubric.length} criterios)`;
+  $('rubric-preview-max').textContent = `Punt. Máx: ${maxPts.toFixed(2)} pts`;
+
+  // Comprobar si hay alumnos calificados
+  const gradesMap = (offlineGrades && offlineGrades[taskId]) || {};
+  const hasGrades = Object.values(gradesMap).some(g => typeof g.finalGrade === 'number');
+  $('rubric-warning-graded').style.display = hasGrades ? 'block' : 'none';
+
+  renderCriteriaPreview(activeRubric, $('rubric-criteria-preview'));
+
+  $('rubric-csv-file').value = '';
+  $('rubric-csv-paste').value = '';
+  $('rubric-paste-container').style.display = 'none';
+  $('btn-save-rubric-modal').disabled = true;
+
+  modal.setAttribute('aria-hidden', 'false');
+  modal.classList.add('modal-backdrop--visible');
+}
+
+function closeRubricModal() {
+  const modal = $('modal-task-rubric');
+  if (modal) {
+    modal.setAttribute('aria-hidden', 'true');
+    modal.classList.remove('modal-backdrop--visible');
+  }
+  currentRubricTaskId = null;
+  currentLoadedRubric = null;
+}
+
+if ($('modal-task-rubric')) {
+  $('btn-close-rubric-modal').addEventListener('click', closeRubricModal);
+  $('btn-cancel-rubric-modal').addEventListener('click', closeRubricModal);
+  $('modal-task-rubric').addEventListener('click', (e) => {
+    if (e.target === $('modal-task-rubric')) closeRubricModal();
+  });
+
+  $('btn-toggle-paste-csv').addEventListener('click', () => {
+    const pasteBox = $('rubric-paste-container');
+    pasteBox.style.display = pasteBox.style.display === 'none' ? 'block' : 'none';
+  });
+
+  function applyParsedRubric(criteria) {
+    currentLoadedRubric = criteria;
+    const maxPts = criteria.reduce((acc, c) => acc + Math.max(...c.levels.map(l => l.points || 0), 0), 0);
+
+    const typeBadge = $('rubric-type-badge');
+    typeBadge.textContent = 'Nueva rúbrica cargada (sin guardar)';
+    typeBadge.style.background = '#fef3c7';
+    typeBadge.style.color = '#92400e';
+
+    $('rubric-summary-info').textContent = `${criteria.length} criterios detectados • Puntuación máxima: ${maxPts.toFixed(2)} pts`;
+    $('rubric-preview-count').textContent = `(${criteria.length} criterios detectados)`;
+    $('rubric-preview-max').textContent = `Punt. Máx: ${maxPts.toFixed(2)} pts`;
+
+    renderCriteriaPreview(criteria, $('rubric-criteria-preview'));
+    $('btn-save-rubric-modal').disabled = false;
+    showToast('Rúbrica analizada', `${criteria.length} criterios listos para guardar`, 'success', 2000);
+  }
+
+  $('rubric-csv-file').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target.result;
+        const criteria = parseClassroomRubricCSV(text);
+        applyParsedRubric(criteria);
+      } catch(err) {
+        showToast('Error en CSV', err.message, 'error');
+      }
+    };
+    reader.onerror = () => showToast('Error', 'No se pudo leer el archivo', 'error');
+    reader.readAsText(file, 'UTF-8');
+  });
+
+  const dropZone = $('rubric-drop-zone');
+  if (dropZone) {
+    ['dragenter', 'dragover'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = 'var(--primary)';
+        dropZone.style.background = '#f0fdf4';
+      });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#cbd5e1';
+        dropZone.style.background = '#fcfcfc';
+      });
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const text = event.target.result;
+            const criteria = parseClassroomRubricCSV(text);
+            applyParsedRubric(criteria);
+          } catch(err) {
+            showToast('Error en CSV', err.message, 'error');
+          }
+        };
+        reader.readAsText(file, 'UTF-8');
+      }
+    });
+  }
+
+  $('btn-process-pasted-csv').addEventListener('click', () => {
+    const text = $('rubric-csv-paste').value.trim();
+    if (!text) {
+      showToast('Aviso', 'Pega primero el texto del CSV', 'warning');
+      return;
+    }
+    try {
+      const criteria = parseClassroomRubricCSV(text);
+      applyParsedRubric(criteria);
+    } catch(err) {
+      showToast('Error en CSV', err.message, 'error');
+    }
+  });
+
+  $('btn-download-rubric-csv').addEventListener('click', () => {
+    if (!currentRubricTaskId) return;
+    const task = CLASSROOM_TASKS.find(t => t.id === currentRubricTaskId);
+    const config = offlineTasksConfig[currentRubricTaskId] || {};
+    const rubricToExport = currentLoadedRubric || getActiveRubric(task, config, OFFLINE_RUBRIC);
+
+    const csvContent = exportRubricToClassroomCSV(rubricToExport);
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const safeTitle = (config.customTitle || task.title).replace(/[^a-zA-Z0-9_-]/g, '_');
+    a.download = `Rubrica_${safeTitle}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+
+  $('btn-save-rubric-modal').addEventListener('click', async () => {
+    if (!currentRubricTaskId || !currentLoadedRubric) return;
+    const btn = $('btn-save-rubric-modal');
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    const taskId = currentRubricTaskId;
+    try {
+      if (offlineTasksConfig[taskId]) {
+        await updateDoc(doc(db, 'tic2_offline_tasks_config', offlineTasksConfig[taskId].id), {
+          customRubric: currentLoadedRubric
+        });
+        offlineTasksConfig[taskId].customRubric = currentLoadedRubric;
+      } else {
+        const newDoc = {
+          classId: classData.id,
+          taskId: taskId,
+          isActive: false,
+          rubricPublished: false,
+          gradesPublished: false,
+          dueDate: '',
+          customRubric: currentLoadedRubric
+        };
+        const ref = await addDoc(collection(db, 'tic2_offline_tasks_config'), newDoc);
+        offlineTasksConfig[taskId] = { id: ref.id, ...newDoc };
+      }
+
+      showToast('Guardado', 'Rúbrica personalizada guardada en la clase', 'success');
+      closeRubricModal();
+      await loadOfflineTasksTab();
+    } catch(err) {
+      showToast('Error', err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 Guardar Rúbrica en esta Clase';
+    }
+  });
+
+  $('btn-reset-rubric').addEventListener('click', async () => {
+    if (!currentRubricTaskId) return;
+    const taskId = currentRubricTaskId;
+
+    const ok = confirm('¿Seguro que deseas eliminar la rúbrica personalizada y restablecer la rúbrica por defecto para esta tarea en esta clase?');
+    if (!ok) return;
+
+    try {
+      if (offlineTasksConfig[taskId]) {
+        await updateDoc(doc(db, 'tic2_offline_tasks_config', offlineTasksConfig[taskId].id), {
+          customRubric: null
+        });
+        offlineTasksConfig[taskId].customRubric = null;
+      }
+
+      showToast('Restablecido', 'Rúbrica restablecida a la configuración por defecto', 'success');
+      closeRubricModal();
+      await loadOfflineTasksTab();
     } catch(err) {
       showToast('Error', err.message, 'error');
     }
